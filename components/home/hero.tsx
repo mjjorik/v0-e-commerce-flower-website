@@ -17,107 +17,89 @@ if (typeof window !== 'undefined') {
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
-  const petal1Ref = useRef<HTMLDivElement>(null)
-  const petal2Ref = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
-    // Elegant reveal of the image (Original v0 behavior but GSAP stable)
+    // Ultra-Luxe reveal of the main image
     gsap.fromTo(imageRef.current, 
-      { clipPath: 'inset(8% 8% 8% 8% round 24px)', opacity: 0 },
-      { clipPath: 'inset(0% 0% 0% 0% round 24px)', opacity: 1, duration: 1.1, ease: "power2.out", delay: 0.2 }
+      { 
+        clipPath: 'inset(100% 0% 0% 0%)',
+        scale: 1.1,
+        y: 60
+      },
+      {
+        clipPath: 'inset(0% 0% 0% 0%)',
+        scale: 1,
+        y: 0,
+        duration: 2,
+        ease: "expo.inOut",
+        delay: 0.2
+      }
     )
-
-    // Floating petals parallax (v0 original effect)
-    gsap.to(petal1Ref.current, {
-      y: -60,
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true
-      }
-    })
-
-    gsap.to(petal2Ref.current, {
-      y: 120,
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true
-      }
-    })
   }, { scope: containerRef })
 
   return (
     <section
       ref={containerRef}
-      className="relative overflow-hidden bg-background px-4 pb-10 pt-8 sm:px-6 lg:px-8 lg:pb-20 lg:pt-16"
+      className="relative min-h-[100dvh] flex flex-col justify-center overflow-hidden pt-32 pb-12 sm:pt-40"
     >
-      <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
-        <div className="relative z-10">
-          <p className="mb-5 text-xs uppercase tracking-[0.28em] text-muted-foreground">
-            Fresh flowers · {BRAND.city}
-          </p>
+      <div className="mx-auto max-w-[100rem] w-full px-6 lg:px-12 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+          
+          {/* Main SEO Content */}
+          <div className="lg:col-span-8">
+            <div className="space-y-10">
+              <div className="inline-flex items-center rounded-full border border-ink/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-ink/40">
+                Fresh flowers · {BRAND.city}
+              </div>
+              
+              <h1 className="font-serif text-[clamp(3.5rem,10vw,8.5rem)] font-medium leading-[0.88] tracking-tighter text-ink perspective-[1200px]">
+                <KineticText text="Beautiful flowers." className="block" delay={100} />
+                <div className="block mt-2">
+                   <KineticText text="Honest" className="inline-block italic text-clay" delay={400} />
+                   <KineticText text="prices." className="inline-block ml-[0.2em]" delay={500} />
+                </div>
+              </h1>
 
-          <h1 className="font-serif text-[clamp(2.75rem,9vw,6.5rem)] font-medium leading-[0.95] tracking-tight text-balance">
-            <KineticText as="span" text="Beautiful flowers." className="block" />
-            <KineticText
-              as="span"
-              text="Honest prices."
-              className="block italic text-terracotta"
-              delay={350}
-            />
-          </h1>
-
-          <p className="mt-6 max-w-md text-pretty text-base leading-relaxed text-foreground/75 sm:text-lg">
-            Farm-fresh bouquets and weekly subscriptions, delivered same-day
-            across Greater Boston. No markups, no fuss — just good flowers,
-            $50 to $130.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Link
-              href="/shop"
-              className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5"
-            >
-              Shop Bouquets
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-            <Link
-              href="/subscriptions"
-              className="text-sm underline decoration-1 underline-offset-4 transition-opacity hover:opacity-70"
-            >
-              Start a subscription
-            </Link>
-          </div>
-        </div>
-
-        <div className="relative">
-          <div
-            ref={imageRef}
-            className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-card sm:aspect-[5/6]"
-          >
-            <Image
-              src="/hero/hero-bouquet.png"
-              alt="Editorial photograph of a loose seasonal bouquet"
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 45vw"
-              className="object-cover"
-            />
+              <div className="flex flex-col gap-10 md:flex-row md:items-center pt-4">
+                <p className="max-w-sm text-lg font-medium leading-[1.4] text-ink/50 text-pretty">
+                  Farm-fresh bouquets and weekly flower subscriptions, delivered same-day across Greater Boston. Order by 1 PM.
+                </p>
+                
+                {/* Luxe Button-in-Button */}
+                <Link
+                  href="/shop"
+                  className="group flex items-center gap-10 rounded-full bg-ink pl-8 pr-2 py-2 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-clay active:scale-[0.98] w-max shadow-2xl shadow-ink/20"
+                >
+                  <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-linen">Shop Bouquets</span>
+                  <div className="flex size-12 items-center justify-center rounded-full bg-linen/20 transition-transform duration-500 group-hover:translate-x-1 group-hover:scale-105">
+                    <ArrowRight className="size-5 text-linen" strokeWidth={1.5} />
+                  </div>
+                </Link>
+              </div>
+            </div>
           </div>
 
-          <div
-            ref={petal1Ref}
-            className="pointer-events-none absolute -left-6 -top-6 size-24 rounded-full bg-sage/50 blur-[2px] sm:size-32"
-            aria-hidden
-          />
-          <div
-            ref={petal2Ref}
-            className="pointer-events-none absolute -bottom-8 -right-4 size-20 rounded-[40%_60%_55%_45%] bg-terracotta/30 sm:size-28"
-            aria-hidden
-          />
+          {/* Overlapping Immersive Visual */}
+          <div className="lg:col-span-4 relative z-10 lg:-mb-20">
+            <div ref={imageRef} className="relative aspect-[3/4] w-full max-w-md ml-auto overflow-hidden rounded-[3rem] bg-card ring-1 ring-black/5 shadow-[0_50px_120px_rgba(0,0,0,0.12)] lg:-rotate-2 lg:translate-x-8">
+              <Image
+                src="/hero/hero-bouquet.png"
+                alt="Boutique Wildflower bouquet in Boston"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 30vw"
+                className="object-cover transition-transform duration-[2.5s] hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/20 to-transparent" />
+            </div>
+            
+            {/* Geo SEO Badge */}
+            <div className="absolute -left-10 bottom-24 bg-linen/90 backdrop-blur-xl border border-white/40 p-5 rounded-2xl shadow-xl ring-1 ring-black/5 hidden xl:block rotate-3 z-30">
+               <p className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mb-1">Serving</p>
+               <p className="font-serif text-lg text-ink leading-tight">Back Bay, Cambridge <br/>& Somerville</p>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
