@@ -1,6 +1,3 @@
-'use client'
-
-import { motion } from 'motion/react'
 import { Truck, Sprout, BadgeDollarSign } from 'lucide-react'
 
 const PROPS = [
@@ -26,12 +23,8 @@ export function ValueProps() {
     <section className="bg-card py-16 sm:py-20">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-3 lg:gap-8 lg:px-8">
         {PROPS.map((p, i) => (
-          <motion.div
+          <div
             key={p.title}
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.6, delay: i * 0.12 }}
             className="flex flex-col gap-3"
           >
             <p.icon className="size-6 text-primary" strokeWidth={1.5} />
@@ -39,7 +32,7 @@ export function ValueProps() {
             <p className="text-pretty leading-relaxed text-foreground/70">
               {p.body}
             </p>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>

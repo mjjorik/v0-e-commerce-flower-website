@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  basePath: '/wildflower',
+  trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true,
   },

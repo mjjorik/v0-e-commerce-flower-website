@@ -2,12 +2,18 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
-import { motion } from 'motion/react'
+import { useRef } from 'react'
 import { Plus } from 'lucide-react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { useGSAP } from '@gsap/react'
 import { useCart } from '@/components/cart/cart-provider'
 import type { Product } from '@/lib/products'
 import { formatPrice } from '@/lib/products'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 export function ProductCard({
   product,
@@ -16,50 +22,51 @@ export function ProductCard({
   product: Product
   index?: number
 }) {
-  const [hover, setHover] = useState(false)
   const { addItem } = useCart()
+  const cardRef = useRef<HTMLDivElement>(null)
 
-  const quickAdd = (e: React.MouseEvent) => {
-    e.preventDefault()
-    const size = product.sizes[1] ?? product.sizes[0]
-    addItem({
-      productSlug: product.slug,
-      name: product.name,
-      sizeKey: size.key,
-      sizeLabel: size.label,
-      price: size.price,
-      image: product.image,
-      imageAlt: product.imageAlt,
-    })
-  }
+  useGSAP(() => {
+    if (!cardRef.current) return
+
+    gsap.fromTo(cardRef.current, 
+      { 
+        opacity: 0, 
+        y: 20,
+        scale: 0.98
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        ease: "expo.out",
+        delay: (index % 4) * 0.1,
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: 'top 92%',
+          toggleActions: 'play none none none',
+        }
+      }
+    )
+  }, { scope: cardRef })
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, delay: (index % 4) * 0.08 }}
-      className="group"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
+    <div ref={cardRef} className="group will-change-transform opacity-0">
       <Link href={`/shop/${product.slug}`} className="block">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-card">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[1.25rem] bg-card ring-1 ring-black/5">
           <Image
             src={product.image || '/placeholder.svg'}
             alt={product.imageAlt}
             fill
             sizes="(max-width: 640px) 50vw, 25vw"
-            className="object-cover transition-all duration-700 group-hover:scale-105"
-            style={{ opacity: hover ? 0 : 1 }}
+            className="object-cover transition-all duration-700 md:group-hover:opacity-0 md:group-hover:scale-105"
           />
           <Image
             src={product.hoverImage || '/placeholder.svg'}
             alt={product.hoverImageAlt}
             fill
             sizes="(max-width: 640px) 50vw, 25vw"
-            className="object-cover transition-all duration-700 group-hover:scale-105"
-            style={{ opacity: hover ? 1 : 0 }}
+            className="object-cover opacity-0 transition-all duration-700 md:group-hover:opacity-100 md:group-hover:scale-105"
           />
 
           {/* badges */}
@@ -78,32 +85,46 @@ export function ProductCard({
 
           {/* quick add */}
           <button
-            onClick={quickAdd}
+            onClick={(e) => {
+              e.preventDefault()
+              const size = product.sizes[1] ?? product.sizes[0]
+              addItem({
+                productSlug: product.slug,
+                name: product.name,
+                sizeKey: size.key,
+                sizeLabel: size.label,
+                price: size.price,
+                image: product.image,
+                imageAlt: product.imageAlt,
+              })
+            }}
             aria-label={`Quick add ${product.name}`}
-            className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-background/95 px-4 py-2.5 text-sm font-medium shadow-sm backdrop-blur transition-all duration-300 hover:bg-primary hover:text-primary-foreground md:translate-y-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
+            className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-background/95 px-4 py-2.5 text-sm font-medium shadow-[0_4px_12px_rgba(0,0,0,0.05)] backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-primary hover:text-primary-foreground active:scale-[0.96] md:translate-y-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
           >
             <Plus className="size-4" /> Add
           </button>
         </div>
 
-        <div className="mt-3 flex items-baseline justify-between gap-2">
+        <div className="mt-4 flex items-baseline justify-between gap-2 px-1">
           <h3 className="font-serif text-lg leading-tight">{product.name}</h3>
           <p className="text-sm text-muted-foreground">
             from {formatPrice(product.basePrice)}
           </p>
         </div>
-        <p className="mt-0.5 text-sm text-muted-foreground">{product.tagline}</p>
+        <p className="mt-1 px-1 text-sm text-muted-foreground">{product.tagline}</p>
       </Link>
-    </motion.div>
+    </div>
   )
 }
 
 export function ProductCardSkeleton() {
   return (
     <div className="animate-pulse">
-      <div className="aspect-[4/5] rounded-xl bg-muted" />
-      <div className="mt-3 h-4 w-2/3 rounded bg-muted" />
-      <div className="mt-2 h-3 w-1/2 rounded bg-muted" />
+      <div className="aspect-[4/5] rounded-[1.25rem] bg-black/5" />
+      <div className="mt-4 px-1">
+        <div className="h-5 w-2/3 rounded bg-black/5" />
+        <div className="mt-2 h-4 w-1/2 rounded bg-black/5" />
+      </div>
     </div>
   )
 }

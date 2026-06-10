@@ -16,17 +16,21 @@ export function CategoryRow() {
   return (
     <section className="py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Reveal className="mb-8 flex items-end justify-between gap-4">
-          <h2 className="font-serif text-3xl tracking-tight sm:text-4xl">
-            Find your bunch
-          </h2>
-          <Link
-            href="/shop"
-            className="shrink-0 text-sm underline underline-offset-4 hover:opacity-70"
-          >
-            View all
-          </Link>
-        </Reveal>
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <Reveal>
+            <h2 className="font-serif text-3xl tracking-tight sm:text-4xl">
+              Find your bunch
+            </h2>
+          </Reveal>
+          <Reveal delay={150}>
+            <Link
+              href="/shop"
+              className="shrink-0 text-sm underline underline-offset-4 hover:opacity-70"
+            >
+              View all
+            </Link>
+          </Reveal>
+        </div>
       </div>
 
       <div className="no-scrollbar flex gap-4 overflow-x-auto px-4 pb-2 sm:px-6 lg:px-8">

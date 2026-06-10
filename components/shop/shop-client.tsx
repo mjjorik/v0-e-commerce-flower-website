@@ -216,13 +216,7 @@ export function ShopClient() {
 
         {/* grid */}
         <div>
-          {loading ? (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <ProductCardSkeleton key={i} />
-              ))}
-            </div>
-          ) : filtered.length === 0 ? (
+          {filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
               <p className="font-serif text-2xl">Nothing matches — yet.</p>
               <p className="text-muted-foreground">

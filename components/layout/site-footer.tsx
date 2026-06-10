@@ -3,8 +3,12 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { Instagram, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { BRAND } from '@/lib/brand'
+
+const InstagramIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+)
 
 const COLUMNS = [
   {
@@ -67,7 +71,7 @@ export function SiteFooter() {
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
             <span className="absolute inset-0 flex items-center justify-center bg-primary/0 text-primary-foreground opacity-0 transition-all duration-300 group-hover:bg-primary/30 group-hover:opacity-100">
-              <Instagram className="size-5" />
+              <InstagramIcon className="size-5" />
             </span>
           </Link>
         ))}
@@ -144,7 +148,7 @@ export function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {BRAND.name}. Made in {BRAND.city}.
           </p>
-          <p>Delivering across Boston, Cambridge, Somerville, Brookline &amp; beyond.</p>
+          <p>Delivering across Boston, Cambridge, Somerville, Brookline &amp; beyond. (v1.0.7-Elite-GSAP)</p>
           <div className="flex items-center gap-2 text-foreground/60">
             <span className="rounded border border-border px-2 py-1">VISA</span>
             <span className="rounded border border-border px-2 py-1">MC</span>

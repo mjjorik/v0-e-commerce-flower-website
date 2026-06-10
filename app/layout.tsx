@@ -28,6 +28,11 @@ export const metadata: Metadata = {
   description:
     'Farm-fresh bouquets and weekly flower subscriptions delivered same-day across Greater Boston. Beautiful flowers, honest prices — $50 to $130.',
   generator: 'v0.app',
+  other: {
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  }
 }
 
 export const viewport = {

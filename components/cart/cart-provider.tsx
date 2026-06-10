@@ -6,6 +6,7 @@ import {
   useState,
   useCallback,
   useMemo,
+  useEffect,
   type ReactNode,
 } from 'react'
 
@@ -49,6 +50,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [toasts, setToasts] = useState<ToastMsg[]>([])
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  // Hydrate from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("wildflower_cart");
+    if (saved) {
+      try {
+        setItems(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse cart", e);
+      }
+    }
+    setIsHydrated(true);
+  }, []);
+
+  // Sync to localStorage
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem("wildflower_cart", JSON.stringify(items));
+    }
+  }, [items, isHydrated]);
 
   const pushToast = useCallback((text: string) => {
     const id = Date.now() + Math.random()

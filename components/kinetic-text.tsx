@@ -1,87 +1,113 @@
 'use client'
 
-import { motion, useReducedMotion } from 'motion/react'
-import type { ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { useGSAP } from '@gsap/react'
+import { cn } from '@/lib/utils'
 
-/**
- * Reveals text word-by-word with a slight upward motion + fade.
- */
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger, useGSAP)
+}
+
+const ELITE_EASE = "expo.out"
+
 export function KineticText({
   text,
   className,
-  delay = 0,
-  stagger = 0.06,
   as = 'span',
-  once = true,
+  delay = 0,
 }: {
   text: string
   className?: string
-  delay?: number
-  stagger?: number
   as?: 'span' | 'h1' | 'h2' | 'h3' | 'p'
-  once?: boolean
+  delay?: number
 }) {
-  const reduce = useReducedMotion()
+  const Comp = as as any
+  const containerRef = useRef<HTMLElement>(null)
   const words = text.split(' ')
-  const Comp = motion[as]
 
-  if (reduce) {
-    const Static = as
-    return <Static className={className}>{text}</Static>
-  }
+  useGSAP(() => {
+    if (!containerRef.current) return
+
+    const words = containerRef.current.querySelectorAll('.gsap-word')
+    
+    gsap.fromTo(words, 
+      { 
+        y: '110%',
+        rotate: 2,
+        opacity: 0 
+      },
+      {
+        y: 0,
+        rotate: 0,
+        opacity: 1,
+        duration: 1.2,
+        ease: ELITE_EASE,
+        stagger: 0.05,
+        delay: delay / 1000,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 92%',
+          toggleActions: 'play none none none', // Only play once
+        }
+      }
+    )
+  }, { scope: containerRef })
 
   return (
-    <Comp
-      className={className}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once, amount: 0.4 }}
-      transition={{ staggerChildren: stagger, delayChildren: delay }}
-      aria-label={text}
-    >
+    <Comp ref={containerRef} className={cn('overflow-visible pb-1', className)}>
       {words.map((word, i) => (
         <span key={i} className="inline-block overflow-hidden align-bottom">
-          <motion.span
-            className="inline-block"
-            variants={{
-              hidden: { y: '110%' },
-              show: {
-                y: 0,
-                transition: { type: 'spring', stiffness: 200, damping: 24 },
-              },
-            }}
-          >
+          <span className="gsap-word inline-block will-change-transform translate-y-[110%]">
             {word}
             {i < words.length - 1 ? '\u00A0' : ''}
-          </motion.span>
+          </span>
         </span>
       ))}
     </Comp>
   )
 }
 
-/** Simple fade + slide up on scroll into view. */
 export function Reveal({
   children,
   className,
   delay = 0,
-  y = 28,
 }: {
   children: ReactNode
   className?: string
   delay?: number
-  y?: number
 }) {
-  const reduce = useReducedMotion()
+  const ref = useRef<HTMLDivElement>(null)
+
+  useGSAP(() => {
+    if (!ref.current) return
+
+    gsap.fromTo(ref.current,
+      { 
+        opacity: 0, 
+        y: 30,
+        scale: 0.98
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        ease: ELITE_EASE,
+        delay: delay / 1000,
+        scrollTrigger: {
+          trigger: ref.current,
+          start: 'top 90%',
+          toggleActions: 'play none none none',
+        }
+      }
+    )
+  }, { scope: ref })
+
   return (
-    <motion.div
-      className={className}
-      initial={reduce ? false : { opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <div ref={ref} className={cn('will-change-transform', className)}>
       {children}
-    </motion.div>
+    </div>
   )
 }

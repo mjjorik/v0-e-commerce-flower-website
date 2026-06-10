@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Menu, X, ShoppingBag } from 'lucide-react'
+import { gsap } from 'gsap'
+import { useGSAP } from '@gsap/react'
 import { useCart } from '@/components/cart/cart-provider'
 import { BRAND } from '@/lib/brand'
 import { cn } from '@/lib/utils'
@@ -23,7 +24,9 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false)
   const { count, openCart } = useCart()
   const pathname = usePathname()
-  const reduce = useReducedMotion()
+  const headerRef = useRef<HTMLElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const navLinksRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -38,37 +41,60 @@ export function SiteHeader() {
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
+  useGSAP(() => {
+    if (menuOpen) {
+      // Open animation
+      gsap.to(overlayRef.current, {
+        opacity: 1,
+        visibility: 'visible',
+        duration: 0.4,
+        ease: "power2.out"
+      })
+      
+      const links = navLinksRef.current?.querySelectorAll('.nav-item')
+      if (links) {
+        gsap.fromTo(links, 
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "expo.out", stagger: 0.08, delay: 0.1 }
+        )
+      }
+    } else {
+      // Close animation
+      gsap.to(overlayRef.current, {
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+          gsap.set(overlayRef.current, { visibility: 'hidden' })
+        }
+      })
     }
   }, [menuOpen])
 
   return (
     <>
-      <AnimatePresence>
-        {announce && (
-          <motion.div
-            initial={false}
-            exit={{ height: 0, opacity: 0 }}
-            className="relative z-50 bg-primary text-primary-foreground"
-          >
-            <div className="mx-auto flex max-w-7xl items-center justify-center gap-3 px-4 py-2 text-center text-xs tracking-wide sm:text-[13px]">
-              <p className="text-pretty">
-                Same-day delivery across {BRAND.city} — order by {BRAND.cutoff}
-              </p>
-              <button
-                onClick={() => setAnnounce(false)}
-                aria-label="Dismiss announcement"
-                className="absolute right-3 rounded-full p-1 transition-colors hover:bg-primary-foreground/15"
-              >
-                <X className="size-3.5" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {announce && (
+        <div className="relative z-50 bg-primary text-primary-foreground">
+          <div className="mx-auto flex max-w-7xl items-center justify-center gap-3 px-4 py-2 text-center text-xs tracking-wide sm:text-[13px]">
+            <p className="text-pretty">
+              Same-day delivery across {BRAND.city} — order by {BRAND.cutoff}
+            </p>
+            <button
+              onClick={() => setAnnounce(false)}
+              aria-label="Dismiss announcement"
+              className="absolute right-3 rounded-full p-1 transition-colors hover:bg-primary-foreground/15"
+            >
+              <X className="size-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
 
       <header
+        ref={headerRef}
         className={cn(
           'sticky top-0 z-40 transition-all duration-300',
           scrolled
@@ -77,7 +103,6 @@ export function SiteHeader() {
         )}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          {/* left: hamburger (mobile) + nav (desktop) */}
           <div className="flex flex-1 items-center">
             <button
               className="lg:hidden"
@@ -103,7 +128,6 @@ export function SiteHeader() {
             </nav>
           </div>
 
-          {/* center: logo */}
           <Link
             href="/"
             className="flex-1 text-center font-serif text-2xl font-semibold tracking-tight sm:text-[26px]"
@@ -111,7 +135,6 @@ export function SiteHeader() {
             {BRAND.name}
           </Link>
 
-          {/* right: order now + cart */}
           <div className="flex flex-1 items-center justify-end gap-3 sm:gap-4">
             <Link
               href="/shop"
@@ -125,71 +148,50 @@ export function SiteHeader() {
               className="relative"
             >
               <ShoppingBag className="size-6" strokeWidth={1.6} />
-              <AnimatePresence>
-                {count > 0 && (
-                  <motion.span
-                    key={count}
-                    initial={reduce ? false : { scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 18 }}
-                    className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-terracotta text-[11px] font-medium text-terracotta-foreground"
-                  >
-                    {count}
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              {count > 0 && (
+                <span className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-terracotta text-[11px] font-medium text-terracotta-foreground">
+                  {count}
+                </span>
+              )}
             </button>
           </div>
         </div>
       </header>
 
-      {/* full-screen mobile overlay */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex flex-col bg-card"
-          >
-            <div className="flex items-center justify-between px-4 py-4 sm:px-6">
-              <span className="font-serif text-2xl font-semibold">
-                {BRAND.name}
-              </span>
-              <button onClick={() => setMenuOpen(false)} aria-label="Close menu">
-                <X className="size-6" />
-              </button>
-            </div>
+      {/* GSAP Powered Overlay */}
+      <div
+        ref={overlayRef}
+        className="fixed inset-0 z-50 flex flex-col bg-card invisible opacity-0"
+      >
+        <div className="flex items-center justify-between px-4 py-4 sm:px-6">
+          <span className="font-serif text-2xl font-semibold">
+            {BRAND.name}
+          </span>
+          <button onClick={() => setMenuOpen(false)} aria-label="Close menu">
+            <X className="size-6" />
+          </button>
+        </div>
 
-            <nav className="flex flex-1 flex-col justify-center gap-2 px-6">
-              {[{ href: '/', label: 'Home' }, ...NAV].map((item, i) => (
-                <motion.div
-                  key={item.href}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.06 }}
-                >
-                  <Link
-                    href={item.href}
-                    className="block py-2 font-serif text-4xl font-medium tracking-tight sm:text-5xl"
-                  >
-                    {item.label}
-                  </Link>
-                </motion.div>
-              ))}
-            </nav>
-
-            <div className="border-t border-border px-6 py-6 text-sm text-muted-foreground">
-              <p className="mb-1">{BRAND.email}</p>
-              <p>
-                Same-day across {BRAND.city} · order by {BRAND.cutoff}
-              </p>
+        <nav ref={navLinksRef} className="flex flex-1 flex-col justify-center gap-2 px-6">
+          {[{ href: '/', label: 'Home' }, ...NAV].map((item) => (
+            <div key={item.href} className="nav-item opacity-0">
+              <Link
+                href={item.href}
+                className="block py-2 font-serif text-4xl font-medium tracking-tight sm:text-5xl"
+              >
+                {item.label}
+              </Link>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          ))}
+        </nav>
+
+        <div className="border-t border-border px-6 py-6 text-sm text-muted-foreground">
+          <p className="mb-1">{BRAND.email}</p>
+          <p>
+            Same-day across {BRAND.city} · order by {BRAND.cutoff}
+          </p>
+        </div>
+      </div>
     </>
   )
 }
