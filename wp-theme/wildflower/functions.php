@@ -167,11 +167,11 @@ function wildflower_media( $attachment_id = null, $size = 'large', $alt = '', $s
  * @param int $count Number of tiles.
  */
 function wildflower_gallery( $count = 9 ) {
-	$ratios = array( '4/5', '1/1', '4/3', '3/4', '1/1', '4/5', '3/4', '4/3', '1/1', '5/6', '3/4', '1/1', '4/3', '4/5', '1/1' );
 	for ( $i = 0; $i < $count; $i++ ) {
 		$variant = ( $i % 5 ) + 1;
-		$ar      = $ratios[ $i % count( $ratios ) ];
-		echo '<button type="button" class="tile" data-index="' . esc_attr( $i ) . '" data-delay="' . esc_attr( $i * 60 ) . '" style="--ar:' . esc_attr( $ar ) . ';" aria-label="' . esc_attr__( 'Open gallery image', 'wildflower' ) . '">';
+		// Every 3rd tile spans two columns → rows always complete (no gaps on 2/3/4 cols).
+		$span = ( 0 === $i % 3 ) ? ' c2' : '';
+		echo '<button type="button" class="tile' . esc_attr( $span ) . '" data-index="' . esc_attr( $i ) . '" data-delay="' . esc_attr( $i * 55 ) . '" aria-label="' . esc_attr__( 'Open gallery image', 'wildflower' ) . '">';
 		echo '<span class="media-fallback media-fallback--' . esc_attr( $variant ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
 		echo '</button>';
 	}

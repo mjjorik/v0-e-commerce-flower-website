@@ -43,7 +43,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 <!-- CATEGORY ROW -->
 <section class="section" style="padding-bottom:0;">
 	<div class="container section-head">
-		<h2 class="reveal"><?php esc_html_e( 'Find your bunch', 'wildflower' ); ?></h2>
+		<h2 class="kinetic"><?php echo wildflower_kinetic( __( 'Find your bunch', 'wildflower' ) ); // phpcs:ignore ?></h2>
 		<a class="link-underline reveal" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'View all', 'wildflower' ); ?></a>
 	</div>
 	<div class="cat-row no-scrollbar">
@@ -77,7 +77,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 	<div class="container">
 		<div class="reveal" style="max-width:36rem;margin-bottom:2.5rem;">
 			<p class="eyebrow"><?php esc_html_e( 'The line-up', 'wildflower' ); ?></p>
-			<h2 style="font-size:clamp(1.875rem,4vw,3rem);margin-top:.5rem;"><?php esc_html_e( 'Bouquets people keep coming back for', 'wildflower' ); ?></h2>
+			<h2 class="kinetic" style="font-size:clamp(1.875rem,4vw,3rem);margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Bouquets people keep coming back for', 'wildflower' ) ); // phpcs:ignore ?></h2>
 		</div>
 		<?php
 		// Featured first, fall back to best-selling / recent.
@@ -103,9 +103,9 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 			array( 'Farm-Fresh Guarantee', 'Cut this week from New England growers. If it wilts early, we replace it.' ),
 			array( '$50–$130, No Markups', 'Honest pricing on every stem. The kind of flowers you can send on a Tuesday.' ),
 		);
-		foreach ( $props as $p ) {
+		foreach ( $props as $pi => $p ) {
 			?>
-			<div class="value-prop reveal">
+			<div class="value-prop reveal" data-delay="<?php echo esc_attr( $pi * 130 ); ?>">
 				<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10M12 4v16M12 4C9 4 7 6 7 9c2 0 4-1 5-3 1 2 3 3 5 3 0-3-2-5-5-5Z"/></svg>
 				<h3><?php echo esc_html( $p[0] ); ?></h3>
 				<p><?php echo esc_html( $p[1] ); ?></p>
@@ -125,7 +125,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 			</div>
 			<div class="sub-teaser__body reveal">
 				<p class="eyebrow" style="color:color-mix(in oklab,var(--primary) 70%,transparent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
-				<h2 style="margin-top:.75rem;"><?php esc_html_e( 'Fresh flowers, every week', 'wildflower' ); ?></h2>
+				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Fresh flowers, every week', 'wildflower' ) ); // phpcs:ignore ?></h2>
 				<p style="margin-top:1.25rem;max-width:28rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.6;"><?php esc_html_e( 'A standing order of seasonal blooms, chosen by our studio and delivered like clockwork. Pause, skip or cancel anytime — no strings, just stems.', 'wildflower' ); ?></p>
 				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$55</span> <span style="font-size:1rem;color:var(--muted-foreground);">/ delivery</span></p>
 				<a class="btn--primary" style="margin-top:1.75rem;" href="<?php echo esc_url( home_url( '/subscriptions/' ) ); ?>"><?php esc_html_e( 'Explore subscriptions', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
@@ -140,7 +140,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 		<div class="section-head">
 			<div style="max-width:32rem;">
 				<p class="eyebrow reveal"><?php esc_html_e( 'For every moment', 'wildflower' ); ?></p>
-				<h2 class="reveal" style="margin-top:.5rem;"><?php esc_html_e( 'Flowers that say it for you', 'wildflower' ); ?></h2>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Flowers that say it for you', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			</div>
 		</div>
 		<div class="bento">
@@ -152,10 +152,10 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 				array( 'Just Because', 'The best reason there is.', false ),
 				array( 'New Baby', 'A soft hello to someone small.', false ),
 			);
-			foreach ( $occasions as $o ) {
+			foreach ( $occasions as $oi => $o ) {
 				$link = $has_woo ? add_query_arg( 'occasion', sanitize_title( $o[0] ), $shop ) : home_url( '/' );
 				?>
-				<a class="bento__tile reveal <?php echo $o[2] ? 'is-big' : ''; ?>" href="<?php echo esc_url( $link ); ?>">
+				<a class="bento__tile reveal <?php echo $o[2] ? 'is-big' : ''; ?>" data-delay="<?php echo esc_attr( $oi * 90 ); ?>" href="<?php echo esc_url( $link ); ?>">
 					<?php wildflower_media( null, 'large', $o[0], false ); ?>
 					<span class="bento__overlay"></span>
 					<span class="bento__caption">
@@ -173,7 +173,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 <!-- HOW IT WORKS -->
 <section class="section how">
 	<div class="container">
-		<h2 style="max-width:28rem;"><?php esc_html_e( 'How it works', 'wildflower' ); ?></h2>
+		<h2 class="kinetic" style="max-width:28rem;"><?php echo wildflower_kinetic( __( 'How it works', 'wildflower' ) ); // phpcs:ignore ?></h2>
 		<div class="how__grid">
 			<?php
 			$steps = array(
@@ -181,9 +181,9 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 				array( '02', 'Tell us when & where', 'Add a delivery date, a time slot and a gift message. Same-day if you order by 1 PM.' ),
 				array( '03', 'We hand-deliver it', 'Our local couriers bring it fresh to the door, anywhere across Greater Boston.' ),
 			);
-			foreach ( $steps as $s ) {
+			foreach ( $steps as $si => $s ) {
 				?>
-				<div class="reveal">
+				<div class="reveal" data-delay="<?php echo esc_attr( $si * 130 ); ?>">
 					<p class="how__num"><?php echo esc_html( $s[0] ); ?></p>
 					<h3><?php echo esc_html( $s[1] ); ?></h3>
 					<p><?php echo esc_html( $s[2] ); ?></p>
@@ -199,7 +199,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 <section class="section marquee">
 	<div class="container" style="margin-bottom:2.5rem;">
 		<p class="eyebrow"><?php esc_html_e( 'Loved across the city', 'wildflower' ); ?></p>
-		<h2 style="margin-top:.5rem;"><?php esc_html_e( 'Notes from the neighborhood', 'wildflower' ); ?></h2>
+		<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Notes from the neighborhood', 'wildflower' ) ); // phpcs:ignore ?></h2>
 	</div>
 	<?php
 	$reviews = array(
@@ -229,7 +229,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 		<div class="section-head">
 			<div style="max-width:32rem;">
 				<p class="eyebrow reveal"><?php esc_html_e( 'From the studio', 'wildflower' ); ?></p>
-				<h2 class="reveal" style="margin-top:.5rem;"><?php esc_html_e( 'The gallery', 'wildflower' ); ?></h2>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'The gallery', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			</div>
 			<a class="link-underline reveal" href="<?php echo esc_url( home_url( '/gallery/' ) ); ?>"><?php esc_html_e( 'View all', 'wildflower' ); ?></a>
 		</div>
