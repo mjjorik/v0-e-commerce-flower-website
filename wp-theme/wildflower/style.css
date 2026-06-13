@@ -252,6 +252,11 @@ p { text-wrap: pretty; }
   .hero__lead { margin-top: 1.25rem; gap: 1.25rem; }
   .hero__media { max-width: 20rem; }
 }
+@media (orientation: landscape) and (min-width: 700px) and (max-height: 620px) {
+  .hero__grid { grid-template-columns: minmax(0, 3fr) minmax(14rem, 1fr); gap: 2rem; align-items: center; }
+  .hero__media { width: min(100%, 18rem); margin-bottom: 0; transform: none; }
+  .hero__lead { flex-direction: row; align-items: center; }
+}
 
 /* ============================================================
    9. Generic grids & cards
