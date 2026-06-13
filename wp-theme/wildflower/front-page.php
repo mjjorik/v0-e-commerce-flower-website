@@ -9,6 +9,27 @@ get_header();
 $brand   = wildflower_brand();
 $has_woo = class_exists( 'WooCommerce' );
 $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+$cats    = array();
+$markup  = '';
+
+if ( $has_woo ) {
+	$cats = get_terms(
+		array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => true,
+			'number'     => 6,
+			'exclude'    => array( get_option( 'default_product_cat' ) ),
+		)
+	);
+	$cats = is_wp_error( $cats ) ? array() : $cats;
+
+	// Featured first, fall back to best-selling / recent.
+	$markup = do_shortcode( '[products limit="4" columns="4" visibility="featured"]' );
+	if ( false === strpos( $markup, '<li' ) ) {
+		$markup = do_shortcode( '[products limit="4" columns="4" orderby="popularity"]' );
+	}
+	$markup = false === strpos( $markup, '<li' ) ? '' : $markup;
+}
 ?>
 
 <!-- HERO -->
@@ -16,7 +37,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 	<span class="hero__glow" aria-hidden="true" data-parallax="90"></span>
 	<div class="container--wide">
 		<div class="hero__grid">
-			<div>
+			<div class="hero__content">
 				<span class="hero__badge"><span class="dot"></span> <?php printf( esc_html__( 'Fresh flowers · %s', 'wildflower' ), esc_html( $brand['city'] ) ); ?></span>
 				<h1 class="kinetic">
 					<?php echo wildflower_kinetic( 'Beautiful flowers.' ); ?><br>
@@ -27,7 +48,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 					<a class="btn--primary btn--lg" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 				</div>
 			</div>
-			<div>
+			<div class="hero__visual">
 				<div class="hero__media media" data-hero-media>
 					<?php
 					$hero_id = (int) get_theme_mod( 'wildflower_hero_image', 0 );
@@ -39,7 +60,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 	</div>
 </section>
 
-<?php if ( $has_woo ) : ?>
+<?php if ( $cats ) : ?>
 <!-- CATEGORY ROW -->
 <section class="section" style="padding-bottom:0;">
 	<div class="container section-head">
@@ -48,30 +69,22 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 	</div>
 	<div class="cat-row no-scrollbar">
 		<?php
-		$cats = get_terms(
-			array(
-				'taxonomy'   => 'product_cat',
-				'hide_empty' => true,
-				'number'     => 6,
-				'exclude'    => array( get_option( 'default_product_cat' ) ),
-			)
-		);
-		if ( ! is_wp_error( $cats ) ) {
-			foreach ( $cats as $cat ) {
-				$thumb_id = (int) get_term_meta( $cat->term_id, 'thumbnail_id', true );
-				?>
-				<a class="cat-card" href="<?php echo esc_url( get_term_link( $cat ) ); ?>">
-					<?php wildflower_media( $thumb_id ? $thumb_id : null, 'large', $cat->name, false ); ?>
-					<span class="cat-card__overlay"></span>
-					<h3><?php echo esc_html( $cat->name ); ?></h3>
-				</a>
-				<?php
-			}
+		foreach ( $cats as $cat ) {
+			$thumb_id = (int) get_term_meta( $cat->term_id, 'thumbnail_id', true );
+			?>
+			<a class="cat-card" href="<?php echo esc_url( get_term_link( $cat ) ); ?>">
+				<?php wildflower_media( $thumb_id ? $thumb_id : null, 'large', $cat->name, false ); ?>
+				<span class="cat-card__overlay"></span>
+				<h3><?php echo esc_html( $cat->name ); ?></h3>
+			</a>
+			<?php
 		}
 		?>
 	</div>
 </section>
+<?php endif; ?>
 
+<?php if ( $markup ) : ?>
 <!-- FEATURED PRODUCTS -->
 <section class="section">
 	<div class="container">
@@ -80,11 +93,6 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 			<h2 class="kinetic" style="font-size:clamp(1.875rem,4vw,3rem);margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Bouquets people keep coming back for', 'wildflower' ) ); // phpcs:ignore ?></h2>
 		</div>
 		<?php
-		// Featured first, fall back to best-selling / recent.
-		$markup = do_shortcode( '[products limit="4" columns="4" visibility="featured"]' );
-		if ( false === strpos( $markup, '<li' ) ) {
-			$markup = do_shortcode( '[products limit="4" columns="4" orderby="popularity"]' );
-		}
 		echo $markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		?>
 		<div style="margin-top:3rem;text-align:center;">
