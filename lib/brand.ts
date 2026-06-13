@@ -1,10 +1,38 @@
 export const BRAND = {
   name: 'Wildflower',
+  legalName: 'Wildflower Studio LLC',
   handle: '@wildflower.boston',
   city: 'Greater Boston',
+  region: 'MA',
   tagline: 'Beautiful flowers. Honest prices.',
   statement: 'Flowers for every day, not just occasions.',
   cutoff: '1 PM',
   email: 'hello@wildflower.boston',
   phone: '(617) 555-0142',
+  phoneHref: '+16175550142',
+  // Production URL (static export is served under /wildflower)
+  url: 'https://wildflower.boston',
+  founded: '2021',
+  priceRange: '$$',
+  address: {
+    street: '124 Studio Lane',
+    locality: 'Boston',
+    region: 'MA',
+    postalCode: '02118',
+    country: 'US',
+  },
+  geo: { lat: 42.3601, lng: -71.0589 },
+  hours: 'Mon–Sat, 8 AM – 4 PM EST',
+  social: {
+    instagram: 'https://instagram.com/wildflower.boston',
+  },
+  areasServed: [
+    'Boston',
+    'Cambridge',
+    'Somerville',
+    'Brookline',
+    'Newton',
+    'Medford',
+    'Arlington',
+  ],
 } as const

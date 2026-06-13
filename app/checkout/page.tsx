@@ -23,7 +23,7 @@ export default function CheckoutClient() {
       <div className="mx-auto flex max-w-md flex-col items-center justify-center py-32 text-center px-4">
         <h1 className="font-serif text-3xl">Your basket is empty</h1>
         <p className="mt-2 text-muted-foreground">You cannot checkout without items.</p>
-        <Link href="/shop" className="mt-8 rounded-full bg-primary px-6 py-3 text-primary-foreground">
+        <Link href="/shop" className="btn-primary mt-8">
           Go to Shop
         </Link>
       </div>
@@ -59,7 +59,7 @@ export default function CheckoutClient() {
               <input type="text" placeholder="City" defaultValue="Boston" className="w-full rounded-xl border border-border bg-transparent px-4 py-3 outline-none focus:border-foreground" />
               <input type="text" placeholder="Zip Code" className="w-full rounded-xl border border-border bg-transparent px-4 py-3 outline-none focus:border-foreground" />
             </div>
-            <button onClick={() => setStep('details')} className="w-full rounded-full bg-primary py-4 text-primary-foreground hover:opacity-90">
+            <button onClick={() => setStep('details')} className="btn-primary w-full">
               Continue to Details
             </button>
           </motion.div>
@@ -72,7 +72,7 @@ export default function CheckoutClient() {
               <input type="email" placeholder="Your Email (for receipt)" className="sm:col-span-2 w-full rounded-xl border border-border bg-transparent px-4 py-3 outline-none focus:border-foreground" />
               <input type="tel" placeholder="Your Phone Number" className="sm:col-span-2 w-full rounded-xl border border-border bg-transparent px-4 py-3 outline-none focus:border-foreground" />
             </div>
-            <button onClick={() => setStep('payment')} className="w-full rounded-full bg-primary py-4 text-primary-foreground hover:opacity-90">
+            <button onClick={() => setStep('payment')} className="btn-primary w-full">
               Continue to Payment
             </button>
             <button onClick={() => setStep('delivery')} className="w-full text-center text-sm text-muted-foreground hover:underline">
@@ -103,7 +103,7 @@ export default function CheckoutClient() {
               <div className="mt-4 h-12 w-full rounded bg-muted animate-pulse"></div>
             </div>
 
-            <button onClick={() => { clearCart(); setStep('success') }} className="w-full rounded-full bg-primary py-4 text-primary-foreground hover:opacity-90">
+            <button onClick={() => { clearCart(); setStep('success') }} className="btn-primary w-full">
               Pay {formatPrice(total)}
             </button>
             <button onClick={() => setStep('details')} className="w-full text-center text-sm text-muted-foreground hover:underline">
@@ -117,7 +117,7 @@ export default function CheckoutClient() {
             <CheckCircle2 className="size-16 text-sage mb-6" />
             <h1 className="font-serif text-4xl mb-4">Order Confirmed</h1>
             <p className="text-muted-foreground max-w-md">Thank you for your order. We've sent a receipt to your email. We'll text you when the flowers are out for delivery.</p>
-            <Link href="/" className="mt-10 rounded-full border border-border px-8 py-3 hover:bg-card">
+            <Link href="/" className="btn-outline mt-10">
               Return Home
             </Link>
           </motion.div>

@@ -32,7 +32,7 @@ export function SubscriptionsClient() {
   }
 
   return (
-    <div className="min-h-[100dvh] w-full bg-[#FAF7F2] pb-32">
+    <div className="min-h-[100dvh] w-full bg-background pb-32">
       
       {/* Hero Section */}
       <section className="mx-auto max-w-[90rem] px-4 pt-24 sm:px-6 md:pt-32 lg:px-8 text-center">
@@ -67,17 +67,17 @@ export function SubscriptionsClient() {
                 >
                   <div className={cn(
                     "relative flex h-full w-full flex-col overflow-hidden rounded-[calc(2.5rem-0.375rem)] p-8 transition-colors duration-700 sm:p-10",
-                    isSelected ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]" : "bg-transparent"
+                    isSelected ? "bg-card shadow-[0_8px_30px_rgb(0,0,0,0.04)]" : "bg-transparent"
                   )}>
                     {isSelected && (
-                      <div className="absolute top-8 right-8 rounded-full bg-[#2D4A32] px-3 py-1 text-[10px] uppercase tracking-widest text-white">
+                      <div className="absolute top-8 right-8 rounded-full bg-primary px-3 py-1 text-[10px] uppercase tracking-widest text-white">
                         Selected
                       </div>
                     )}
                     
                     <h3 className="font-serif text-3xl">{plan.title}</h3>
                     <div className="mt-4 flex items-baseline gap-1">
-                      <span className="font-serif text-4xl text-[#C77B5A]">{formatPrice(plan.price)}</span>
+                      <span className="font-serif text-4xl text-terracotta">{formatPrice(plan.price)}</span>
                       <span className="text-sm text-black/40">/delivery</span>
                     </div>
                     
@@ -86,9 +86,9 @@ export function SubscriptionsClient() {
                     <div className="mt-auto pt-10">
                       <div className="h-px w-full bg-black/5 mb-6" />
                       <ul className="space-y-4 text-sm text-black/70">
-                        <li className="flex items-center gap-3"><Check className="size-4 text-[#2D4A32]" strokeWidth={1.5} /> Skip or cancel anytime</li>
-                        <li className="flex items-center gap-3"><Check className="size-4 text-[#2D4A32]" strokeWidth={1.5} /> Free delivery</li>
-                        <li className="flex items-center gap-3"><Check className="size-4 text-[#2D4A32]" strokeWidth={1.5} /> Exclusive seasonal stems</li>
+                        <li className="flex items-center gap-3"><Check className="size-4 text-primary" strokeWidth={1.5} /> Skip or cancel anytime</li>
+                        <li className="flex items-center gap-3"><Check className="size-4 text-primary" strokeWidth={1.5} /> Free delivery</li>
+                        <li className="flex items-center gap-3"><Check className="size-4 text-primary" strokeWidth={1.5} /> Exclusive seasonal stems</li>
                       </ul>
                     </div>
                   </div>
@@ -103,7 +103,7 @@ export function SubscriptionsClient() {
           <Reveal delay={400}>
             <button 
               onClick={handleSubscribe}
-              className="group flex items-center gap-6 rounded-full bg-[#2D4A32] pl-8 pr-2 py-2 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-black active:scale-[0.98]"
+              className="group flex items-center gap-6 rounded-full bg-primary pl-8 pr-2 py-2 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-black active:scale-[0.98]"
             >
               <span className="text-sm font-medium uppercase tracking-[0.1em] text-white">Start Subscription</span>
               <div className="flex size-12 items-center justify-center rounded-full bg-white/20 transition-transform duration-500 group-hover:translate-x-1 group-hover:bg-white/30 group-hover:scale-105">

@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { Reveal } from '@/components/kinetic-text'
+import { SmartImage } from '@/components/smart-image'
 
 const CATEGORIES = [
   { label: 'Bestsellers', href: '/shop?sort=featured', image: '/categories/bestsellers.png' },
@@ -41,14 +41,15 @@ export function CategoryRow() {
             className="group relative w-[68vw] shrink-0 overflow-hidden rounded-2xl sm:w-72"
           >
             <div className="relative aspect-[3/4]">
-              <Image
-                src={cat.image || '/placeholder.svg'}
+              <SmartImage
+                src={cat.image}
                 alt={cat.label}
                 fill
                 sizes="(max-width: 640px) 68vw, 18rem"
+                showMotif={false}
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-primary/10 to-transparent" />
               <h3 className="absolute bottom-4 left-4 font-serif text-2xl text-primary-foreground">
                 {cat.label}
               </h3>
