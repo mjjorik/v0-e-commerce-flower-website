@@ -84,56 +84,36 @@ function wildflower_assets() {
 add_action( 'wp_enqueue_scripts', 'wildflower_assets' );
 
 /**
- * Ensure a "Shop" link is always present at the start of the primary menu
- * when WooCommerce is active — so it shows in both the desktop nav and the
- * mobile burger without manual menu editing.
+ * Theme-controlled primary navigation (used by both the desktop bar and the
+ * mobile burger). Order is fixed here so it's predictable everywhere:
+ * Home, Shop, Subscriptions, Gallery, Journal, Occasions, Delivery, then
+ * About and Contact last. Shop appears only when WooCommerce is active.
  *
- * @param string   $items HTML list items.
- * @param stdClass $args  Menu args.
- * @return string
+ * @param string $menu_class Class for the <ul>.
  */
-function wildflower_inject_shop( $items, $args ) {
-	if ( empty( $args->theme_location ) || 'primary' !== $args->theme_location ) {
-		return $items;
+function wildflower_nav( $menu_class = 'site-header__menu' ) {
+	$current = '';
+	if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+		$path    = wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH );
+		$current = untrailingslashit( home_url( $path ) );
 	}
-	if ( ! class_exists( 'WooCommerce' ) ) {
-		return $items;
-	}
-	$shop_url = wc_get_page_permalink( 'shop' );
-	if ( ! $shop_url || false !== stripos( $items, '>' . __( 'Shop', 'wildflower' ) . '<' ) ) {
-		return $items;
-	}
-	$shop = '<li class="menu-item menu-item--shop"><a href="' . esc_url( $shop_url ) . '">' . esc_html__( 'Shop', 'wildflower' ) . '</a></li>';
-	return $shop . $items;
-}
-add_filter( 'wp_nav_menu_items', 'wildflower_inject_shop', 10, 2 );
 
-/**
- * Default menu used when no menu is assigned to a location — guarantees the
- * theme has navigation (incl. Shop) out of the box.
- *
- * @param array $args Menu args.
- */
-function wildflower_default_menu( $args ) {
-	$location = isset( $args['theme_location'] ) ? $args['theme_location'] : '';
-	if ( 'primary' !== $location ) {
-		return;
-	}
-	$class = isset( $args['menu_class'] ) ? $args['menu_class'] : '';
-	$links = array();
+	$items = array( array( home_url( '/' ), __( 'Home', 'wildflower' ) ) );
 	if ( class_exists( 'WooCommerce' ) && wc_get_page_permalink( 'shop' ) ) {
-		$links[ wc_get_page_permalink( 'shop' ) ] = __( 'Shop', 'wildflower' );
+		$items[] = array( wc_get_page_permalink( 'shop' ), __( 'Shop', 'wildflower' ) );
 	}
-	$links[ home_url( '/subscriptions/' ) ] = __( 'Subscriptions', 'wildflower' );
-	$links[ home_url( '/occasions/' ) ]     = __( 'Occasions', 'wildflower' );
-	$links[ home_url( '/gallery/' ) ]        = __( 'Gallery', 'wildflower' );
-	$links[ home_url( '/journal/' ) ]        = __( 'Journal', 'wildflower' );
-	$links[ home_url( '/delivery/' ) ]       = __( 'Delivery', 'wildflower' );
-	$links[ home_url( '/about/' ) ]          = __( 'About', 'wildflower' );
+	$items[] = array( home_url( '/subscriptions/' ), __( 'Subscriptions', 'wildflower' ) );
+	$items[] = array( home_url( '/gallery/' ), __( 'Gallery', 'wildflower' ) );
+	$items[] = array( home_url( '/journal/' ), __( 'Journal', 'wildflower' ) );
+	$items[] = array( home_url( '/occasions/' ), __( 'Occasions', 'wildflower' ) );
+	$items[] = array( home_url( '/delivery/' ), __( 'Delivery', 'wildflower' ) );
+	$items[] = array( home_url( '/about/' ), __( 'About', 'wildflower' ) );
+	$items[] = array( home_url( '/contact/' ), __( 'Contact', 'wildflower' ) );
 
-	echo '<ul class="' . esc_attr( $class ) . '">';
-	foreach ( $links as $url => $label ) {
-		echo '<li class="menu-item"><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a></li>';
+	echo '<ul class="' . esc_attr( $menu_class ) . '">';
+	foreach ( $items as $it ) {
+		$active = ( untrailingslashit( $it[0] ) === $current ) ? ' current-menu-item' : '';
+		echo '<li class="menu-item' . esc_attr( $active ) . '"><a href="' . esc_url( $it[0] ) . '">' . esc_html( $it[1] ) . '</a></li>';
 	}
 	echo '</ul>';
 }
@@ -180,22 +160,20 @@ function wildflower_media( $attachment_id = null, $size = 'large', $alt = '', $s
 }
 
 /**
- * Render a mosaic of placeholder gallery tiles that assemble in on scroll.
- * Varied sizes + colourful botanical gradients. Swap for real images later.
+ * Render a masonry gallery of clickable placeholder tiles (open in a lightbox,
+ * swipeable). Varied heights + colourful botanical gradients fill the columns
+ * with no gaps on any screen. Swap the fallbacks for real images later.
  *
- * @param int  $count       Number of tiles.
- * @param bool $with_spans  Use varied tile sizes (mosaic) vs uniform.
+ * @param int $count Number of tiles.
  */
-function wildflower_gallery( $count = 9, $with_spans = true ) {
-	$spans = $with_spans
-		? array( 'c2 r2', '', '', 'c2', '', 'r2', '', 'c2', '', 'r2', '', '', 'c2', '', '' )
-		: array();
+function wildflower_gallery( $count = 9 ) {
+	$ratios = array( '4/5', '1/1', '4/3', '3/4', '1/1', '4/5', '3/4', '4/3', '1/1', '5/6', '3/4', '1/1', '4/3', '4/5', '1/1' );
 	for ( $i = 0; $i < $count; $i++ ) {
 		$variant = ( $i % 5 ) + 1;
-		$span    = isset( $spans[ $i ] ) ? $spans[ $i ] : '';
-		echo '<span class="tile ' . esc_attr( $span ) . '" data-delay="' . esc_attr( $i * 70 ) . '">';
+		$ar      = $ratios[ $i % count( $ratios ) ];
+		echo '<button type="button" class="tile" data-index="' . esc_attr( $i ) . '" data-delay="' . esc_attr( $i * 60 ) . '" style="--ar:' . esc_attr( $ar ) . ';" aria-label="' . esc_attr__( 'Open gallery image', 'wildflower' ) . '">';
 		echo '<span class="media-fallback media-fallback--' . esc_attr( $variant ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
-		echo '</span>';
+		echo '</button>';
 	}
 }
 

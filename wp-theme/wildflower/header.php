@@ -44,17 +44,7 @@ $brand = wildflower_brand();
 				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
 			</button>
 			<nav class="site-header__nav" aria-label="<?php esc_attr_e( 'Primary', 'wildflower' ); ?>">
-				<?php
-				wp_nav_menu(
-					array(
-						'theme_location' => 'primary',
-						'container'      => false,
-						'menu_class'     => 'site-header__menu',
-						'depth'          => 1,
-						'fallback_cb'    => 'wildflower_default_menu',
-					)
-				);
-				?>
+				<?php wildflower_nav( 'site-header__menu' ); ?>
 			</nav>
 		</div>
 
@@ -88,17 +78,7 @@ $brand = wildflower_brand();
 		</button>
 	</div>
 	<div class="mobile-nav__links">
-		<?php
-		wp_nav_menu(
-			array(
-				'theme_location' => 'primary',
-				'container'      => false,
-				'menu_class'     => 'mobile-nav__menu',
-				'depth'          => 1,
-				'fallback_cb'    => 'wildflower_default_menu',
-			)
-		);
-		?>
+		<?php wildflower_nav( 'mobile-nav__menu' ); ?>
 	</div>
 	<div class="mobile-nav__foot">
 		<p><?php echo esc_html( $brand['email'] ); ?></p>
