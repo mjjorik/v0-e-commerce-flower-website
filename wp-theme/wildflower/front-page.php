@@ -208,34 +208,36 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 		array( 'Ordered at noon, delivered by 4. The bouquet looked exactly like the photo.', 'Priya S.', 'Somerville' ),
 		array( 'Finally, flowers that don’t look like a gas-station afterthought.', 'Tom W.', 'Brookline' ),
 	);
-	$loop = array_merge( $reviews, $reviews );
 	?>
 	<div class="marquee__track">
-		<?php foreach ( $loop as $r ) : ?>
-			<figure class="quote-card">
-				<blockquote>&ldquo;<?php echo esc_html( $r[0] ); ?>&rdquo;</blockquote>
-				<figcaption><strong style="color:var(--foreground);"><?php echo esc_html( $r[1] ); ?></strong> · <?php echo esc_html( $r[2] ); ?></figcaption>
-			</figure>
-		<?php endforeach; ?>
+		<?php for ( $g = 0; $g < 2; $g++ ) : ?>
+			<div class="marquee__group"<?php echo $g ? ' aria-hidden="true"' : ''; ?>>
+				<?php foreach ( $reviews as $r ) : ?>
+					<figure class="quote-card">
+						<blockquote>&ldquo;<?php echo esc_html( $r[0] ); ?>&rdquo;</blockquote>
+						<figcaption><strong style="color:var(--foreground);"><?php echo esc_html( $r[1] ); ?></strong> · <?php echo esc_html( $r[2] ); ?></figcaption>
+					</figure>
+				<?php endforeach; ?>
+			</div>
+		<?php endfor; ?>
 	</div>
 </section>
 
-<!-- COMMUNITY STRIP -->
+<!-- GALLERY -->
 <section class="section">
 	<div class="container">
 		<div class="section-head">
-			<h2 class="reveal"><?php esc_html_e( 'From the studio', 'wildflower' ); ?></h2>
-			<a class="link-underline reveal" href="<?php echo esc_url( $brand['instagram'] ); ?>" rel="noopener"><?php echo esc_html( $brand['handle'] ); ?></a>
+			<div style="max-width:32rem;">
+				<p class="eyebrow reveal"><?php esc_html_e( 'From the studio', 'wildflower' ); ?></p>
+				<h2 class="reveal" style="margin-top:.5rem;"><?php esc_html_e( 'The gallery', 'wildflower' ); ?></h2>
+			</div>
+			<a class="link-underline reveal" href="<?php echo esc_url( home_url( '/gallery/' ) ); ?>"><?php esc_html_e( 'View all', 'wildflower' ); ?></a>
 		</div>
-		<div class="community-grid">
-			<?php
-			for ( $i = 0; $i < 6; $i++ ) {
-				$span = ( 0 === $i || 3 === $i ) ? 'span-2' : '';
-				echo '<a class="media ' . esc_attr( $span ) . '" href="' . esc_url( $brand['instagram'] ) . '" rel="noopener">';
-				wildflower_media( null, 'medium', '', $i % 2 === 0 );
-				echo '</a>';
-			}
-			?>
+		<div class="gallery-grid">
+			<?php wildflower_gallery( 9 ); ?>
+		</div>
+		<div style="margin-top:2.5rem;text-align:center;">
+			<a class="btn--outline" href="<?php echo esc_url( home_url( '/gallery/' ) ); ?>"><?php esc_html_e( 'Explore the gallery', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 		</div>
 	</div>
 </section>

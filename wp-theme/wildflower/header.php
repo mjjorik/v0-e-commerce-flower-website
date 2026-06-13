@@ -14,6 +14,7 @@ $brand = wildflower_brand();
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="theme-color" content="#FDFBF7">
 	<link rel="profile" href="https://gmpg.org/xfn/11">
+	<script>document.documentElement.className += ' js';</script>
 	<?php wp_head(); ?>
 </head>
 
@@ -42,20 +43,19 @@ $brand = wildflower_brand();
 			<button class="menu-toggle" data-menu-open aria-label="<?php esc_attr_e( 'Open menu', 'wildflower' ); ?>">
 				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
 			</button>
-			<?php
-			if ( has_nav_menu( 'primary' ) ) {
+			<nav class="site-header__nav" aria-label="<?php esc_attr_e( 'Primary', 'wildflower' ); ?>">
+				<?php
 				wp_nav_menu(
 					array(
 						'theme_location' => 'primary',
-						'container'      => 'nav',
-						'container_class' => 'site-header__nav',
+						'container'      => false,
 						'menu_class'     => 'site-header__menu',
 						'depth'          => 1,
-						'fallback_cb'    => false,
+						'fallback_cb'    => 'wildflower_default_menu',
 					)
 				);
-			}
-			?>
+				?>
+			</nav>
 		</div>
 
 		<a class="site-header__brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
@@ -89,17 +89,15 @@ $brand = wildflower_brand();
 	</div>
 	<div class="mobile-nav__links">
 		<?php
-		if ( has_nav_menu( 'primary' ) ) {
-			wp_nav_menu(
-				array(
-					'theme_location' => 'primary',
-					'container'      => false,
-					'menu_class'     => 'mobile-nav__menu',
-					'depth'          => 1,
-					'fallback_cb'    => false,
-				)
-			);
-		}
+		wp_nav_menu(
+			array(
+				'theme_location' => 'primary',
+				'container'      => false,
+				'menu_class'     => 'mobile-nav__menu',
+				'depth'          => 1,
+				'fallback_cb'    => 'wildflower_default_menu',
+			)
+		);
 		?>
 	</div>
 	<div class="mobile-nav__foot">

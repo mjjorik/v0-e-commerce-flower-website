@@ -39,8 +39,8 @@
     });
   }
 
-  /* ---- Reveal on scroll (.reveal / .kinetic) ---- */
-  var revealEls = document.querySelectorAll('.reveal, .kinetic');
+  /* ---- Reveal on scroll (.reveal / .kinetic / .tile) ---- */
+  var revealEls = document.querySelectorAll('.reveal, .kinetic, .tile');
   if (reduceMotion || !('IntersectionObserver' in window)) {
     revealEls.forEach(function (el) { el.classList.add('is-visible'); });
   } else {

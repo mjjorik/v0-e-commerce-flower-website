@@ -40,6 +40,18 @@ function wildflower_setup() {
 add_action( 'after_setup_theme', 'wildflower_setup' );
 
 /**
+ * Asset version helper — uses file mtime so browsers never serve a stale
+ * cached CSS/JS after an update (a common "animations stopped working" cause).
+ *
+ * @param string $rel Path relative to the theme root, e.g. '/assets/js/main.js'.
+ * @return string
+ */
+function wildflower_ver( $rel ) {
+	$file = get_template_directory() . $rel;
+	return file_exists( $file ) ? (string) filemtime( $file ) : WILDFLOWER_VERSION;
+}
+
+/**
  * Enqueue styles and scripts.
  */
 function wildflower_assets() {
@@ -52,10 +64,10 @@ function wildflower_assets() {
 	);
 
 	// Main stylesheet.
-	wp_enqueue_style( 'wildflower-style', get_stylesheet_uri(), array( 'wildflower-fonts' ), WILDFLOWER_VERSION );
+	wp_enqueue_style( 'wildflower-style', get_stylesheet_uri(), array( 'wildflower-fonts' ), wildflower_ver( '/style.css' ) );
 
 	if ( class_exists( 'WooCommerce' ) ) {
-		wp_enqueue_style( 'wildflower-woo', get_template_directory_uri() . '/assets/css/woocommerce.css', array( 'wildflower-style' ), WILDFLOWER_VERSION );
+		wp_enqueue_style( 'wildflower-woo', get_template_directory_uri() . '/assets/css/woocommerce.css', array( 'wildflower-style' ), wildflower_ver( '/assets/css/woocommerce.css' ) );
 	}
 
 	// GSAP + ScrollTrigger (CDN) for the same motion as the prototype.
@@ -63,13 +75,69 @@ function wildflower_assets() {
 	wp_enqueue_script( 'gsap-scrolltrigger', 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js', array( 'gsap' ), '3.12.5', true );
 
 	// Theme JS.
-	wp_enqueue_script( 'wildflower-main', get_template_directory_uri() . '/assets/js/main.js', array( 'gsap', 'gsap-scrolltrigger' ), WILDFLOWER_VERSION, true );
+	wp_enqueue_script( 'wildflower-main', get_template_directory_uri() . '/assets/js/main.js', array( 'gsap', 'gsap-scrolltrigger' ), wildflower_ver( '/assets/js/main.js' ), true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'wildflower_assets' );
+
+/**
+ * Ensure a "Shop" link is always present at the start of the primary menu
+ * when WooCommerce is active — so it shows in both the desktop nav and the
+ * mobile burger without manual menu editing.
+ *
+ * @param string   $items HTML list items.
+ * @param stdClass $args  Menu args.
+ * @return string
+ */
+function wildflower_inject_shop( $items, $args ) {
+	if ( empty( $args->theme_location ) || 'primary' !== $args->theme_location ) {
+		return $items;
+	}
+	if ( ! class_exists( 'WooCommerce' ) ) {
+		return $items;
+	}
+	$shop_url = wc_get_page_permalink( 'shop' );
+	if ( ! $shop_url || false !== stripos( $items, '>' . __( 'Shop', 'wildflower' ) . '<' ) ) {
+		return $items;
+	}
+	$shop = '<li class="menu-item menu-item--shop"><a href="' . esc_url( $shop_url ) . '">' . esc_html__( 'Shop', 'wildflower' ) . '</a></li>';
+	return $shop . $items;
+}
+add_filter( 'wp_nav_menu_items', 'wildflower_inject_shop', 10, 2 );
+
+/**
+ * Default menu used when no menu is assigned to a location — guarantees the
+ * theme has navigation (incl. Shop) out of the box.
+ *
+ * @param array $args Menu args.
+ */
+function wildflower_default_menu( $args ) {
+	$location = isset( $args['theme_location'] ) ? $args['theme_location'] : '';
+	if ( 'primary' !== $location ) {
+		return;
+	}
+	$class = isset( $args['menu_class'] ) ? $args['menu_class'] : '';
+	$links = array();
+	if ( class_exists( 'WooCommerce' ) && wc_get_page_permalink( 'shop' ) ) {
+		$links[ wc_get_page_permalink( 'shop' ) ] = __( 'Shop', 'wildflower' );
+	}
+	$links[ home_url( '/subscriptions/' ) ] = __( 'Subscriptions', 'wildflower' );
+	$links[ home_url( '/occasions/' ) ]     = __( 'Occasions', 'wildflower' );
+	$links[ home_url( '/gallery/' ) ]        = __( 'Gallery', 'wildflower' );
+	$links[ home_url( '/journal/' ) ]        = __( 'Journal', 'wildflower' );
+	$links[ home_url( '/delivery/' ) ]       = __( 'Delivery', 'wildflower' );
+	$links[ home_url( '/about/' ) ]          = __( 'About', 'wildflower' );
+
+	echo '<ul class="' . esc_attr( $class ) . '">';
+	foreach ( $links as $url => $label ) {
+		echo '<li class="menu-item"><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a></li>';
+	}
+	echo '</ul>';
+}
+
 
 /**
  * Brand info used in templates and structured data.
@@ -109,6 +177,26 @@ function wildflower_media( $attachment_id = null, $size = 'large', $alt = '', $s
 		echo '</span>';
 	}
 	echo '</span>';
+}
+
+/**
+ * Render a mosaic of placeholder gallery tiles that assemble in on scroll.
+ * Varied sizes + colourful botanical gradients. Swap for real images later.
+ *
+ * @param int  $count       Number of tiles.
+ * @param bool $with_spans  Use varied tile sizes (mosaic) vs uniform.
+ */
+function wildflower_gallery( $count = 9, $with_spans = true ) {
+	$spans = $with_spans
+		? array( 'c2 r2', '', '', 'c2', '', 'r2', '', 'c2', '', 'r2', '', '', 'c2', '', '' )
+		: array();
+	for ( $i = 0; $i < $count; $i++ ) {
+		$variant = ( $i % 5 ) + 1;
+		$span    = isset( $spans[ $i ] ) ? $spans[ $i ] : '';
+		echo '<span class="tile ' . esc_attr( $span ) . '" data-delay="' . esc_attr( $i * 70 ) . '">';
+		echo '<span class="media-fallback media-fallback--' . esc_attr( $variant ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+		echo '</span>';
+	}
 }
 
 /**
