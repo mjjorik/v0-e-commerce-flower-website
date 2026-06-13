@@ -166,9 +166,9 @@ p { text-wrap: pretty; }
    ============================================================ */
 /* Hidden states only apply when JS is available (the <html> gets .js early),
    so if a script ever fails to load the content stays fully visible. */
-.reveal { transition: opacity .7s var(--ease-luxe), transform .7s var(--ease-luxe); }
-.js .reveal { opacity: 0; transform: translateY(28px); }
-.reveal.is-visible { opacity: 1; transform: none; }
+.reveal { transition: opacity .8s var(--ease-luxe), transform .8s var(--ease-luxe), filter .8s var(--ease-luxe); }
+.js .reveal { opacity: 0; transform: translateY(34px); filter: blur(8px); }
+.reveal.is-visible { opacity: 1; transform: none; filter: none; }
 
 .kinetic .word { display: inline-block; overflow: hidden; vertical-align: bottom; }
 .kinetic .word > span { display: inline-block; transition: transform .8s var(--ease-luxe); }
