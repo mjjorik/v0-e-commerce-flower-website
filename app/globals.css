@@ -29,49 +29,73 @@
   --color-foreground: var(--foreground);
   --color-background: var(--background);
 
+  /* Brand tokens — now fully defined so every utility resolves */
   --color-linen: var(--linen);
   --color-ink: var(--ink);
   --color-clay: var(--clay);
   --color-moss: var(--moss);
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-foreground: var(--terracotta-foreground);
+  --color-sage: var(--sage);
+  --color-sage-foreground: var(--sage-foreground);
+  --color-cream: var(--cream);
 
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius); /* 24px */
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
+  /* Editorial radius scale — tighter, more architectural (less "2015 bubble") */
+  --radius-sm: 0.25rem;   /* 4px  */
+  --radius-md: 0.4rem;    /* ~6px */
+  --radius-lg: 0.625rem;  /* 10px */
+  --radius-xl: 0.875rem;  /* 14px */
+  --radius-2xl: 1.25rem;  /* 20px */
+  --radius-3xl: 1.75rem;  /* 28px */
+
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 :root {
-  /* Hyper-Luxe Palette 2026 */
-  --background: oklch(0.988 0.006 84); /* #FDFBF7 Bone Linen */
-  --foreground: oklch(0.22 0.03 150); /* #142416 Deep Forest Ink */
+  /* ── Wildflower 2026 — light, warm, botanical, editorial ── */
+  --background: oklch(0.986 0.006 86);   /* warm bone / ivory   */
+  --foreground: oklch(0.25 0.03 152);    /* deep forest ink     */
 
-  --card: oklch(0.97 0.008 84);
-  --card-foreground: oklch(0.22 0.03 150);
+  --card: oklch(0.962 0.01 82);          /* warm cream surface  */
+  --card-foreground: oklch(0.25 0.03 152);
 
-  --primary: oklch(0.22 0.03 150); /* Deep Forest Ink */
-  --primary-foreground: oklch(0.988 0.006 84);
+  --cream: oklch(0.97 0.012 80);
 
-  --accent: oklch(0.58 0.12 42); /* #AC543D Burned Clay */
-  --accent-foreground: oklch(0.988 0.006 84);
+  --popover: oklch(0.986 0.006 86);
+  --popover-foreground: oklch(0.25 0.03 152);
 
-  --secondary: oklch(0.82 0.05 140); /* Sage Mist */
-  --secondary-foreground: oklch(0.22 0.03 150);
+  --primary: oklch(0.27 0.035 152);      /* forest green ink    */
+  --primary-foreground: oklch(0.986 0.006 86);
 
-  --muted: oklch(0.94 0.01 84);
-  --muted-foreground: oklch(0.45 0.02 150);
+  /* accent === terracotta */
+  --accent: oklch(0.63 0.125 45);        /* warm terracotta     */
+  --accent-foreground: oklch(0.99 0.006 86);
+  --terracotta: oklch(0.63 0.125 45);
+  --terracotta-foreground: oklch(0.99 0.006 86);
 
-  --border: oklch(0.9 0.012 84);
-  --input: oklch(0.9 0.012 84);
-  --ring: oklch(0.58 0.12 42);
+  /* secondary === sage */
+  --secondary: oklch(0.86 0.04 150);     /* soft sage mist      */
+  --secondary-foreground: oklch(0.27 0.04 152);
+  --sage: oklch(0.86 0.04 150);
+  --sage-foreground: oklch(0.27 0.04 152);
 
-  --linen: oklch(0.988 0.006 84);
-  --ink: oklch(0.22 0.03 150);
-  --clay: oklch(0.58 0.12 42);
-  --moss: oklch(0.82 0.05 140);
+  --muted: oklch(0.948 0.008 86);
+  --muted-foreground: oklch(0.5 0.02 152);
 
-  --radius: 1.5rem; /* Precise 24px */
+  --destructive: oklch(0.58 0.18 27);
+
+  --border: oklch(0.9 0.012 86);
+  --input: oklch(0.9 0.012 86);
+  --ring: oklch(0.63 0.125 45);
+
+  /* legacy aliases */
+  --linen: oklch(0.986 0.006 86);
+  --ink: oklch(0.25 0.03 152);
+  --clay: oklch(0.63 0.125 45);
+  --moss: oklch(0.86 0.04 150);
+
+  --radius: 0.625rem;
 }
 
 @layer base {
@@ -79,9 +103,15 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground selection:bg-clay selection:text-white antialiased;
-    background-image: 
-      url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    @apply bg-background text-foreground antialiased;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+  ::selection {
+    background: var(--terracotta);
+    color: var(--terracotta-foreground);
   }
   html {
     @apply font-sans;
@@ -90,17 +120,81 @@
   h1, h2, h3, h4 {
     @apply font-serif font-medium tracking-tight text-balance;
   }
+  /* refined focus ring */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* ── Button system — confident, editorial, animated. No more pills. ── */
+  .btn,
+  .btn-primary,
+  .btn-accent,
+  .btn-outline,
+  .btn-ghost {
+    @apply relative inline-flex select-none items-center justify-center gap-2.5
+           rounded-[var(--radius-md)] px-7 py-3.5 text-sm font-medium tracking-tight
+           whitespace-nowrap transition-[transform,background-color,color,box-shadow,border-color]
+           duration-300 ease-[var(--ease-luxe)] outline-none
+           focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+           focus-visible:ring-offset-background active:translate-y-px;
+  }
+  .btn-sm { @apply px-5 py-2.5 text-[13px]; }
+  .btn-lg { @apply px-9 py-4 text-[15px]; }
+
+  .btn-primary {
+    @apply overflow-hidden bg-primary text-primary-foreground
+           shadow-[0_1px_2px_rgba(20,36,22,0.18)]
+           hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-8px_rgba(20,36,22,0.35)];
+  }
+  .btn-accent {
+    @apply overflow-hidden bg-terracotta text-terracotta-foreground
+           shadow-[0_1px_2px_rgba(172,84,61,0.2)]
+           hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-8px_rgba(172,84,61,0.4)];
+  }
+  .btn-outline {
+    @apply border border-foreground/20 bg-transparent text-foreground
+           hover:border-foreground hover:bg-foreground hover:text-background;
+  }
+  .btn-ghost {
+    @apply bg-transparent text-foreground hover:bg-foreground/5;
+  }
+
+  /* sweeping sheen on solid buttons */
+  .btn-primary::before,
+  .btn-accent::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 -translate-x-full
+           bg-gradient-to-r from-transparent via-white/15 to-transparent
+           transition-transform duration-700 ease-[var(--ease-luxe)];
+  }
+  .btn-primary:hover::before,
+  .btn-accent:hover::before { @apply translate-x-full; }
+
+  /* arrow inside any button nudges on hover */
+  .btn-arrow { @apply transition-transform duration-300 ease-[var(--ease-luxe)]; }
+  :is(.btn, .btn-primary, .btn-accent, .btn-outline, .btn-ghost):hover .btn-arrow {
+    @apply translate-x-1;
+  }
+
+  /* ── Elegant image fallback — branded botanical gradient ── */
+  .img-fallback {
+    background-color: var(--card);
+    background-image:
+      radial-gradient(120% 90% at 18% 12%, color-mix(in oklab, var(--sage) 70%, transparent) 0%, transparent 55%),
+      radial-gradient(110% 90% at 88% 92%, color-mix(in oklab, var(--terracotta) 45%, transparent) 0%, transparent 50%),
+      linear-gradient(135deg, color-mix(in oklab, var(--cream) 90%, var(--sage)) 0%, var(--card) 100%);
+  }
 }
 
 @layer utilities {
-  .bezel-outer {
-    @apply rounded-[2rem] bg-black/5 p-2 ring-1 ring-black/5;
-  }
-  .bezel-inner {
-    @apply rounded-[calc(2rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.5)];
-  }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
 }
 
 @keyframes marquee {
@@ -109,4 +203,13 @@
 }
 .animate-marquee {
   animation: marquee 80s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

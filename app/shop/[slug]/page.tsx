@@ -5,6 +5,9 @@ import { ChevronRight } from 'lucide-react'
 import { PRODUCTS, getProduct } from '@/lib/products'
 import { ProductDetail } from '@/components/shop/product-detail'
 import { ProductCard } from '@/components/product-card'
+import { JsonLd } from '@/components/json-ld'
+import { productLd, breadcrumbLd } from '@/lib/seo'
+import { BRAND } from '@/lib/brand'
 
 export function generateStaticParams() {
   return PRODUCTS.map((p) => ({ slug: p.slug }))
@@ -18,9 +21,18 @@ export async function generateMetadata({
   const { slug } = await params
   const product = getProduct(slug)
   if (!product) return { title: 'Not found' }
+  const path = `/shop/${product.slug}`
   return {
     title: product.name,
-    description: product.tagline,
+    description: `${product.tagline}. ${product.description}`,
+    alternates: { canonical: path },
+    openGraph: {
+      type: 'website',
+      title: `${product.name} · ${BRAND.name}`,
+      description: product.tagline,
+      url: path,
+      images: [{ url: product.image, alt: product.imageAlt }],
+    },
   }
 }
 
@@ -42,6 +54,16 @@ export default async function ProductPage({
 
   return (
     <div className="pt-6">
+      <JsonLd
+        data={[
+          productLd(product),
+          breadcrumbLd([
+            { name: 'Home', path: '/' },
+            { name: 'Shop', path: '/shop' },
+            { name: product.name, path: `/shop/${product.slug}` },
+          ]),
+        ]}
+      />
       {/* breadcrumb */}
       <nav
         aria-label="Breadcrumb"

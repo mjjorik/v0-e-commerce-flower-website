@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Shop Bouquets',
   description:
     'Browse farm-fresh bouquets from $50 to $130. Filter by price, color, occasion and same-day availability across Greater Boston.',
+  alternates: { canonical: '/shop' },
 }
 
 export default function ShopPage() {

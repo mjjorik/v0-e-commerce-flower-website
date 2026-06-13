@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { motion, AnimatePresence } from 'motion/react'
-import { Plus, Minus, ChevronDown, Check } from 'lucide-react'
+import { ChevronDown, Check } from 'lucide-react'
+import { SmartImage } from '@/components/smart-image'
 import { useCart } from '@/components/cart/cart-provider'
 import type { Product } from '@/lib/products'
 import { formatPrice } from '@/lib/products'
@@ -63,12 +63,13 @@ export function ProductDetail({ product }: { product: Product }) {
             transition={{ duration: 0.5 }}
             className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-card"
           >
-            <Image
-              src={gallery[activeImg] || '/placeholder.svg'}
+            <SmartImage
+              src={gallery[activeImg]}
               alt={product.imageAlt}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
+              fallbackLabel={product.name}
               className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
           </motion.div>
@@ -85,11 +86,12 @@ export function ProductDetail({ product }: { product: Product }) {
                 )}
                 aria-label={`View image ${i + 1}`}
               >
-                <Image
-                  src={src || '/placeholder.svg'}
+                <SmartImage
+                  src={src}
                   alt=""
                   fill
                   sizes="80px"
+                  showMotif={false}
                   className="object-cover"
                 />
               </button>
@@ -239,7 +241,7 @@ export function ProductDetail({ product }: { product: Product }) {
           <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={handleAdd}
-            className="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5"
+            className="btn-primary btn-lg mt-8 w-full"
           >
             Add to Basket · {formatPrice(size.price)}
           </motion.button>
@@ -300,10 +302,7 @@ export function ProductDetail({ product }: { product: Product }) {
           </p>
           <p className="text-xs text-muted-foreground">{size.label}</p>
         </div>
-        <button
-          onClick={handleAdd}
-          className="flex-1 rounded-full bg-primary px-6 py-3 text-sm text-primary-foreground"
-        >
+        <button onClick={handleAdd} className="btn-primary flex-1">
           Add to Basket
         </button>
       </div>

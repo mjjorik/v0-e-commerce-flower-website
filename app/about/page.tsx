@@ -1,11 +1,25 @@
-'use client'
-
-import Image from 'next/image'
+import type { Metadata } from 'next'
 import { Reveal } from '@/components/kinetic-text'
+import { SmartImage } from '@/components/smart-image'
+import { JsonLd } from '@/components/json-ld'
+import { breadcrumbLd } from '@/lib/seo'
+import { BRAND } from '@/lib/brand'
+
+export const metadata: Metadata = {
+  title: 'About the Studio',
+  description: `Meet ${BRAND.name} — a closed-door floral studio in Boston sourcing textural, farm-fresh stems directly from New England growers. No markups, no baby's breath.`,
+  alternates: { canonical: '/about' },
+}
 
 export default function AboutPage() {
   return (
-    <div className="relative min-h-[100dvh] w-full overflow-hidden bg-[#FAF7F2]">
+    <div className="relative min-h-[100dvh] w-full overflow-hidden bg-background">
+      <JsonLd
+        data={breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'About', path: '/about' },
+        ])}
+      />
       {/* Subtle Noise Overlay */}
       <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.03] mix-blend-multiply" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")' }}></div>
 
@@ -44,10 +58,11 @@ export default function AboutPage() {
             
             <Reveal className="relative aspect-[3/4] w-full max-w-lg self-end rounded-[2.5rem] bg-black/5 p-2 ring-1 ring-black/5">
               <div className="relative h-full w-full overflow-hidden rounded-[calc(2.5rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]">
-                <Image 
-                  src="/instagram/ig-1.png" 
-                  alt="Florist working in Boston studio" 
-                  fill 
+                <SmartImage
+                  src="/instagram/ig-1.png"
+                  alt="Florist hand-tying a bouquet in the Wildflower Boston studio"
+                  fill
+                  fallbackLabel="The studio"
                   className="object-cover"
                 />
               </div>
@@ -55,16 +70,17 @@ export default function AboutPage() {
 
             <Reveal className="relative aspect-square w-full max-w-md self-start rounded-[2.5rem] bg-black/5 p-2 ring-1 ring-black/5 lg:-mt-32" delay={150}>
               <div className="relative h-full w-full overflow-hidden rounded-[calc(2.5rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]">
-                <Image 
-                  src="/instagram/ig-2.png" 
-                  alt="Fresh ranunculus close up" 
-                  fill 
+                <SmartImage
+                  src="/instagram/ig-2.png"
+                  alt="Close-up of fresh ranunculus sourced from New England farms"
+                  fill
+                  showMotif={false}
                   className="object-cover"
                 />
               </div>
             </Reveal>
 
-            <Reveal className="relative w-full max-w-xl self-center rounded-[2.5rem] bg-white p-10 ring-1 ring-black/5 sm:p-16 lg:mt-16">
+            <Reveal className="relative w-full max-w-xl self-center rounded-[2.5rem] bg-card p-10 ring-1 ring-black/5 sm:p-16 lg:mt-16">
               <h3 className="font-serif text-3xl">The Team</h3>
               <p className="mt-6 text-black/60 leading-relaxed text-lg">
                 We are a small, obsessed team of designers, florists, and drivers who believe in doing one thing exceptionally well. No fluff, no filler—just honest flowers delivered with absolute precision.
