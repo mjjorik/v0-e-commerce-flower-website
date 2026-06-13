@@ -4,7 +4,23 @@ A classic PHP theme (no build step) that ports the Wildflower design system —
 warm light palette, Fraunces + Inter, editorial animated buttons, GSAP motion,
 and elegant botanical image fallbacks — to WordPress + WooCommerce.
 
-## Install
+## Quick preview (Docker, one command)
+
+From the `wp-theme/` folder (the one with `docker-compose.yml`):
+
+```bash
+cd wp-theme
+docker compose up -d     # WordPress + MariaDB
+./setup.sh               # installs WP, activates theme, creates pages + menu
+```
+
+Then open **http://localhost:8080** (admin: `http://localhost:8080/wp-admin`, `admin` / `admin`).
+
+The homepage renders without WooCommerce — shop/category/featured sections simply
+stay hidden until you add the plugin (see below). Stop with `docker compose down`
+(add `-v` to wipe the database).
+
+## Manual install
 
 1. Copy the `wildflower/` folder into `wp-content/themes/`.
 2. **Appearance → Themes → Activate** “Wildflower”.
