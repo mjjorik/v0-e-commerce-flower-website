@@ -416,22 +416,30 @@ textarea { resize: vertical; }
 .mobile-nav__menu .menu-item:nth-child(8) { transition-delay: .48s; }
 
 /* ============================================================
-   14. Gallery — deterministic mosaic that tiles with NO gaps.
-       Pattern: one full-width tile + two half tiles, repeating,
-       so every row is complete on 2 / 3 / 4 columns. Tiles open
-       in a lightbox (swipe / arrows / keys).
+   14. Gallery — rich mosaic of varied tile sizes, densely packed
+       so it fills without gaps. Tiles open in a lightbox.
    ============================================================ */
-.gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 9.5rem; gap: .6rem; grid-auto-flow: dense; }
-@media (min-width: 640px)  { .gallery-grid { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 11rem; gap: .85rem; } }
-@media (min-width: 1024px) { .gallery-grid { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 12.5rem; gap: 1rem; } }
+.gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 7.5rem; gap: .6rem; grid-auto-flow: dense; }
+@media (min-width: 640px)  { .gallery-grid { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 9rem; gap: .85rem; } }
+@media (min-width: 1024px) { .gallery-grid { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 9.5rem; gap: 1rem; } }
 .gallery-grid .tile {
   grid-column: span 1; grid-row: span 1; position: relative; overflow: hidden;
   border-radius: var(--radius-xl); padding: 0; border: none; cursor: pointer; display: block;
 }
-.gallery-grid .tile.c2 { grid-column: span 2; }
+.gallery-grid .tile.w2 { grid-column: span 2; }
+.gallery-grid .tile.h2 { grid-row: span 2; }
 .gallery-grid .tile .media-fallback { position: absolute; inset: 0; aspect-ratio: auto; transition: transform .8s var(--ease-luxe); }
 .gallery-grid .tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease-luxe); }
 .gallery-grid .tile:hover .media-fallback, .gallery-grid .tile:hover img { transform: scale(1.05); }
+
+/* Parallax: give media layers vertical headroom so they can drift on scroll
+   without revealing edges (desktop/tablet only — disabled on small screens). */
+@media (min-width: 768px) {
+  .gallery-grid .tile .media-fallback,
+  .gallery-grid .tile img,
+  .bento__tile .media-fallback,
+  .bento__tile .media img { inset: -11% 0 auto 0; height: 122%; will-change: transform; }
+}
 
 /* ============================================================
    14b. Lightbox

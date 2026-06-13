@@ -160,20 +160,27 @@ function wildflower_media( $attachment_id = null, $size = 'large', $alt = '', $s
 }
 
 /**
- * Render a masonry gallery of clickable placeholder tiles (open in a lightbox,
- * swipeable). Varied heights + colourful botanical gradients fill the columns
- * with no gaps on any screen. Swap the fallbacks for real images later.
+ * Render a rich mosaic of clickable placeholder tiles (varied sizes — big,
+ * tall and wide) that open in a lightbox. The size pattern has a total area
+ * that's a multiple of 12, so it tiles flush on 2 / 3 / 4 columns with no gaps
+ * (render-verified). Pass $sets to repeat the pattern (e.g. 2 for the full
+ * gallery page). Swap the fallbacks for real images later.
  *
- * @param int $count Number of tiles.
+ * @param int $sets Number of pattern repetitions.
  */
-function wildflower_gallery( $count = 9 ) {
-	for ( $i = 0; $i < $count; $i++ ) {
-		$variant = ( $i % 5 ) + 1;
-		// Every 3rd tile spans two columns → rows always complete (no gaps on 2/3/4 cols).
-		$span = ( 0 === $i % 3 ) ? ' c2' : '';
-		echo '<button type="button" class="tile' . esc_attr( $span ) . '" data-index="' . esc_attr( $i ) . '" data-delay="' . esc_attr( $i * 55 ) . '" aria-label="' . esc_attr__( 'Open gallery image', 'wildflower' ) . '">';
-		echo '<span class="media-fallback media-fallback--' . esc_attr( $variant ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
-		echo '</button>';
+function wildflower_gallery( $sets = 1 ) {
+	$pattern = array( 'w2 h2', '', '', 'h2', 'w2', '', '', 'w2 h2', '', 'h2', 'w2', '', '', '' );
+	$len     = count( $pattern );
+	$i       = 0;
+	for ( $s = 0; $s < $sets; $s++ ) {
+		foreach ( $pattern as $span ) {
+			$variant = ( $i % 5 ) + 1;
+			$delay   = ( $i % $len ) * 55;
+			echo '<button type="button" class="tile ' . esc_attr( $span ) . '" data-index="' . esc_attr( $i ) . '" data-delay="' . esc_attr( $delay ) . '" aria-label="' . esc_attr__( 'Open gallery image', 'wildflower' ) . '">';
+			echo '<span class="media-fallback media-fallback--' . esc_attr( $variant ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+			echo '</button>';
+			$i++;
+		}
 	}
 }
 

@@ -33,7 +33,7 @@ get_header();
 	endwhile;
 	?>
 	<div class="gallery-grid">
-		<?php wildflower_gallery( 15 ); ?>
+		<?php wildflower_gallery( 2 ); ?>
 	</div>
 </div>
 <?php

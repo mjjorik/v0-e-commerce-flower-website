@@ -13,7 +13,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 
 <!-- HERO -->
 <section class="hero">
-	<span class="hero__glow" aria-hidden="true"></span>
+	<span class="hero__glow" aria-hidden="true" data-parallax="90"></span>
 	<div class="container--wide">
 		<div class="hero__grid">
 			<div>
@@ -234,7 +234,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 			<a class="link-underline reveal" href="<?php echo esc_url( home_url( '/gallery/' ) ); ?>"><?php esc_html_e( 'View all', 'wildflower' ); ?></a>
 		</div>
 		<div class="gallery-grid">
-			<?php wildflower_gallery( 9 ); ?>
+			<?php wildflower_gallery(); ?>
 		</div>
 		<div style="margin-top:2.5rem;text-align:center;">
 			<a class="btn--outline" href="<?php echo esc_url( home_url( '/gallery/' ) ); ?>"><?php esc_html_e( 'Explore the gallery', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
@@ -246,7 +246,7 @@ $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 <section class="section" style="padding-top:0;">
 	<div class="container">
 		<div class="cta">
-			<span class="cta__glow" aria-hidden="true"></span>
+			<span class="cta__glow" aria-hidden="true" data-parallax="-70"></span>
 			<p class="eyebrow" style="position:relative;color:color-mix(in oklab,var(--terracotta-foreground) 70%,transparent);margin-bottom:1.25rem;"><?php esc_html_e( 'No occasion required', 'wildflower' ); ?></p>
 			<h2 class="kinetic"><?php echo wildflower_kinetic( "Make someone's Tuesday." ); ?></h2>
 			<p><?php esc_html_e( 'The best flowers are the ones nobody expected. Send a little joy, today.', 'wildflower' ); ?></p>

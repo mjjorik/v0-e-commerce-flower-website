@@ -75,6 +75,32 @@
     }
   }
 
+  /* ---- Parallax on scroll (depth on media + drifting glows) ---- */
+  if (window.gsap && window.ScrollTrigger && window.matchMedia('(min-width: 768px)').matches) {
+    window.gsap.registerPlugin(window.ScrollTrigger);
+
+    // Media layers drift at alternating speeds for depth (gallery + occasions).
+    document.querySelectorAll('.gallery-grid .tile .media-fallback, .bento__tile .media-fallback').forEach(function (el, i) {
+      var dir = (i % 2 === 0) ? 1 : -1;
+      window.gsap.fromTo(el,
+        { yPercent: -7 * dir },
+        {
+          yPercent: 7 * dir, ease: 'none',
+          scrollTrigger: { trigger: el.closest('.tile, .bento__tile') || el, start: 'top bottom', end: 'bottom top', scrub: 0.5 },
+        }
+      );
+    });
+
+    // Decorative blocks (glows) drift on scroll.
+    document.querySelectorAll('[data-parallax]').forEach(function (el) {
+      var amt = parseFloat(el.getAttribute('data-parallax')) || 60;
+      window.gsap.to(el, {
+        y: amt, ease: 'none',
+        scrollTrigger: { trigger: el.parentElement || el, start: 'top bottom', end: 'bottom top', scrub: 0.5 },
+      });
+    });
+  }
+
   /* ---- Gallery lightbox (click to open, arrows / keys / swipe) ---- */
   var tiles = Array.prototype.slice.call(document.querySelectorAll('.gallery-grid .tile'));
   if (tiles.length) {
