@@ -243,6 +243,14 @@ p { text-wrap: pretty; }
   .hero__media { transform: translateX(1.5rem) rotate(-2deg); margin-bottom: -5rem; }
   .hero__lead { flex-direction: row; align-items: center; }
 }
+/* Landscape / short viewports: compact the hero so the headline, lead and
+   button all fit without being pushed below the fold. */
+@media (orientation: landscape) and (max-height: 620px) {
+  .hero { min-height: auto; padding-block: 5.5rem 2.5rem; }
+  .hero h1 { font-size: clamp(2.25rem, 6.5vw, 4rem); margin-top: 1.25rem; }
+  .hero__lead { margin-top: 1.25rem; gap: 1.25rem; }
+  .hero__media { max-width: 20rem; }
+}
 
 /* ============================================================
    9. Generic grids & cards
