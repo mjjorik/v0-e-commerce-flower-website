@@ -58,7 +58,13 @@ to switch/publish looks, plus a **rebuilt, editorial homepage** (new rhythm) wit
 - [DONE] P5 Expand theme set to 8 curated looks.
 - [DONE] P6 Remote upgrade: dual-swatch cards, font label, scales to N.
 - [DONE] P7 Hero video support (img/video/fallback) + customizer.
-- [TODO] P8 Homepage composition rebuild (sections/bento/3-up/storytelling).
+- [WIP] P8 Homepage composition rebuild. Locked section order:
+  1 announce(accent) · 2 header · 3 hero(img/video) · 4 trust strip ·
+  5 occasions bento(asymmetric) · 6 bestsellers(3 big) · 7 add-ons "complete
+  the gift" NEW · 8 subscription · 9 how it works(dark) · 10 our story NEW ·
+  11 delivery zones NEW · 12 reviews · 13 gallery · 14 final CTA · 15 footer.
+  Screens: shop, product, cart/checkout, occasions, subscriptions, delivery,
+  gallery, journal, about, contact, 404, search, studio remote.
 - [TODO] P9 Per-axis remote controls (font pair / radius independent of palette) — stretch.
 - [TODO] P10 Seasonal / time-of-day auto themes — stretch.
 

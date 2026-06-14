@@ -2,6 +2,10 @@
 /**
  * Front page — the Wildflower homepage.
  *
+ * Section order (see docs/STUDIO_PLAN.md):
+ * hero → trust strip → occasions bento → bestsellers (3 big) → add-ons →
+ * subscription → how it works → our story → delivery → reviews → gallery → CTA.
+ *
  * @package Wildflower
  */
 
@@ -23,16 +27,16 @@ if ( $has_woo ) {
 	);
 	$cats = is_wp_error( $cats ) ? array() : $cats;
 
-	// Featured first, fall back to best-selling / recent.
-	$markup = do_shortcode( '[products limit="4" columns="4" visibility="featured"]' );
+	// Three hero products — featured first, then best-selling.
+	$markup = do_shortcode( '[products limit="3" columns="3" visibility="featured"]' );
 	if ( false === strpos( $markup, '<li' ) ) {
-		$markup = do_shortcode( '[products limit="4" columns="4" orderby="popularity"]' );
+		$markup = do_shortcode( '[products limit="3" columns="3" orderby="popularity"]' );
 	}
 	$markup = false === strpos( $markup, '<li' ) ? '' : $markup;
 }
 ?>
 
-<!-- HERO -->
+<!-- 3 · HERO -->
 <section class="hero">
 	<span class="hero__glow" aria-hidden="true" data-parallax="90"></span>
 	<div class="container--wide">
@@ -45,7 +49,11 @@ if ( $has_woo ) {
 				</h1>
 				<div class="hero__lead">
 					<p><?php printf( esc_html__( 'Farm-fresh bouquets and weekly subscriptions, hand-delivered same-day across Greater Boston. Order by %s.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>
-					<a class="btn--primary btn--lg btn--magnetic" data-magnetic="0.25" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+					<div class="hero__cta">
+						<a class="btn--primary btn--lg btn--magnetic" data-magnetic="0.25" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+						<a class="btn--outline btn--lg" href="#how"><?php esc_html_e( 'How it works', 'wildflower' ); ?></a>
+					</div>
+					<p class="hero__trust"><span class="hero__stars">★★★★★</span> <strong>4.9</strong> · <?php esc_html_e( '820+ reviews · Same-day before 1 PM · Hand-tied daily', 'wildflower' ); ?></p>
 				</div>
 			</div>
 			<div class="hero__visual">
@@ -57,96 +65,35 @@ if ( $has_woo ) {
 	</div>
 </section>
 
-<?php if ( $cats ) : ?>
-<!-- CATEGORY ROW -->
-<section class="section" style="padding-bottom:0;">
-	<div class="container section-head">
-		<h2 class="kinetic"><?php echo wildflower_kinetic( __( 'Find your bunch', 'wildflower' ) ); // phpcs:ignore ?></h2>
-		<a class="link-underline reveal" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'View all', 'wildflower' ); ?></a>
-	</div>
-	<div class="cat-row no-scrollbar">
+<!-- 4 · TRUST STRIP -->
+<section class="trust-strip">
+	<div class="container trust-strip__row">
 		<?php
-		foreach ( $cats as $cat ) {
-			$thumb_id = (int) get_term_meta( $cat->term_id, 'thumbnail_id', true );
-			?>
-			<a class="cat-card" href="<?php echo esc_url( get_term_link( $cat ) ); ?>">
-				<?php wildflower_media( $thumb_id ? $thumb_id : null, 'large', $cat->name, false ); ?>
-				<span class="cat-card__overlay"></span>
-				<h3><?php echo esc_html( $cat->name ); ?></h3>
-			</a>
-			<?php
-		}
-		?>
-	</div>
-</section>
-<?php endif; ?>
-
-<?php if ( $markup ) : ?>
-<!-- FEATURED PRODUCTS -->
-<section class="section">
-	<div class="container">
-		<div class="reveal" style="max-width:36rem;margin-bottom:2.5rem;">
-			<p class="eyebrow"><?php esc_html_e( 'The line-up', 'wildflower' ); ?></p>
-			<h2 class="kinetic" style="font-size:clamp(1.875rem,4vw,3rem);margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Bouquets people keep coming back for', 'wildflower' ) ); // phpcs:ignore ?></h2>
-		</div>
-		<?php
-		echo $markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		?>
-		<div style="margin-top:3rem;text-align:center;">
-			<a class="btn--outline reveal" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop all bouquets', 'wildflower' ); ?></a>
-		</div>
-	</div>
-</section>
-<?php endif; ?>
-
-<!-- VALUE PROPS -->
-<section class="section value-props">
-	<div class="container value-props__grid">
-		<?php
-		$props = array(
-			array( 'Same-Day Delivery', 'Order by ' . $brand['cutoff'] . ' and it lands on their doorstep today, across Greater Boston.' ),
-			array( 'Farm-Fresh Guarantee', 'Cut this week from New England growers. If it wilts early, we replace it.' ),
-			array( '$50–$130, No Markups', 'Honest pricing on every stem. The kind of flowers you can send on a Tuesday.' ),
+		$trust = array(
+			array( 'M5 13l4 4L19 7', __( 'Same-day delivery', 'wildflower' ), __( 'Order by 1 PM', 'wildflower' ) ),
+			array( 'M12 3v18M5 8c3 0 5-2 7-5 2 3 4 5 7 5', __( 'Farm-fresh', 'wildflower' ), __( 'Cut this week', 'wildflower' ) ),
+			array( 'M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6', __( 'Honest pricing', 'wildflower' ), __( '$50–$130, no markups', 'wildflower' ) ),
+			array( 'M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.8 5.7 21l2.3-7.1-6-4.5h7.6z', __( 'Loved in Boston', 'wildflower' ), __( '4.9★ · 820+ reviews', 'wildflower' ) ),
 		);
-		foreach ( $props as $pi => $p ) {
+		foreach ( $trust as $t ) :
 			?>
-			<div class="value-prop reveal" data-delay="<?php echo esc_attr( $pi * 130 ); ?>">
-				<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10M12 4v16M12 4C9 4 7 6 7 9c2 0 4-1 5-3 1 2 3 3 5 3 0-3-2-5-5-5Z"/></svg>
-				<h3><?php echo esc_html( $p[0] ); ?></h3>
-				<p><?php echo esc_html( $p[1] ); ?></p>
+			<div class="trust-strip__item reveal">
+				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="<?php echo esc_attr( $t[0] ); ?>"/></svg>
+				<span><strong><?php echo esc_html( $t[1] ); ?></strong><em><?php echo esc_html( $t[2] ); ?></em></span>
 			</div>
-			<?php
-		}
-		?>
+		<?php endforeach; ?>
 	</div>
 </section>
 
-<!-- SUBSCRIPTION TEASER -->
-<section class="section">
-	<div class="container">
-		<div class="sub-teaser">
-			<div class="media">
-				<?php wildflower_media( null, 'large', 'Weekly ritual', true ); ?>
-			</div>
-			<div class="sub-teaser__body reveal">
-				<p class="eyebrow" style="color:color-mix(in oklab,var(--primary) 70%,transparent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
-				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Fresh flowers, every week', 'wildflower' ) ); // phpcs:ignore ?></h2>
-				<p style="margin-top:1.25rem;max-width:28rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.6;"><?php esc_html_e( 'A standing order of seasonal blooms, chosen by our studio and delivered like clockwork. Pause, skip or cancel anytime — no strings, just stems.', 'wildflower' ); ?></p>
-				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$55</span> <span style="font-size:1rem;color:var(--muted-foreground);">/ delivery</span></p>
-				<a class="btn--primary" style="margin-top:1.75rem;" href="<?php echo esc_url( home_url( '/subscriptions/' ) ); ?>"><?php esc_html_e( 'Explore subscriptions', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
-			</div>
-		</div>
-	</div>
-</section>
-
-<!-- OCCASIONS BENTO -->
+<!-- 5 · SHOP BY OCCASION — ASYMMETRIC BENTO -->
 <section class="section">
 	<div class="container">
 		<div class="section-head">
 			<div style="max-width:32rem;">
 				<p class="eyebrow reveal"><?php esc_html_e( 'For every moment', 'wildflower' ); ?></p>
-				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Flowers that say it for you', 'wildflower' ) ); // phpcs:ignore ?></h2>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Shop by occasion', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			</div>
+			<a class="link-underline reveal" href="<?php echo esc_url( home_url( '/occasions/' ) ); ?>"><?php esc_html_e( 'All occasions', 'wildflower' ); ?></a>
 		</div>
 		<div class="bento">
 			<?php
@@ -175,8 +122,73 @@ if ( $has_woo ) {
 	</div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="section how">
+<?php if ( $markup ) : ?>
+<!-- 6 · BESTSELLERS — 3 BIG -->
+<section class="section section--alt">
+	<div class="container">
+		<div class="section-head">
+			<div style="max-width:36rem;">
+				<p class="eyebrow reveal"><?php esc_html_e( 'The line-up', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Bestsellers', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			</div>
+			<a class="link-underline reveal" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'View all', 'wildflower' ); ?></a>
+		</div>
+		<div class="products--big">
+			<?php echo $markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+	</div>
+</section>
+<?php endif; ?>
+
+<!-- 7 · COMPLETE THE GIFT — ADD-ONS -->
+<section class="section addons">
+	<div class="container addons__inner">
+		<div class="addons__head reveal">
+			<p class="eyebrow" style="color:color-mix(in oklab,var(--primary-foreground) 70%,transparent);"><?php esc_html_e( 'The little extras', 'wildflower' ); ?></p>
+			<h2 class="kinetic" style="margin-top:.5rem;color:var(--primary-foreground);"><?php echo wildflower_kinetic( __( 'Complete the gift', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			<p class="addons__lead"><?php esc_html_e( 'Make it unforgettable — add a little something at checkout.', 'wildflower' ); ?></p>
+		</div>
+		<div class="addons__grid">
+			<?php
+			$addons = array(
+				array( 'Glass vase', '+ $18', 'M7 3h10l-1 5a5 5 0 0 1-8 0z' ),
+				array( 'Soy candle', '+ $24', 'M12 3c2 2 2 4 0 6-2-2-2-4 0-6zM8 11h8v9H8z' ),
+				array( 'Belgian truffles', '+ $16', 'M4 9h16l-2 11H6zM8 9a4 4 0 0 1 8 0' ),
+				array( 'Handwritten card', 'Free', 'M3 5h18v14H3zM3 7l9 6 9-6' ),
+			);
+			foreach ( $addons as $ai => $a ) :
+				?>
+				<div class="addon reveal" data-delay="<?php echo esc_attr( $ai * 90 ); ?>">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="<?php echo esc_attr( $a[2] ); ?>"/></svg>
+					<span class="addon__name"><?php echo esc_html( $a[0] ); ?></span>
+					<span class="addon__price"><?php echo esc_html( $a[1] ); ?></span>
+				</div>
+			<?php endforeach; ?>
+		</div>
+		<a class="btn--accent" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Browse add-ons', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+	</div>
+</section>
+
+<!-- 8 · SUBSCRIPTION -->
+<section class="section">
+	<div class="container">
+		<div class="sub-teaser">
+			<div class="media">
+				<?php wildflower_media( null, 'large', 'Weekly ritual', true ); ?>
+			</div>
+			<div class="sub-teaser__body reveal">
+				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Fresh flowers, every week', 'wildflower' ) ); // phpcs:ignore ?></h2>
+				<p style="margin-top:1.25rem;max-width:28rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.6;"><?php esc_html_e( 'A standing order of seasonal blooms, chosen by our studio and delivered like clockwork. Pause, skip or cancel anytime — no strings, just stems.', 'wildflower' ); ?></p>
+				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$55</span> <span style="font-size:1rem;color:var(--muted-foreground);">/ delivery</span></p>
+				<a class="btn--primary" style="margin-top:1.75rem;" href="<?php echo esc_url( home_url( '/subscriptions/' ) ); ?>"><?php esc_html_e( 'Explore subscriptions', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 9 · HOW IT WORKS -->
+<section class="section how" id="how">
 	<div class="container">
 		<h2 class="kinetic" style="max-width:28rem;"><?php echo wildflower_kinetic( __( 'How it works', 'wildflower' ) ); // phpcs:ignore ?></h2>
 		<div class="how__grid">
@@ -200,7 +212,58 @@ if ( $has_woo ) {
 	</div>
 </section>
 
-<!-- TESTIMONIALS -->
+<!-- 10 · OUR STORY -->
+<section class="section">
+	<div class="container">
+		<div class="story">
+			<div class="story__media media">
+				<?php wildflower_media( null, 'large', 'In the studio', true ); ?>
+			</div>
+			<div class="story__body reveal">
+				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'Our story', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'A real florist, around the corner', 'wildflower' ) ); // phpcs:ignore ?></h2>
+				<p class="story__text"><?php esc_html_e( 'We’re a small Boston studio, not a warehouse. Every bouquet is hand-tied the morning it’s delivered, from stems cut this week by New England growers. You can tell a person made it — because one did.', 'wildflower' ); ?></p>
+				<div class="story__stats">
+					<div><strong>2015</strong><span><?php esc_html_e( 'Studio founded', 'wildflower' ); ?></span></div>
+					<div><strong>40k+</strong><span><?php esc_html_e( 'Bouquets delivered', 'wildflower' ); ?></span></div>
+					<div><strong>100%</strong><span><?php esc_html_e( 'Hand-tied daily', 'wildflower' ); ?></span></div>
+				</div>
+				<a class="btn--outline" style="margin-top:2rem;" href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'Read our story', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 11 · DELIVERY ZONES -->
+<section class="section section--alt">
+	<div class="container">
+		<div class="delivery">
+			<div class="delivery__body reveal">
+				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'Delivery', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Across Greater Boston', 'wildflower' ) ); // phpcs:ignore ?></h2>
+				<ul class="zones">
+					<?php
+					$zones = array(
+						array( 'Boston · Cambridge · Somerville', __( 'Same-day', 'wildflower' ) ),
+						array( 'Brookline · Newton · Quincy', __( 'Same-day', 'wildflower' ) ),
+						array( 'Greater metro (within Rt-128)', __( 'Next-day', 'wildflower' ) ),
+					);
+					foreach ( $zones as $z ) :
+						?>
+						<li class="zone"><span><?php echo esc_html( $z[0] ); ?></span><em><?php echo esc_html( $z[1] ); ?></em></li>
+					<?php endforeach; ?>
+				</ul>
+				<p class="cutoff"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> <?php esc_html_e( 'Order before', 'wildflower' ); ?> <strong><?php echo esc_html( $brand['cutoff'] ); ?></strong> <?php esc_html_e( 'for same-day delivery', 'wildflower' ); ?></p>
+			</div>
+			<div class="delivery__map media" aria-hidden="true">
+				<span class="delivery__pin"></span>
+				<span class="media-fallback__label"><?php esc_html_e( 'Greater Boston', 'wildflower' ); ?></span>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 12 · REVIEWS -->
 <section class="section marquee">
 	<div class="container" style="margin-bottom:2.5rem;">
 		<p class="eyebrow"><?php esc_html_e( 'Loved across the city', 'wildflower' ); ?></p>
@@ -219,6 +282,7 @@ if ( $has_woo ) {
 			<div class="marquee__group"<?php echo $g ? ' aria-hidden="true"' : ''; ?>>
 				<?php foreach ( $reviews as $r ) : ?>
 					<figure class="quote-card">
+						<span class="quote-card__stars">★★★★★</span>
 						<blockquote>&ldquo;<?php echo esc_html( $r[0] ); ?>&rdquo;</blockquote>
 						<figcaption><strong style="color:var(--foreground);"><?php echo esc_html( $r[1] ); ?></strong> · <?php echo esc_html( $r[2] ); ?></figcaption>
 					</figure>
@@ -228,7 +292,7 @@ if ( $has_woo ) {
 	</div>
 </section>
 
-<!-- GALLERY -->
+<!-- 13 · GALLERY -->
 <section class="section">
 	<div class="container">
 		<div class="section-head">
@@ -236,26 +300,26 @@ if ( $has_woo ) {
 				<p class="eyebrow reveal"><?php esc_html_e( 'From the studio', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'The gallery', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			</div>
-			<a class="link-underline reveal" href="<?php echo esc_url( home_url( '/gallery/' ) ); ?>"><?php esc_html_e( 'View all', 'wildflower' ); ?></a>
+			<a class="link-underline reveal" href="<?php echo esc_url( $brand['instagram'] ); ?>"><?php echo esc_html( $brand['handle'] ); ?></a>
 		</div>
 		<div class="gallery-grid">
 			<?php wildflower_gallery(); ?>
 		</div>
-		<div style="margin-top:2.5rem;text-align:center;">
-			<a class="btn--outline" href="<?php echo esc_url( home_url( '/gallery/' ) ); ?>"><?php esc_html_e( 'Explore the gallery', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
-		</div>
 	</div>
 </section>
 
-<!-- BOTTOM CTA -->
+<!-- 14 · FINAL CTA -->
 <section class="section" style="padding-top:0;">
 	<div class="container">
 		<div class="cta">
 			<span class="cta__glow" aria-hidden="true" data-parallax="-70"></span>
-			<p class="eyebrow" style="position:relative;color:color-mix(in oklab,var(--terracotta-foreground) 70%,transparent);margin-bottom:1.25rem;"><?php esc_html_e( 'No occasion required', 'wildflower' ); ?></p>
-			<h2 class="kinetic"><?php echo wildflower_kinetic( "Make someone's Tuesday." ); ?></h2>
-			<p><?php esc_html_e( 'The best flowers are the ones nobody expected. Send a little joy, today.', 'wildflower' ); ?></p>
-			<a class="btn" style="position:relative;margin-top:2.25rem;background:var(--background);color:var(--foreground);box-shadow:0 8px 24px -8px rgba(0,0,0,.25);" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			<p class="eyebrow" style="position:relative;color:color-mix(in oklab,var(--primary-foreground) 70%,transparent);margin-bottom:1.25rem;"><?php esc_html_e( 'No occasion required', 'wildflower' ); ?></p>
+			<h2 class="kinetic"><?php echo wildflower_kinetic( 'Send something beautiful today.' ); ?></h2>
+			<p><?php esc_html_e( 'Fresh, hand-tied and delivered across Boston in hours. The best flowers are the ones nobody expected.', 'wildflower' ); ?></p>
+			<div class="cta__row">
+				<a class="btn--accent btn--lg btn--pulse" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+				<a class="btn--lg" style="position:relative;background:transparent;border:1px solid color-mix(in oklab,var(--primary-foreground) 45%,transparent);color:var(--primary-foreground);" href="<?php echo esc_url( home_url( '/subscriptions/' ) ); ?>"><?php esc_html_e( 'Start a subscription', 'wildflower' ); ?></a>
+			</div>
 		</div>
 	</div>
 </section>
