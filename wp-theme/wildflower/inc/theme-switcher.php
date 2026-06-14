@@ -1,11 +1,19 @@
 <?php
 /**
- * Theme switcher ("the pult").
+ * Theming engine + owner remote ("the pult").
  *
- * Stores the active colour theme as a single site option and applies it to the
- * <html> element server-side, so every visitor sees the published theme with no
- * flash of the wrong palette. A small REST API lets the Studio remote read the
- * available palettes and (for admins) publish a new one instantly.
+ * A *theme* here is a complete look — not a single colour. Each theme defines:
+ *   • two accent colours (both change per theme — nothing is hardcoded),
+ *   • a dark "statement" colour with single-hue gradient stops,
+ *   • a typography pair (heading + body),
+ *   • a button corner radius.
+ *
+ * Everything is defined ONCE in wildflower_themes() / wildflower_font_pairs().
+ * The CSS variables for every theme are generated from that source, and the
+ * remote builds its UI from the same source — so adding a theme is a one-entry
+ * change with no copy-paste. The published theme is stored as a site option and
+ * applied server-side via <html data-theme="…"> (no flash). Admins can preview
+ * any theme without publishing via ?wf_preview=<id>.
  *
  * @package Wildflower
  */
@@ -18,54 +26,122 @@ const WILDFLOWER_THEME_OPTION  = 'wildflower_theme';
 const WILDFLOWER_THEME_DEFAULT = 'slate';
 
 /**
- * The curated palettes. This is the single source of truth — it must mirror the
- * [data-theme="…"] blocks in style.css. The remote builds its buttons from here,
- * so adding a theme is: add the CSS block + an entry here.
+ * Typography pairs. `google` is the query part of a fonts.googleapis.com URL.
  *
  * @return array<string,array<string,string>>
  */
-function wildflower_theme_palettes() {
+function wildflower_font_pairs() {
 	return array(
-		'slate' => array(
-			'label'   => __( 'Slate', 'wildflower' ),
-			'desc'    => __( 'Cool, editorial, interior-brand calm. Stays out of the flowers’ way.', 'wildflower' ),
-			'primary' => '#44546a',
-			'accent'  => '#b56a52',
+		'editorial' => array(
+			'label'   => 'Editorial',
+			'heading' => "'Fraunces', Georgia, serif",
+			'body'    => "'Inter', ui-sans-serif, system-ui, sans-serif",
+			'google'  => 'family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600',
 		),
-		'evergreen' => array(
-			'label'   => __( 'Evergreen', 'wildflower' ),
-			'desc'    => __( 'Deep, near-black green. Luxe hospitality mood.', 'wildflower' ),
-			'primary' => '#1c4a40',
-			'accent'  => '#b56a52',
+		'modern' => array(
+			'label'   => 'Modern',
+			'heading' => "'Space Grotesk', ui-sans-serif, system-ui, sans-serif",
+			'body'    => "'Inter', ui-sans-serif, system-ui, sans-serif",
+			'google'  => 'family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600',
 		),
-		'aubergine' => array(
-			'label'   => __( 'Aubergine', 'wildflower' ),
-			'desc'    => __( 'Dark plum. Romantic, rich, classic florist warmth.', 'wildflower' ),
-			'primary' => '#4b304a',
-			'accent'  => '#b56a52',
+		'classic' => array(
+			'label'   => 'Classic',
+			'heading' => "'Cormorant Garamond', Georgia, serif",
+			'body'    => "'Inter', ui-sans-serif, system-ui, sans-serif",
+			'google'  => 'family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600',
 		),
-		'copper' => array(
-			'label'   => __( 'Copper', 'wildflower' ),
-			'desc'    => __( 'Warm tonal brown-copper. Friendly and inviting.', 'wildflower' ),
-			'primary' => '#7a4a38',
-			'accent'  => '#c77e63',
+		'grotesk' => array(
+			'label'   => 'Grotesk',
+			'heading' => "'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif",
+			'body'    => "'Inter', ui-sans-serif, system-ui, sans-serif",
+			'google'  => 'family=Schibsted+Grotesk:ital,wght@0,400..800;1,400..700&family=Inter:wght@400;500;600',
 		),
 	);
 }
 
 /**
- * Sanitize a theme id against the allow-list of curated palettes.
+ * The curated themes — the single source of truth.
  *
- * @param string $theme Candidate id.
- * @return string A valid theme id (falls back to the default).
+ * Keys: label, desc, primary (+ -2 lighter / -3 darker gradient stops),
+ * accent (main: prices, links, dot, cart), accent2 (headline italics &
+ * highlights), font (key into wildflower_font_pairs), radius (button corner).
+ *
+ * @return array<string,array<string,string>>
  */
-function wildflower_sanitize_theme( $theme ) {
-	$theme = is_string( $theme ) ? sanitize_key( $theme ) : '';
-	return array_key_exists( $theme, wildflower_theme_palettes() ) ? $theme : WILDFLOWER_THEME_DEFAULT;
+function wildflower_themes() {
+	return array(
+		'slate' => array(
+			'label'  => 'Slate',
+			'desc'   => 'Cool editorial calm. Brass + slate-teal. Interior-brand poise.',
+			'primary' => '#3e4c61', 'primary2' => '#50617a', 'primary3' => '#313d4f',
+			'accent'  => '#b07a45', 'accent2'  => '#4a6173',
+			'font'    => 'editorial', 'radius' => '3px',
+		),
+		'evergreen' => array(
+			'label'  => 'Evergreen',
+			'desc'   => 'Near-black green + antique gold. Luxe hospitality.',
+			'primary' => '#1f4a40', 'primary2' => '#2d6155', 'primary3' => '#143a32',
+			'accent'  => '#c2924c', 'accent2'  => '#2e6b5c',
+			'font'    => 'classic', 'radius' => '4px',
+		),
+		'aubergine' => array(
+			'label'  => 'Aubergine',
+			'desc'   => 'Dark plum + dusty rose. Romantic and rich.',
+			'primary' => '#46304a', 'primary2' => '#5a3f5d', 'primary3' => '#37253a',
+			'accent'  => '#c18598', 'accent2'  => '#7a5277',
+			'font'    => 'classic', 'radius' => '4px',
+		),
+		'copper' => array(
+			'label'  => 'Copper',
+			'desc'   => 'Warm brown-copper + sage. Friendly and inviting.',
+			'primary' => '#7a4a38', 'primary2' => '#915b45', 'primary3' => '#5f3a2c',
+			'accent'  => '#b9824e', 'accent2'  => '#5e7c72',
+			'font'    => 'editorial', 'radius' => '3px',
+		),
+		'noir' => array(
+			'label'  => 'Noir',
+			'desc'   => 'Charcoal + gold. Modern, confident, gallery-grade.',
+			'primary' => '#2b2724', 'primary2' => '#3c3733', 'primary3' => '#1f1c1a',
+			'accent'  => '#c2a14e', 'accent2'  => '#9a6f4e',
+			'font'    => 'modern', 'radius' => '0',
+		),
+		'bordeaux' => array(
+			'label'  => 'Bordeaux',
+			'desc'   => 'Deep wine + blush copper. Romantic, opulent.',
+			'primary' => '#5a2734', 'primary2' => '#723443', 'primary3' => '#451d27',
+			'accent'  => '#c98b6b', 'accent2'  => '#9e4a59',
+			'font'    => 'classic', 'radius' => '3px',
+		),
+		'midnight' => array(
+			'label'  => 'Midnight',
+			'desc'   => 'Deep navy + brass. Architectural and timeless.',
+			'primary' => '#232c44', 'primary2' => '#324063', 'primary3' => '#1a2133',
+			'accent'  => '#c2a14e', 'accent2'  => '#506390',
+			'font'    => 'grotesk', 'radius' => '0',
+		),
+		'sand' => array(
+			'label'  => 'Sand',
+			'desc'   => 'Warm umber + clay. Soft, organic, sun-washed.',
+			'primary' => '#5b4f3f', 'primary2' => '#6f6150', 'primary3' => '#473d30',
+			'accent'  => '#b07a45', 'accent2'  => '#8a7a5e',
+			'font'    => 'editorial', 'radius' => '5px',
+		),
+	);
 }
 
 /**
- * The published theme (what visitors get).
+ * Sanitize a theme id against the allow-list.
+ *
+ * @param string $theme Candidate id.
+ * @return string Valid id (falls back to default).
+ */
+function wildflower_sanitize_theme( $theme ) {
+	$theme = is_string( $theme ) ? sanitize_key( $theme ) : '';
+	return array_key_exists( $theme, wildflower_themes() ) ? $theme : WILDFLOWER_THEME_DEFAULT;
+}
+
+/**
+ * The published theme (what every visitor gets).
  *
  * @return string
  */
@@ -74,8 +150,7 @@ function wildflower_published_theme() {
 }
 
 /**
- * The theme to actually render. Admins can preview any theme without publishing
- * via ?wf_preview=<id>; everyone else always gets the published theme.
+ * The theme to render. Admins can preview any theme via ?wf_preview=<id>.
  *
  * @return string
  */
@@ -85,6 +160,81 @@ function wildflower_active_theme() {
 	}
 	return wildflower_published_theme();
 }
+
+/**
+ * Resolve a theme's font pair (with a safe fallback).
+ *
+ * @param string $theme Theme id.
+ * @return array<string,string>
+ */
+function wildflower_theme_font( $theme ) {
+	$themes = wildflower_themes();
+	$pairs  = wildflower_font_pairs();
+	$key    = isset( $themes[ $theme ]['font'] ) ? $themes[ $theme ]['font'] : 'editorial';
+	return isset( $pairs[ $key ] ) ? $pairs[ $key ] : reset( $pairs );
+}
+
+/**
+ * Build the CSS variable block for one theme.
+ *
+ * @param array<string,string> $t Theme.
+ * @return string CSS declarations (no selector).
+ */
+function wildflower_theme_vars( $t ) {
+	$font = wildflower_theme_font_by_key( isset( $t['font'] ) ? $t['font'] : 'editorial' );
+	return sprintf(
+		'--primary:%1$s;--primary-2:%2$s;--primary-3:%3$s;--accent:%4$s;--accent-2:%5$s;--ring:%4$s;--radius-btn:%6$s;--font-serif:%7$s;--font-sans:%8$s;',
+		$t['primary'],
+		$t['primary2'],
+		$t['primary3'],
+		$t['accent'],
+		$t['accent2'],
+		$t['radius'],
+		$font['heading'],
+		$font['body']
+	);
+}
+
+/**
+ * Font pair by key (helper that won't recurse into theme lookup).
+ *
+ * @param string $key Pair id.
+ * @return array<string,string>
+ */
+function wildflower_theme_font_by_key( $key ) {
+	$pairs = wildflower_font_pairs();
+	return isset( $pairs[ $key ] ) ? $pairs[ $key ] : reset( $pairs );
+}
+
+/**
+ * Generate and attach the CSS for every theme (single source of truth).
+ */
+function wildflower_generate_theme_css() {
+	$css = '';
+	foreach ( wildflower_themes() as $id => $t ) {
+		$css .= '[data-theme="' . $id . '"]{' . wildflower_theme_vars( $t ) . '}';
+	}
+	// Default values on :root so the site is correct even before data-theme.
+	$themes = wildflower_themes();
+	$def    = isset( $themes[ WILDFLOWER_THEME_DEFAULT ] ) ? $themes[ WILDFLOWER_THEME_DEFAULT ] : reset( $themes );
+	$css   .= ':root{' . wildflower_theme_vars( $def ) . '}';
+	wp_add_inline_style( 'wildflower-style', $css );
+}
+add_action( 'wp_enqueue_scripts', 'wildflower_generate_theme_css', 20 );
+
+/**
+ * Load only the active theme's font pair (front-end + previews).
+ */
+function wildflower_enqueue_theme_fonts() {
+	$font = wildflower_theme_font( wildflower_active_theme() );
+	wp_enqueue_style(
+		'wildflower-fonts',
+		'https://fonts.googleapis.com/css2?' . $font['google'] . '&display=swap',
+		array(),
+		null
+	);
+}
+add_action( 'wp_enqueue_scripts', 'wildflower_enqueue_theme_fonts', 5 );
 
 /**
  * Put data-theme on the <html> element (header.php prints language_attributes()).
@@ -98,7 +248,29 @@ function wildflower_html_theme_attr( $output ) {
 add_filter( 'language_attributes', 'wildflower_html_theme_attr' );
 
 /**
- * REST API: read palettes + current theme, and (admins) publish a new one.
+ * Compact theme list for the remote (id, label, desc, swatches, font label).
+ *
+ * @return array<string,array<string,string>>
+ */
+function wildflower_themes_for_remote() {
+	$pairs = wildflower_font_pairs();
+	$out   = array();
+	foreach ( wildflower_themes() as $id => $t ) {
+		$out[ $id ] = array(
+			'label'   => $t['label'],
+			'desc'    => $t['desc'],
+			'primary' => $t['primary'],
+			'accent'  => $t['accent'],
+			'accent2' => $t['accent2'],
+			'font'    => isset( $pairs[ $t['font'] ] ) ? $pairs[ $t['font'] ]['label'] : ucfirst( $t['font'] ),
+			'radius'  => $t['radius'],
+		);
+	}
+	return $out;
+}
+
+/**
+ * REST API: read themes + state, and (admins) publish a new one.
  */
 function wildflower_register_theme_rest() {
 	register_rest_route(
@@ -111,9 +283,9 @@ function wildflower_register_theme_rest() {
 				'callback'            => function () {
 					return rest_ensure_response(
 						array(
-							'theme'     => wildflower_published_theme(),
-							'default'   => WILDFLOWER_THEME_DEFAULT,
-							'palettes'  => wildflower_theme_palettes(),
+							'theme'    => wildflower_published_theme(),
+							'default'  => WILDFLOWER_THEME_DEFAULT,
+							'palettes' => wildflower_themes_for_remote(),
 						)
 					);
 				},

@@ -54,7 +54,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .studio-head .studio-muted { font-size: .95rem; line-height: 1.5; }
 
 /* ── Preset buttons ── */
-.studio-presets { display: grid; gap: .75rem; flex: 1; align-content: start; }
+.studio-presets { display: grid; gap: .75rem; flex: 1; align-content: start; overflow-y: auto; padding-right: .25rem; margin-right: -.25rem; }
 .preset {
   display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem;
   text-align: left; padding: 1rem; border-radius: 14px;
@@ -64,15 +64,17 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .preset:hover { transform: translateY(-2px); border-color: #4a443c; }
 .preset.is-selected { border-color: var(--s-ink); background: #262320; }
 .preset__swatch {
-  width: 46px; height: 46px; border-radius: 11px; position: relative;
+  width: 48px; height: 48px; border-radius: 11px; position: relative;
+  display: flex; align-items: flex-end; justify-content: flex-end; gap: 3px; padding: 5px;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 6px 16px -8px rgba(0,0,0,.6);
 }
-.preset__swatch::after {
-  content: ''; position: absolute; right: 6px; bottom: 6px; width: 12px; height: 12px;
-  border-radius: 999px; background: var(--dot); box-shadow: 0 0 0 2px rgba(0,0,0,.25);
+.preset__chip {
+  width: 13px; height: 13px; border-radius: 999px; display: block;
+  box-shadow: 0 0 0 1.5px rgba(0,0,0,.28);
 }
 .preset__name { font-family: var(--font-serif); font-size: 1.15rem; line-height: 1.1; }
 .preset__desc { display: block; font-size: .78rem; color: var(--s-muted); margin-top: .15rem; line-height: 1.35; }
+.preset__meta { display: block; font-size: .66rem; letter-spacing: .04em; text-transform: uppercase; color: #6f6960; margin-top: .35rem; }
 .preset__live {
   font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .14em;
   color: var(--s-ok); border: 1px solid color-mix(in srgb, var(--s-ok) 50%, transparent);

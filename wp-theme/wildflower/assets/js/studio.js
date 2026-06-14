@@ -35,15 +35,21 @@
     presetsEl.innerHTML = '';
     Object.keys(cfg.palettes).forEach(function (id) {
       var p = cfg.palettes[id];
+      var corners = (p.radius === '0' || p.radius === '0px') ? 'Sharp corners' : 'Soft ' + p.radius;
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'preset';
       btn.dataset.theme = id;
-      btn.style.setProperty('--dot', p.accent);
       btn.innerHTML =
-        '<span class="preset__swatch" style="background:' + p.primary + ';--dot:' + p.accent + '"></span>' +
-        '<span class="preset__text"><span class="preset__name">' + p.label + '</span>' +
-        '<span class="preset__desc">' + p.desc + '</span></span>' +
+        '<span class="preset__swatch" style="background:' + p.primary + '">' +
+          '<i class="preset__chip" style="background:' + p.accent + '"></i>' +
+          '<i class="preset__chip" style="background:' + p.accent2 + '"></i>' +
+        '</span>' +
+        '<span class="preset__text">' +
+          '<span class="preset__name">' + p.label + '</span>' +
+          '<span class="preset__desc">' + p.desc + '</span>' +
+          '<span class="preset__meta">' + p.font + ' · ' + corners + '</span>' +
+        '</span>' +
         '<span class="preset__live">Live</span>';
       btn.addEventListener('click', function () { select(id); });
       presetsEl.appendChild(btn);

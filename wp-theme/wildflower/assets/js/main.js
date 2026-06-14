@@ -5,6 +5,39 @@
 (function () {
   'use strict';
 
+  /* ---- Enable theme cross-fade after first paint (avoids flash on load) ---- */
+  window.requestAnimationFrame(function () {
+    document.documentElement.classList.add('theme-ready');
+  });
+
+  /* ---- Magnetic buttons (subtle pull toward the cursor) ---- */
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.btn--magnetic').forEach(function (btn) {
+      var strength = parseFloat(btn.getAttribute('data-magnetic')) || 0.3;
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        btn.style.setProperty('--mx', ((e.clientX - (r.left + r.width / 2)) * strength).toFixed(1) + 'px');
+        btn.style.setProperty('--my', ((e.clientY - (r.top + r.height / 2)) * strength).toFixed(1) + 'px');
+      });
+      btn.addEventListener('pointerleave', function () {
+        btn.style.setProperty('--mx', '0px');
+        btn.style.setProperty('--my', '0px');
+      });
+    });
+  }
+
+  /* ---- Hero video: pause when off-screen to save battery/CPU ---- */
+  var heroVideo = document.querySelector('[data-hero-video]');
+  if (heroVideo && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { heroVideo.play().catch(function () {}); }
+        else { heroVideo.pause(); }
+      });
+    }, { threshold: 0.1 }).observe(heroVideo);
+  }
+
   /* ---- Announcement bar ---- */
   var announce = document.querySelector('[data-announce]');
   var announceClose = document.querySelector('[data-announce-close]');

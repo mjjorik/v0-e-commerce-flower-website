@@ -45,15 +45,12 @@ if ( $has_woo ) {
 				</h1>
 				<div class="hero__lead">
 					<p><?php printf( esc_html__( 'Farm-fresh bouquets and weekly subscriptions, hand-delivered same-day across Greater Boston. Order by %s.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>
-					<a class="btn--primary btn--lg" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+					<a class="btn--primary btn--lg btn--magnetic" data-magnetic="0.25" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 				</div>
 			</div>
 			<div class="hero__visual">
 				<div class="hero__media media" data-hero-media>
-					<?php
-					$hero_id = (int) get_theme_mod( 'wildflower_hero_image', 0 );
-					wildflower_media( $hero_id ? $hero_id : null, 'large', 'Wildflower', true );
-					?>
+					<?php wildflower_hero_visual(); ?>
 				</div>
 			</div>
 		</div>

@@ -55,15 +55,10 @@ function wildflower_ver( $rel ) {
  * Enqueue styles and scripts.
  */
 function wildflower_assets() {
-	// Fonts.
-	wp_enqueue_style(
-		'wildflower-fonts',
-		'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&display=swap',
-		array(),
-		null
-	);
+	// Fonts for the ACTIVE theme's pair are enqueued (handle: wildflower-fonts)
+	// in inc/theme-switcher.php, so they swap with the theme.
 
-	// Main stylesheet.
+	// Main stylesheet (theme CSS variables are added inline by the engine).
 	wp_enqueue_style( 'wildflower-style', get_stylesheet_uri(), array( 'wildflower-fonts' ), wildflower_ver( '/style.css' ) );
 
 	if ( class_exists( 'WooCommerce' ) ) {
@@ -160,6 +155,57 @@ function wildflower_media( $attachment_id = null, $size = 'large', $alt = '', $s
 }
 
 /**
+ * Map a media URL to a video MIME type by extension.
+ *
+ * @param string $url Media URL.
+ * @return string
+ */
+function wildflower_video_mime( $url ) {
+	$ext = strtolower( (string) pathinfo( (string) wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION ) );
+	$map = array(
+		'mp4'  => 'video/mp4',
+		'm4v'  => 'video/mp4',
+		'webm' => 'video/webm',
+		'ogv'  => 'video/ogg',
+		'mov'  => 'video/quicktime',
+	);
+	return isset( $map[ $ext ] ) ? $map[ $ext ] : 'video/mp4';
+}
+
+/**
+ * Render the hero visual. Prefers a video (uploaded attachment or URL), falls
+ * back to the hero image, then to the elegant botanical placeholder — so the
+ * hero always looks intentional whatever is (or isn't) configured.
+ */
+function wildflower_hero_visual() {
+	$video_id  = (int) get_theme_mod( 'wildflower_hero_video', 0 );
+	$video_url = trim( (string) get_theme_mod( 'wildflower_hero_video_url', '' ) );
+	$poster_id = (int) get_theme_mod( 'wildflower_hero_image', 0 );
+
+	$src = '';
+	if ( $video_id ) {
+		$src = (string) wp_get_attachment_url( $video_id );
+	} elseif ( $video_url ) {
+		$src = $video_url;
+	}
+
+	if ( $src ) {
+		$poster = $poster_id ? wp_get_attachment_image_url( $poster_id, 'large' ) : '';
+		echo '<span class="media">';
+		printf(
+			'<video class="hero__video" data-hero-video autoplay muted loop playsinline preload="metadata"%1$s><source src="%2$s" type="%3$s"></video>',
+			$poster ? ' poster="' . esc_url( $poster ) . '"' : '',
+			esc_url( $src ),
+			esc_attr( wildflower_video_mime( $src ) )
+		);
+		echo '</span>';
+		return;
+	}
+
+	wildflower_media( $poster_id ? $poster_id : null, 'large', 'Wildflower', true );
+}
+
+/**
  * Render a rich mosaic of clickable placeholder tiles (varied sizes — big,
  * tall and wide) that open in a lightbox. The size pattern has a total area
  * that's a multiple of 12, so it tiles flush on 2 / 3 / 4 columns with no gaps
@@ -238,10 +284,37 @@ function wildflower_customize( $wp_customize ) {
 			$wp_customize,
 			'wildflower_hero_image',
 			array(
-				'label'     => __( 'Hero image', 'wildflower' ),
-				'section'   => 'wildflower_home',
-				'mime_type' => 'image',
+				'label'       => __( 'Hero image', 'wildflower' ),
+				'description' => __( 'Shown when no hero video is set, and used as the video poster.', 'wildflower' ),
+				'section'     => 'wildflower_home',
+				'mime_type'   => 'image',
 			)
+		)
+	);
+
+	// Hero video — takes precedence over the image when present.
+	$wp_customize->add_setting( 'wildflower_hero_video', array( 'sanitize_callback' => 'absint' ) );
+	$wp_customize->add_control(
+		new WP_Customize_Media_Control(
+			$wp_customize,
+			'wildflower_hero_video',
+			array(
+				'label'       => __( 'Hero video', 'wildflower' ),
+				'description' => __( 'MP4 or WebM. Plays muted & looped; falls back to the hero image.', 'wildflower' ),
+				'section'     => 'wildflower_home',
+				'mime_type'   => 'video',
+			)
+		)
+	);
+
+	$wp_customize->add_setting( 'wildflower_hero_video_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
+	$wp_customize->add_control(
+		'wildflower_hero_video_url',
+		array(
+			'label'       => __( 'Hero video URL (optional)', 'wildflower' ),
+			'description' => __( 'External MP4/WebM URL — used if no video is uploaded above.', 'wildflower' ),
+			'section'     => 'wildflower_home',
+			'type'        => 'url',
 		)
 	);
 }
