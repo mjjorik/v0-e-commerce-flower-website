@@ -34,6 +34,11 @@ if ( $has_woo ) {
 	}
 	$markup = false === strpos( $markup, '<li' ) ? '' : $markup;
 }
+
+// Fall back to demo bouquets so the section is never empty (no Woo / no products).
+if ( '' === $markup ) {
+	$markup = wildflower_demo_products( 6 );
+}
 ?>
 
 <!-- 3 · HERO -->
@@ -59,6 +64,16 @@ if ( $has_woo ) {
 			<div class="hero__visual">
 				<div class="hero__media media" data-hero-media>
 					<?php wildflower_hero_visual(); ?>
+				</div>
+				<span class="hero__chip"><span class="hero__chip-star">★</span> 4.9 · <?php esc_html_e( 'Same-day', 'wildflower' ); ?></span>
+				<div class="hero__float">
+					<span class="hero__float-text">
+						<span class="hero__float-name"><?php esc_html_e( 'Pink Peony Dream', 'wildflower' ); ?></span>
+						<span class="hero__float-price">$49</span>
+					</span>
+					<span class="hero__float-plus" aria-hidden="true">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+					</span>
 				</div>
 			</div>
 		</div>

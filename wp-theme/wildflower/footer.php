@@ -74,6 +74,17 @@ $brand = wildflower_brand();
 	</div>
 </footer>
 
+<?php if ( class_exists( 'WooCommerce' ) ) : ?>
+<!-- Mobile sticky action bar — appears after the hero (phones only) -->
+<div class="mobile-bar" data-mobile-bar aria-hidden="true">
+	<div class="mobile-bar__info">
+		<span class="mobile-bar__label"><?php esc_html_e( 'Bouquets', 'wildflower' ); ?></span>
+		<span class="mobile-bar__price"><?php esc_html_e( 'From $50 · same-day', 'wildflower' ); ?></span>
+	</div>
+	<a class="btn--accent btn--sm" href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>"><?php esc_html_e( 'Shop now', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+</div>
+<?php endif; ?>
+
 <?php wp_footer(); ?>
 </body>
 </html>

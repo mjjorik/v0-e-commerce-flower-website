@@ -38,6 +38,18 @@
     }, { threshold: 0.1 }).observe(heroVideo);
   }
 
+  /* ---- Mobile sticky action bar — reveal after the hero ---- */
+  var mbar = document.querySelector('[data-mobile-bar]');
+  if (mbar) {
+    var heroEl = document.querySelector('.hero');
+    var onBar = function () {
+      var trigger = heroEl ? heroEl.offsetHeight * 0.8 : 480;
+      mbar.classList.toggle('is-visible', window.scrollY > trigger);
+    };
+    onBar();
+    window.addEventListener('scroll', onBar, { passive: true });
+  }
+
   /* ---- Horizontal scrollers (bestsellers) ---- */
   document.querySelectorAll('[data-scroller]').forEach(function (sc) {
     var track = sc.querySelector('[data-scroller-track]');

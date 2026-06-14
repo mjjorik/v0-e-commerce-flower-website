@@ -206,6 +206,42 @@ function wildflower_hero_visual() {
 }
 
 /**
+ * Demo bouquet cards for the homepage scroller when WooCommerce has no products
+ * yet (so the section is never empty). Mirrors the Woo `[products]` markup so the
+ * same styles apply; real products replace these automatically once they exist.
+ *
+ * @param int $count How many cards.
+ * @return string
+ */
+function wildflower_demo_products( $count = 6 ) {
+	$demo = array(
+		array( 'Pink Peony Dream', '$49' ),
+		array( 'Sunday Market', '$50' ),
+		array( 'Wildfield', '$52' ),
+		array( 'Garden Blush', '$58' ),
+		array( 'Meadow Light', '$54' ),
+		array( 'Rosa Bianca', '$60' ),
+		array( 'Coastal Stems', '$48' ),
+		array( 'Studio Choice', '$56' ),
+	);
+	$shop = class_exists( 'WooCommerce' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+	$out  = '<ul class="products demo-products">';
+	for ( $i = 0; $i < $count; $i++ ) {
+		$d    = $demo[ $i % count( $demo ) ];
+		$out .= '<li class="product">';
+		$out .= '<a href="' . esc_url( $shop ) . '">';
+		$out .= '<span class="media"><span class="media-fallback media-fallback--' . ( ( $i % 5 ) + 1 ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span></span>';
+		$out .= '<h2 class="woocommerce-loop-product__title">' . esc_html( $d[0] ) . '</h2>';
+		$out .= '<span class="price">' . esc_html( $d[1] ) . '</span>';
+		$out .= '</a>';
+		$out .= '<a class="btn--accent btn--sm button" href="' . esc_url( $shop ) . '">' . esc_html__( 'View bouquet', 'wildflower' ) . '</a>';
+		$out .= '</li>';
+	}
+	$out .= '</ul>';
+	return $out;
+}
+
+/**
  * Render a rich mosaic of clickable placeholder tiles (varied sizes — big,
  * tall and wide) that open in a lightbox. The size pattern has a total area
  * that's a multiple of 12, so it tiles flush on 2 / 3 / 4 columns with no gaps
