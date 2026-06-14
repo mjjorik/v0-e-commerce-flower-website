@@ -51,8 +51,9 @@ WC tested up to: 9.0
      Theme values are generated in inc/theme-switcher.php (single source). */
   --accent:   #b07a45;
   --accent-2: #4a6173;
+  --accent-foreground: #f7f4ee;    /* readable text on --accent (per theme)  */
   --terracotta: var(--accent);     /* legacy alias — follows the theme accent */
-  --terracotta-foreground: #ffffff;
+  --terracotta-foreground: var(--accent-foreground);
   --ring: var(--accent);
 
   /* Soft neutral sage — only used inside placeholder media fallbacks. */
@@ -84,8 +85,9 @@ WC tested up to: 9.0
   --container: 80rem;
   --container-wide: 100rem;
 
-  /* Single-hue "expensive" gradient for dark statement surfaces. */
+  /* Single-hue "expensive" gradients (dark statement surface + accent strip). */
   --primary-grad: linear-gradient(157deg, var(--primary-2) 0%, var(--primary) 54%, var(--primary-3) 100%);
+  --accent-grad: linear-gradient(100deg, color-mix(in oklab, var(--accent) 86%, white) 0%, var(--accent) 52%, color-mix(in oklab, var(--accent) 82%, black) 100%);
   /* Fine film grain layered over dark surfaces so flats read as material. */
   --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
 }
@@ -238,7 +240,7 @@ p { text-wrap: pretty; }
 /* ============================================================
    7. Header
    ============================================================ */
-.announce { position: relative; z-index: 50; background-color: var(--primary); background-image: var(--grain), var(--primary-grad); color: var(--primary-foreground); }
+.announce { position: relative; z-index: 50; background-color: var(--accent); background-image: var(--grain), var(--accent-grad); color: var(--accent-foreground); font-weight: 500; }
 .announce__inner { max-width: var(--container); margin-inline: auto; padding: .5rem 1rem; text-align: center; font-size: .8125rem; }
 .announce__close { position: absolute; right: .75rem; top: 50%; transform: translateY(-50%); padding: .25rem; border-radius: 999px; }
 .announce__close:hover { background: rgba(255,255,255,.15); }

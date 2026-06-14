@@ -175,6 +175,32 @@ function wildflower_theme_font( $theme ) {
 }
 
 /**
+ * Pick a readable text colour (dark or light) for a given accent background,
+ * using WCAG relative luminance — so accent strips/badges stay legible across
+ * every theme (a light gold and a dark wine both get the right text).
+ *
+ * @param string $hex Background colour.
+ * @return string Ink or cream.
+ */
+function wildflower_readable_on( $hex ) {
+	$hex = ltrim( (string) $hex, '#' );
+	if ( 3 === strlen( $hex ) ) {
+		$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+	}
+	if ( 6 !== strlen( $hex ) ) {
+		return '#f7f4ee';
+	}
+	$lin = function ( $c ) {
+		$c = $c / 255;
+		return $c <= 0.03928 ? $c / 12.92 : pow( ( $c + 0.055 ) / 1.055, 2.4 );
+	};
+	$l = 0.2126 * $lin( hexdec( substr( $hex, 0, 2 ) ) )
+		+ 0.7152 * $lin( hexdec( substr( $hex, 2, 2 ) ) )
+		+ 0.0722 * $lin( hexdec( substr( $hex, 4, 2 ) ) );
+	return $l > 0.42 ? '#1b1916' : '#f7f4ee';
+}
+
+/**
  * Build the CSS variable block for one theme.
  *
  * @param array<string,string> $t Theme.
@@ -183,7 +209,7 @@ function wildflower_theme_font( $theme ) {
 function wildflower_theme_vars( $t ) {
 	$font = wildflower_theme_font_by_key( isset( $t['font'] ) ? $t['font'] : 'editorial' );
 	return sprintf(
-		'--primary:%1$s;--primary-2:%2$s;--primary-3:%3$s;--accent:%4$s;--accent-2:%5$s;--ring:%4$s;--radius-btn:%6$s;--font-serif:%7$s;--font-sans:%8$s;',
+		'--primary:%1$s;--primary-2:%2$s;--primary-3:%3$s;--accent:%4$s;--accent-2:%5$s;--accent-foreground:%9$s;--ring:%4$s;--radius-btn:%6$s;--font-serif:%7$s;--font-sans:%8$s;',
 		$t['primary'],
 		$t['primary2'],
 		$t['primary3'],
@@ -191,7 +217,8 @@ function wildflower_theme_vars( $t ) {
 		$t['accent2'],
 		$t['radius'],
 		$font['heading'],
-		$font['body']
+		$font['body'],
+		wildflower_readable_on( $t['accent'] )
 	);
 }
 
