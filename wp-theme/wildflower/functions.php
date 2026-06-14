@@ -247,6 +247,9 @@ function wildflower_customize( $wp_customize ) {
 }
 add_action( 'customize_register', 'wildflower_customize' );
 
+// Colour theme switcher ("the pult") — data-theme + REST API.
+require get_template_directory() . '/inc/theme-switcher.php';
+
 // Structured data (JSON-LD) and WooCommerce tweaks.
 require get_template_directory() . '/inc/seo.php';
 if ( class_exists( 'WooCommerce' ) ) {

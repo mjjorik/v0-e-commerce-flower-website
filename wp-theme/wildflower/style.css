@@ -16,22 +16,50 @@ WC tested up to: 9.0
 /* ============================================================
    1. Design tokens
    ============================================================ */
+/*
+   Theming model
+   -------------
+   The palette is split in two layers so the whole site can be re-skinned by
+   flipping a single attribute (`<html data-theme="…">`), set server-side from
+   the saved option in inc/theme-switcher.php — so every visitor sees the
+   published theme with no flash.
+
+   • BASE tokens (cream / charcoal / copper) stay constant across every theme —
+     the warm, editorial foundation that flowers sit on.
+   • ACCENT tokens (--primary + its gradient stops) change per theme. They drive
+     the dark "statement" surfaces and primary buttons. Each accent is a single
+     hue with light/dark stops so dark sections read as depth/light, never a
+     cheap multi-colour gradient.
+
+   To add a theme: add a [data-theme="x"] block below AND the matching entry in
+   wildflower_theme_palettes() so the remote ("pult") lists it.
+*/
 :root {
-  /* Wildflower 2026 — light, warm, botanical, editorial */
-  --background: oklch(0.986 0.006 86);
-  --foreground: oklch(0.25 0.03 152);
-  --card: oklch(0.962 0.01 82);
-  --cream: oklch(0.97 0.012 80);
-  --primary: oklch(0.27 0.035 152);
-  --primary-foreground: oklch(0.986 0.006 86);
-  --terracotta: oklch(0.63 0.125 45);
-  --terracotta-foreground: oklch(0.99 0.006 86);
-  --sage: oklch(0.86 0.04 150);
-  --sage-foreground: oklch(0.27 0.04 152);
-  --muted: oklch(0.948 0.008 86);
-  --muted-foreground: oklch(0.5 0.02 152);
-  --border: oklch(0.9 0.012 86);
-  --ring: oklch(0.63 0.125 45);
+  /* ── Base — constant across all themes ── */
+  --background: #f4f1ea;            /* warm cream paper            */
+  --cream:      #f7f4ee;            /* lifted cream surface         */
+  --card:       #efe9dd;            /* recessed cream surface       */
+  --foreground: #2b2724;           /* warm charcoal ink            */
+  --muted:      #ece6da;
+  --muted-foreground: #79716a;
+  --border:     #e3dccd;
+
+  /* Copper — the universal micro-accent (prices, badges, cart count, hover).
+     Kept small on purpose; never a big surface. (legacy name: terracotta) */
+  --terracotta: #b56a52;
+  --terracotta-foreground: #ffffff;
+
+  /* Soft neutral sage — only used inside placeholder media fallbacks. */
+  --sage: #cdd2c4;
+  --sage-foreground: #2b2724;
+
+  --ring: #b56a52;
+
+  /* ── Accent (overridden per theme; defaults below = Slate) ── */
+  --primary: #44546a;
+  --primary-2: #56657f;            /* lighter gradient stop        */
+  --primary-3: #36435a;            /* darker gradient stop         */
+  --primary-foreground: #f7f4ee;
 
   --font-serif: 'Fraunces', Georgia, serif;
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
@@ -48,7 +76,18 @@ WC tested up to: 9.0
 
   --container: 80rem;
   --container-wide: 100rem;
+
+  /* Single-hue "expensive" gradient for dark statement surfaces. */
+  --primary-grad: linear-gradient(157deg, var(--primary-2) 0%, var(--primary) 54%, var(--primary-3) 100%);
+  /* Fine film grain layered over dark surfaces so flats read as material. */
+  --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
 }
+
+/* ── Theme presets — accent only ── */
+[data-theme="slate"]     { --primary:#44546a; --primary-2:#56657f; --primary-3:#36435a; }
+[data-theme="evergreen"] { --primary:#1c4a40; --primary-2:#2a6256; --primary-3:#143a32; }
+[data-theme="aubergine"] { --primary:#4b304a; --primary-2:#5e3f5d; --primary-3:#3a253a; }
+[data-theme="copper"]    { --primary:#7a4a38; --primary-2:#915b45; --primary-3:#5f3a2c; --terracotta:#c77e63; --ring:#c77e63; }
 
 /* ============================================================
    2. Reset & base
@@ -192,7 +231,7 @@ p { text-wrap: pretty; }
 /* ============================================================
    7. Header
    ============================================================ */
-.announce { position: relative; z-index: 50; background: var(--primary); color: var(--primary-foreground); }
+.announce { position: relative; z-index: 50; background-color: var(--primary); background-image: var(--grain), var(--primary-grad); color: var(--primary-foreground); }
 .announce__inner { max-width: var(--container); margin-inline: auto; padding: .5rem 1rem; text-align: center; font-size: .8125rem; }
 .announce__close { position: absolute; right: .75rem; top: 50%; transform: translateY(-50%); padding: .25rem; border-radius: 999px; }
 .announce__close:hover { background: rgba(255,255,255,.15); }
@@ -343,7 +382,7 @@ body.admin-bar .site-header { top: 32px; }
 .bento__caption p { font-size: .875rem; color: rgba(255,255,255,.8); }
 
 /* how it works (dark) */
-.how { background: var(--primary); color: var(--primary-foreground); }
+.how { position: relative; background-color: var(--primary); background-image: var(--grain), var(--primary-grad); color: var(--primary-foreground); transition: background-color .5s var(--ease-luxe); }
 .how__grid { display: grid; gap: 2.5rem; margin-top: 3rem; }
 @media (min-width: 640px){ .how__grid { grid-template-columns: repeat(3,1fr); gap: 2rem; } }
 .how__num { font-family: var(--font-serif); font-size: clamp(3.5rem,6vw,4.5rem); color: color-mix(in oklab, var(--primary-foreground) 40%, transparent); }
