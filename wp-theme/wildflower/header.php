@@ -39,15 +39,6 @@ $brand = wildflower_brand();
 
 <header class="site-header" data-site-header>
 	<div class="container site-header__inner">
-		<div style="display:flex;flex:1;align-items:center;">
-			<button class="menu-toggle" data-menu-open aria-label="<?php esc_attr_e( 'Open menu', 'wildflower' ); ?>">
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-			</button>
-			<nav class="site-header__nav" aria-label="<?php esc_attr_e( 'Primary', 'wildflower' ); ?>">
-				<?php wildflower_nav( 'site-header__menu' ); ?>
-			</nav>
-		</div>
-
 		<a class="site-header__brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
 			<?php
 			if ( has_custom_logo() ) {
@@ -58,6 +49,10 @@ $brand = wildflower_brand();
 			?>
 		</a>
 
+		<nav class="site-header__nav" aria-label="<?php esc_attr_e( 'Primary', 'wildflower' ); ?>">
+			<?php wildflower_nav( 'site-header__menu' ); ?>
+		</nav>
+
 		<div class="site-header__actions">
 			<?php if ( class_exists( 'WooCommerce' ) ) : ?>
 				<a class="btn--primary btn--sm order-now" href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>"><?php esc_html_e( 'Order Now', 'wildflower' ); ?></a>
@@ -66,6 +61,9 @@ $brand = wildflower_brand();
 					<span class="cart-toggle__count" data-cart-count><?php echo esc_html( wildflower_cart_count() ); ?></span>
 				</a>
 			<?php endif; ?>
+			<button class="menu-toggle" data-menu-open aria-label="<?php esc_attr_e( 'Open menu', 'wildflower' ); ?>">
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+			</button>
 		</div>
 	</div>
 </header>

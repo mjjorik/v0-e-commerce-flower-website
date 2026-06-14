@@ -38,6 +38,32 @@
     }, { threshold: 0.1 }).observe(heroVideo);
   }
 
+  /* ---- Horizontal scrollers (bestsellers) ---- */
+  document.querySelectorAll('[data-scroller]').forEach(function (sc) {
+    var track = sc.querySelector('[data-scroller-track]');
+    var prev = sc.querySelector('[data-scroll-prev]');
+    var next = sc.querySelector('[data-scroll-next]');
+    if (!track) return;
+
+    function step() {
+      var card = track.querySelector('.product, li');
+      return card ? card.getBoundingClientRect().width + 24 : track.clientWidth * 0.8;
+    }
+    function update() {
+      var maxScroll = track.scrollWidth - track.clientWidth - 2;
+      var atStart = track.scrollLeft <= 2;
+      var atEnd = track.scrollLeft >= maxScroll;
+      sc.classList.toggle('is-end', atEnd);
+      if (prev) prev.disabled = atStart;
+      if (next) next.disabled = atEnd;
+    }
+    if (prev) prev.addEventListener('click', function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); });
+    if (next) next.addEventListener('click', function () { track.scrollBy({ left: step(), behavior: 'smooth' }); });
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+
   /* ---- Announcement bar ---- */
   var announce = document.querySelector('[data-announce]');
   var announceClose = document.querySelector('[data-announce-close]');

@@ -87,7 +87,7 @@ WC tested up to: 9.0
 
   /* Single-hue "expensive" gradients (dark statement surface + accent strip). */
   --primary-grad: linear-gradient(157deg, var(--primary-2) 0%, var(--primary) 54%, var(--primary-3) 100%);
-  --accent-grad: linear-gradient(100deg, color-mix(in oklab, var(--accent) 86%, white) 0%, var(--accent) 52%, color-mix(in oklab, var(--accent) 82%, black) 100%);
+  --accent-grad: linear-gradient(120deg, color-mix(in oklab, var(--accent) 90%, white) 0%, var(--accent) 46%, color-mix(in oklab, var(--accent) 88%, black) 100%);
   /* Fine film grain layered over dark surfaces so flats read as material. */
   --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
 }
@@ -167,7 +167,7 @@ p { text-wrap: pretty; }
 
 .btn--primary { background: var(--primary); color: var(--primary-foreground); box-shadow: 0 1px 2px color-mix(in oklab, var(--primary) 35%, transparent); }
 .btn--primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -8px color-mix(in oklab, var(--primary) 50%, transparent); }
-.btn--accent { background: var(--accent); color: var(--terracotta-foreground); box-shadow: 0 1px 2px color-mix(in oklab, var(--accent) 40%, transparent); }
+.btn--accent { background-color: var(--accent); background-image: var(--accent-grad); color: var(--terracotta-foreground); box-shadow: 0 1px 2px color-mix(in oklab, var(--accent) 40%, transparent); }
 .btn--accent:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -8px color-mix(in oklab, var(--accent) 55%, transparent); }
 .btn--outline { border: 1px solid color-mix(in oklab, var(--foreground) 20%, transparent); }
 .btn--outline:hover { border-color: var(--foreground); background: var(--foreground); color: var(--background); }
@@ -250,15 +250,15 @@ body.admin-bar .site-header { top: 32px; }
 @media (max-width: 782px) { body.admin-bar .site-header { top: 46px; } }
 .site-header.is-scrolled { background: color-mix(in oklab, var(--background) 80%, transparent); backdrop-filter: blur(12px); border-bottom-color: color-mix(in oklab, var(--border) 60%, transparent); }
 .site-header__inner { display: flex; align-items: center; justify-content: space-between; padding-block: 1rem; }
-.site-header__nav { display: none; gap: 1.75rem; align-items: center; flex: 1; }
-.site-header__brand { flex: 1; text-align: center; font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; }
-.site-header__actions { display: flex; flex: 1; align-items: center; justify-content: flex-end; gap: 1rem; }
+.site-header__nav { display: none; gap: 1.75rem; align-items: center; flex: 1; justify-content: center; }
+.site-header__brand { text-align: left; margin-right: 1.5rem; font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; }
+.site-header__actions { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; margin-left: auto; }
 .nav-link { position: relative; font-size: .9rem; color: color-mix(in oklab, var(--foreground) 80%, transparent); transition: color .2s; }
 .nav-link:hover, .nav-link.is-active { color: var(--foreground); }
 .nav-link::after { content: ''; position: absolute; left: 0; bottom: -.25rem; height: 1px; width: 0; background: var(--foreground); transition: width .3s; }
 .nav-link:hover::after { width: 100%; }
 .cart-toggle { position: relative; }
-.cart-toggle__count { position: absolute; top: -.5rem; right: -.5rem; display: flex; align-items: center; justify-content: center; min-width: 1.25rem; height: 1.25rem; padding: 0 .25rem; border-radius: 999px; background: var(--terracotta); color: var(--terracotta-foreground); font-size: .6875rem; font-weight: 500; }
+.cart-toggle__count { position: absolute; top: -.5rem; right: -.5rem; display: flex; align-items: center; justify-content: center; min-width: 1.25rem; height: 1.25rem; padding: 0 .25rem; border-radius: 999px; background-color: var(--accent); background-image: var(--accent-grad); color: var(--terracotta-foreground); font-size: .6875rem; font-weight: 500; }
 .menu-toggle { display: inline-flex; }
 @media (min-width: 1024px) {
   .site-header__nav { display: flex; }
@@ -342,7 +342,7 @@ body.admin-bar .site-header { top: 32px; }
 .product-card__tagline { margin-top: .125rem; font-size: .875rem; color: var(--muted-foreground); }
 .badge { position: absolute; left: .75rem; top: .75rem; z-index: 2; border-radius: 999px; padding: .25rem .625rem; font-size: .6875rem; font-weight: 500; }
 .badge--primary { background: var(--primary); color: var(--primary-foreground); }
-.badge--accent { background: var(--terracotta); color: var(--terracotta-foreground); }
+.badge--accent { background-color: var(--accent); background-image: var(--accent-grad); color: var(--terracotta-foreground); }
 
 /* category row (horizontal scroll) */
 .cat-row { display: flex; gap: 1rem; overflow-x: auto; padding: 0 1.5rem .5rem; }
@@ -655,17 +655,52 @@ textarea { resize: vertical; }
   .bento__tile.is-big { grid-column: span 2; grid-row: span 2; }
 }
 
-/* 6 · Bestsellers — 3 big */
-.products--big { display: grid; grid-template-columns: 1fr; gap: 1.75rem; }
-@media (min-width: 700px) { .products--big { grid-template-columns: repeat(3, 1fr); gap: clamp(1.25rem, 2.5vw, 2rem); } }
-/* Woo [products] outputs ul.products > li.product — map it onto the grid. */
-.products--big ul.products { display: contents; margin: 0; padding: 0; list-style: none; }
-.products--big ul.products li.product { margin: 0; width: auto; float: none; }
-.products--big .product img { width: 100%; border-radius: var(--radius-lg); aspect-ratio: 4/5; object-fit: cover; transition: transform .7s var(--ease-luxe); }
-.products--big .product:hover img { transform: scale(1.04); }
-.products--big .product .woocommerce-loop-product__title { font-family: var(--font-serif); font-size: 1.4rem; margin-top: .9rem; }
-.products--big .product .price { color: var(--accent); font-weight: 600; font-size: 1.05rem; }
-.products--big .product .button { margin-top: .75rem; }
+/* 6 · Bestsellers — horizontal scroller (3 shown, 6 total) */
+.scroller__nav { display: flex; align-items: center; gap: .5rem; }
+.scroller__arrow {
+  display: none; width: 2.5rem; height: 2.5rem; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: 999px; color: var(--foreground);
+  transition: background-color .25s var(--ease-luxe), color .25s, border-color .25s, opacity .25s;
+}
+.scroller__arrow:hover { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.scroller__arrow:disabled { opacity: .35; cursor: default; }
+.scroller__arrow:disabled:hover { background: none; color: var(--foreground); border-color: var(--border); }
+.scroller__nav .link-underline { margin-left: .5rem; }
+@media (min-width: 700px) { .scroller__arrow { display: inline-flex; } }
+
+.scroller__viewport { position: relative; }
+.products--scroll {
+  display: flex; gap: clamp(1rem, 2vw, 1.5rem); overflow-x: auto; scroll-behavior: smooth;
+  scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;
+  padding-block: .25rem; scroll-padding-left: 1.5rem;
+}
+.products--scroll::-webkit-scrollbar { display: none; }
+@media (min-width: 1024px) { .products--scroll { scroll-padding-left: 3rem; } }
+/* Woo outputs ul.products > li.product — flatten it into the flex row. */
+.products--scroll ul.products { display: contents; margin: 0; padding: 0; list-style: none; }
+.products--scroll li.product,
+.products--scroll > .product {
+  flex: 0 0 80%; max-width: 80%; margin: 0; width: auto; float: none; scroll-snap-align: start;
+}
+@media (min-width: 700px) { .products--scroll li.product, .products--scroll > .product { flex-basis: 31.5%; max-width: 31.5%; } }
+.products--scroll .product img { width: 100%; border-radius: var(--radius-lg); aspect-ratio: 4/5; object-fit: cover; transition: transform .7s var(--ease-luxe); }
+.products--scroll .product:hover img { transform: scale(1.04); }
+.products--scroll .product .woocommerce-loop-product__title { font-family: var(--font-serif); font-size: 1.4rem; margin-top: .9rem; }
+.products--scroll .product .price { color: var(--accent); font-weight: 600; font-size: 1.05rem; }
+.products--scroll .product .button { margin-top: .75rem; }
+
+/* Right-edge fade + hint signal that the row scrolls. */
+.scroller__fade {
+  position: absolute; top: 0; right: 0; bottom: 0; width: clamp(2rem, 6vw, 5rem); pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--card));
+}
+.scroller.is-end .scroller__fade { opacity: 0; transition: opacity .3s; }
+.scroller__hint {
+  display: block; text-align: right; padding: .75rem 1.5rem 0; font-size: .78rem;
+  letter-spacing: .04em; color: var(--muted-foreground);
+}
+@media (min-width: 1024px) { .scroller__hint { padding-inline: 3rem; } }
+.scroller.is-end .scroller__hint { opacity: .4; }
 
 /* 7 · Complete the gift — add-ons (dark statement) */
 .addons { position: relative; background-color: var(--primary); background-image: var(--grain), var(--primary-grad); color: var(--primary-foreground); border-radius: 0; }
@@ -699,6 +734,10 @@ textarea { resize: vertical; }
 .delivery { display: grid; gap: clamp(2rem, 5vw, 3.5rem); align-items: center; }
 @media (min-width: 860px) { .delivery { grid-template-columns: .95fr 1.05fr; } }
 .delivery__body h2 { font-size: clamp(2rem, 4vw, 3rem); }
+.delivery__lead { margin-top: 1.25rem; max-width: 32rem; color: color-mix(in oklab, var(--foreground) 72%, transparent); line-height: 1.6; }
+.delivery__facts { display: flex; flex-wrap: wrap; gap: 1.75rem 2.5rem; margin: 1.75rem 0 1.5rem; }
+.delivery__facts strong { display: block; font-family: var(--font-serif); font-size: 1.4rem; color: var(--accent); line-height: 1.1; }
+.delivery__facts span { font-size: .82rem; color: var(--muted-foreground); }
 .zones { list-style: none; padding: 0; margin: 1.75rem 0 0; display: grid; gap: .65rem; }
 .zone { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 1.1rem; background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-lg); }
 .zone span { font-size: .95rem; }
