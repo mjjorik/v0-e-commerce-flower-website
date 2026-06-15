@@ -740,24 +740,23 @@ textarea { resize: vertical; }
 .product:hover .product__view span { transform: none; }
 @media (hover: none) { .product__view { display: none; } }
 
-/* Circular add button on the image corner (always visible — mobile-friendly). */
-.product__media .button {
-  position: absolute; right: .7rem; bottom: .7rem; z-index: 2;
-  width: 2.6rem; height: 2.6rem; padding: 0; border-radius: 999px;
-  display: inline-flex; align-items: center; justify-content: center;
-  background-color: var(--accent) !important; background-image: var(--accent-grad) !important;
-  color: var(--accent-foreground) !important; border: 0 !important; font-size: 0 !important; line-height: 0;
-  box-shadow: 0 10px 22px -10px rgba(0,0,0,.55); transition: transform .25s var(--ease-luxe), box-shadow .25s;
-}
-.product__media .button::before { content: '+'; font-size: 1.45rem; font-weight: 400; line-height: 1; }
-.product__media .button:hover { transform: scale(1.09); box-shadow: 0 14px 28px -10px rgba(0,0,0,.6); }
 .product__media .badge--accent { position: absolute; top: .7rem; left: .7rem; z-index: 2; }
 
-/* Body */
-.product__body { margin-top: .85rem; }
+/* Body — name + price on the left, circular add button on the right (under the photo). */
+.product__body { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .9rem; }
+.product__info { min-width: 0; }
 .product__body .woocommerce-loop-product__title { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.2; }
 .product__body .price { display: block; color: var(--accent); font-weight: 600; font-size: 1.05rem; margin-top: .15rem; }
 .product__body .price del { color: var(--muted-foreground); font-weight: 400; margin-right: .35rem; }
+.product__body .button {
+  flex: 0 0 auto; width: 2.6rem; height: 2.6rem; padding: 0; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background-color: var(--accent) !important; background-image: var(--accent-grad) !important;
+  color: var(--accent-foreground) !important; border: 0 !important; font-size: 0 !important; line-height: 0;
+  box-shadow: 0 8px 18px -10px rgba(0,0,0,.5); transition: transform .25s var(--ease-luxe), box-shadow .25s;
+}
+.product__body .button::before { content: '+'; font-size: 1.45rem; font-weight: 400; line-height: 1; }
+.product__body .button:hover { transform: scale(1.09); box-shadow: 0 12px 24px -10px rgba(0,0,0,.55); }
 
 /* Right-edge fade + hint signal that the row scrolls. */
 .scroller__fade {

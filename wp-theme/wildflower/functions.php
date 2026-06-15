@@ -232,11 +232,13 @@ function wildflower_demo_products( $count = 6 ) {
 		$out .= '<div class="product__media">';
 		$out .= '<span class="media-fallback media-fallback--' . ( ( $i % 5 ) + 1 ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>';
 		$out .= '<a class="product__view" href="' . esc_url( $shop ) . '"><span>' . esc_html__( 'View bouquet', 'wildflower' ) . '</span></a>';
-		$out .= '<a class="button add_to_cart_button" href="' . esc_url( $shop ) . '" aria-label="' . esc_attr( sprintf( __( 'View %s', 'wildflower' ), $d[0] ) ) . '"></a>';
 		$out .= '</div>';
 		$out .= '<div class="product__body">';
+		$out .= '<div class="product__info">';
 		$out .= '<h2 class="woocommerce-loop-product__title">' . esc_html( $d[0] ) . '</h2>';
 		$out .= '<span class="price">' . esc_html( $d[1] ) . '</span>';
+		$out .= '</div>';
+		$out .= '<a class="button add_to_cart_button" href="' . esc_url( $shop ) . '" aria-label="' . esc_attr( sprintf( __( 'View %s', 'wildflower' ), $d[0] ) ) . '"></a>';
 		$out .= '</div>';
 		$out .= '</li>';
 	}

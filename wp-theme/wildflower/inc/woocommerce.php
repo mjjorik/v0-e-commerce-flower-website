@@ -59,22 +59,23 @@ add_action(
 	10
 );
 
-// After thumbnail + sale flash: full-cover hover link + circular add button,
-// then close media and open the text body.
+// After thumbnail + sale flash: full-cover hover link, then close media and
+// open the text body (title + price on the left).
 add_action(
 	'woocommerce_before_shop_loop_item_title',
 	function () {
 		echo '<a class="product__view" href="' . esc_url( get_permalink() ) . '"><span>' . esc_html__( 'View bouquet', 'wildflower' ) . '</span></a>';
-		woocommerce_template_loop_add_to_cart();
-		echo '</div><div class="product__body">';
+		echo '</div><div class="product__body"><div class="product__info">';
 	},
 	20
 );
 
-// Close the body after the price.
+// Close the info, then the circular add button sits to the RIGHT of name/price.
 add_action(
 	'woocommerce_after_shop_loop_item_title',
 	function () {
+		echo '</div>';
+		woocommerce_template_loop_add_to_cart();
 		echo '</div>';
 	},
 	20
