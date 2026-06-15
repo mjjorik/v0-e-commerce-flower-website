@@ -279,15 +279,15 @@ if ( '' === $markup ) {
 	</div>
 </section>
 
-<!-- 11 · REVIEWS -->
-<section class="section">
+<!-- 11 · REVIEWS (matcha block) -->
+<section class="section reviews">
 	<div class="container">
 		<div class="section-head">
 			<div style="max-width:36rem;">
 				<p class="eyebrow reveal"><?php esc_html_e( 'Loved across the city', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Notes from the neighborhood', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			</div>
-			<span class="link-underline reveal" style="color:var(--accent);">★ 4.9 · 820+ reviews</span>
+			<span class="reviews__rating reveal">★ 4.9 · 820+ reviews</span>
 		</div>
 		<?php
 		$reviews = array(
