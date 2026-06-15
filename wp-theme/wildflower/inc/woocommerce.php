@@ -40,6 +40,46 @@ add_filter(
 	}
 );
 
+/* ============================================================
+   Product card — rebuild the loop into an editorial card:
+   image with a circular "+" add button in the corner and a
+   hover gradient revealing "View bouquet"; title + price below.
+   Works on the shop archive and the homepage [products] scroller.
+   ============================================================ */
+remove_action( 'woocommerce_before_shop_loop_item', 'woocommerce_template_loop_product_link_open', 10 );
+remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close', 5 );
+remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+
+// Open the media wrapper (no enclosing <a>, so the add button can live inside).
+add_action(
+	'woocommerce_before_shop_loop_item',
+	function () {
+		echo '<div class="product__media">';
+	},
+	10
+);
+
+// After thumbnail + sale flash: full-cover hover link + circular add button,
+// then close media and open the text body.
+add_action(
+	'woocommerce_before_shop_loop_item_title',
+	function () {
+		echo '<a class="product__view" href="' . esc_url( get_permalink() ) . '"><span>' . esc_html__( 'View bouquet', 'wildflower' ) . '</span></a>';
+		woocommerce_template_loop_add_to_cart();
+		echo '</div><div class="product__body">';
+	},
+	20
+);
+
+// Close the body after the price.
+add_action(
+	'woocommerce_after_shop_loop_item_title',
+	function () {
+		echo '</div>';
+	},
+	20
+);
+
 /* Friendlier add-to-cart label in loops. */
 add_filter(
 	'woocommerce_product_add_to_cart_text',

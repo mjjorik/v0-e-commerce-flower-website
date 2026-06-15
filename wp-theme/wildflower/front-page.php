@@ -48,9 +48,9 @@ if ( '' === $markup ) {
 		<div class="hero__grid">
 			<div class="hero__content">
 				<span class="hero__badge"><span class="dot"></span> <?php printf( esc_html__( 'Fresh flowers · %s', 'wildflower' ), esc_html( $brand['city'] ) ); ?></span>
-				<h1 class="kinetic">
-					<?php echo wildflower_kinetic( 'Beautiful flowers.' ); ?><br>
-					<span class="italic"><?php echo wildflower_kinetic( 'Honest' ); ?></span> <?php echo wildflower_kinetic( 'prices.' ); ?>
+				<h1 class="hero__title kinetic">
+					<?php echo wildflower_kinetic( 'Fresh flowers' ); ?><br>
+					<span class="hero__title-accent"><?php echo wildflower_kinetic( 'today.' ); ?></span>
 				</h1>
 				<div class="hero__lead">
 					<p><?php printf( esc_html__( 'Farm-fresh bouquets and weekly subscriptions, hand-delivered same-day across Greater Boston. Order by %s.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>

@@ -38,6 +38,23 @@
     }, { threshold: 0.1 }).observe(heroVideo);
   }
 
+  /* ---- Header search toggle ---- */
+  var searchToggle = document.querySelector('[data-search-toggle]');
+  var searchInput = document.querySelector('[data-search-input]');
+  if (searchToggle && header) {
+    searchToggle.addEventListener('click', function () {
+      var open = header.classList.toggle('search-open');
+      searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open && searchInput) { setTimeout(function () { searchInput.focus(); }, 120); }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && header.classList.contains('search-open')) {
+        header.classList.remove('search-open');
+        searchToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   /* ---- Mobile sticky action bar — reveal after the hero ---- */
   var mbar = document.querySelector('[data-mobile-bar]');
   if (mbar) {

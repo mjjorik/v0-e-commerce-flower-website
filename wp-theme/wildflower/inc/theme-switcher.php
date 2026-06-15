@@ -36,7 +36,7 @@ function wildflower_font_pairs() {
 			'label'   => 'Editorial',
 			'heading' => "'Fraunces', Georgia, serif",
 			'body'    => "'Inter', ui-sans-serif, system-ui, sans-serif",
-			'google'  => 'family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600',
+			'google'  => 'family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600',
 		),
 		'modern' => array(
 			'label'   => 'Modern',
@@ -48,7 +48,7 @@ function wildflower_font_pairs() {
 			'label'   => 'Classic',
 			'heading' => "'Cormorant Garamond', Georgia, serif",
 			'body'    => "'Inter', ui-sans-serif, system-ui, sans-serif",
-			'google'  => 'family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600',
+			'google'  => 'family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600',
 		),
 		'grotesk' => array(
 			'label'   => 'Grotesk',

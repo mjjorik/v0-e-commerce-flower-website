@@ -229,12 +229,15 @@ function wildflower_demo_products( $count = 6 ) {
 	for ( $i = 0; $i < $count; $i++ ) {
 		$d    = $demo[ $i % count( $demo ) ];
 		$out .= '<li class="product">';
-		$out .= '<a href="' . esc_url( $shop ) . '">';
-		$out .= '<span class="media"><span class="media-fallback media-fallback--' . ( ( $i % 5 ) + 1 ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span></span>';
+		$out .= '<div class="product__media">';
+		$out .= '<span class="media-fallback media-fallback--' . ( ( $i % 5 ) + 1 ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>';
+		$out .= '<a class="product__view" href="' . esc_url( $shop ) . '"><span>' . esc_html__( 'View bouquet', 'wildflower' ) . '</span></a>';
+		$out .= '<a class="button add_to_cart_button" href="' . esc_url( $shop ) . '" aria-label="' . esc_attr( sprintf( __( 'View %s', 'wildflower' ), $d[0] ) ) . '"></a>';
+		$out .= '</div>';
+		$out .= '<div class="product__body">';
 		$out .= '<h2 class="woocommerce-loop-product__title">' . esc_html( $d[0] ) . '</h2>';
 		$out .= '<span class="price">' . esc_html( $d[1] ) . '</span>';
-		$out .= '</a>';
-		$out .= '<a class="btn--outline btn--sm" href="' . esc_url( $shop ) . '">' . esc_html__( 'View bouquet', 'wildflower' ) . '</a>';
+		$out .= '</div>';
 		$out .= '</li>';
 	}
 	$out .= '</ul>';

@@ -286,6 +286,9 @@ body.admin-bar .site-header { top: 32px; }
 .hero__badge { display: inline-flex; align-items: center; gap: .5rem; border: 1px solid color-mix(in oklab, var(--foreground) 10%, transparent); border-radius: 999px; padding: .375rem 1rem; font-size: .625rem; font-weight: 600; text-transform: uppercase; letter-spacing: .3em; color: color-mix(in oklab, var(--foreground) 45%, transparent); }
 .hero__badge .dot { width: .375rem; height: .375rem; border-radius: 999px; background: var(--terracotta); }
 .hero h1 { font-size: clamp(3.25rem, 8.8vw, 7.5rem); line-height: .9; letter-spacing: -0.045em; margin-top: clamp(1.5rem, 3vw, 2.25rem); }
+/* Big, bold, uppercase hero headline (reference: "FLOWERS TODAY."). */
+.hero__title { text-transform: uppercase; font-weight: 700; font-size: clamp(3.75rem, 11vw, 9rem); line-height: .86; letter-spacing: -0.04em; }
+.hero__title-accent { color: var(--accent); }
 .hero h1 .italic { font-style: italic; color: var(--accent-2); }
 .hero__lead { display: grid; justify-items: start; gap: 1.5rem; margin-top: clamp(1.75rem, 3vw, 2.5rem); }
 .hero__lead p { max-width: 29rem; font-size: clamp(1rem, 1.5vw, 1.125rem); font-weight: 500; line-height: 1.5; color: color-mix(in oklab, var(--foreground) 62%, transparent); }
@@ -711,27 +714,50 @@ textarea { resize: vertical; }
   flex: 0 0 80%; max-width: 80%; margin: 0; width: auto; float: none; scroll-snap-align: start;
 }
 @media (min-width: 700px) { .products--scroll li.product, .products--scroll > .product { flex-basis: 31.5%; max-width: 31.5%; } }
-.products--scroll .product .media { display: block; aspect-ratio: 4/5; border-radius: var(--radius-lg); overflow: hidden; }
-.products--scroll .product img,
-.products--scroll .product .media-fallback { width: 100%; height: 100%; border-radius: var(--radius-lg); aspect-ratio: 4/5; object-fit: cover; transition: transform .7s var(--ease-luxe); }
-.products--scroll .product:hover img,
-.products--scroll .product:hover .media-fallback { transform: scale(1.04); }
-.products--scroll .product .woocommerce-loop-product__title { font-family: var(--font-serif); font-size: 1.4rem; margin-top: .9rem; }
-.products--scroll .product .price { display: block; color: var(--accent); font-weight: 600; font-size: 1.05rem; margin-top: .2rem; }
-/* Product actions stay quiet — outline, not a burning fill (covers Woo's
-   auto-generated add-to-cart button and the demo cards). */
-.products--scroll .product .button,
-.products--scroll .product .btn--outline { margin-top: .9rem; }
-.products--scroll .product .button {
+/* ── Editorial product card (used in the scroller AND the shop grid) ── */
+.product { position: relative; }
+.product__media {
+  position: relative; display: block; aspect-ratio: 4/5; border-radius: var(--radius-lg);
+  overflow: hidden; background: var(--card);
+}
+.product__media img,
+.product__media .media-fallback {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transition: transform .7s var(--ease-luxe);
+}
+.product:hover .product__media img,
+.product:hover .product__media .media-fallback { transform: scale(1.05); }
+
+/* Hover overlay (desktop): gradient + "View bouquet". Mobile relies on the +. */
+.product__view {
+  position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 1rem 1.1rem; z-index: 1;
+  color: #fff; font-weight: 600; font-size: .95rem;
+  background: linear-gradient(to top, rgba(0,0,0,.5), rgba(0,0,0,0) 58%);
+  opacity: 0; transition: opacity .45s var(--ease-luxe);
+}
+.product__view span { transform: translateY(10px); transition: transform .45s var(--ease-luxe); }
+.product:hover .product__view { opacity: 1; }
+.product:hover .product__view span { transform: none; }
+@media (hover: none) { .product__view { display: none; } }
+
+/* Circular add button on the image corner (always visible — mobile-friendly). */
+.product__media .button {
+  position: absolute; right: .7rem; bottom: .7rem; z-index: 2;
+  width: 2.6rem; height: 2.6rem; padding: 0; border-radius: 999px;
   display: inline-flex; align-items: center; justify-content: center;
-  background: transparent !important; background-image: none !important; box-shadow: none !important;
-  color: var(--foreground) !important; border: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent) !important;
-  border-radius: var(--radius-btn); padding: .55rem 1.1rem; font-size: .8125rem; font-weight: 500;
-  transition: background-color .25s var(--ease-luxe), color .25s var(--ease-luxe), border-color .25s var(--ease-luxe);
+  background-color: var(--accent) !important; background-image: var(--accent-grad) !important;
+  color: var(--accent-foreground) !important; border: 0 !important; font-size: 0 !important; line-height: 0;
+  box-shadow: 0 10px 22px -10px rgba(0,0,0,.55); transition: transform .25s var(--ease-luxe), box-shadow .25s;
 }
-.products--scroll .product .button:hover {
-  background: var(--foreground) !important; color: var(--background) !important; border-color: var(--foreground) !important;
-}
+.product__media .button::before { content: '+'; font-size: 1.45rem; font-weight: 400; line-height: 1; }
+.product__media .button:hover { transform: scale(1.09); box-shadow: 0 14px 28px -10px rgba(0,0,0,.6); }
+.product__media .badge--accent { position: absolute; top: .7rem; left: .7rem; z-index: 2; }
+
+/* Body */
+.product__body { margin-top: .85rem; }
+.product__body .woocommerce-loop-product__title { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.2; }
+.product__body .price { display: block; color: var(--accent); font-weight: 600; font-size: 1.05rem; margin-top: .15rem; }
+.product__body .price del { color: var(--muted-foreground); font-weight: 400; margin-right: .35rem; }
 
 /* Right-edge fade + hint signal that the row scrolls. */
 .scroller__fade {
@@ -816,4 +842,59 @@ textarea { resize: vertical; }
 @media (max-width: 767px) {
   .mobile-bar { display: flex; }
   .site-footer { padding-bottom: 4.5rem; }
+}
+
+/* ============================================================
+   X4. Header — world-class refinement
+   ============================================================ */
+.announce__inner { padding: .55rem 1rem; font-size: .76rem; letter-spacing: .04em; font-weight: 500; }
+
+/* Primary nav (the real menu output by wildflower_nav). */
+.site-header__menu { display: flex; align-items: center; gap: clamp(1.1rem, 2.2vw, 2rem); list-style: none; margin: 0; padding: 0; }
+.site-header__menu li { margin: 0; }
+.site-header__menu a {
+  position: relative; font-size: .875rem; font-weight: 500; letter-spacing: -.01em;
+  color: color-mix(in oklab, var(--foreground) 66%, transparent); transition: color .2s var(--ease-luxe);
+}
+.site-header__menu a:hover,
+.site-header__menu .current-menu-item > a { color: var(--foreground); }
+.site-header__menu a::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -.4rem; height: 1.5px; width: 0; margin-inline: auto;
+  background: var(--accent); border-radius: 2px; transition: width .3s var(--ease-luxe);
+}
+.site-header__menu a:hover::after,
+.site-header__menu .current-menu-item > a::after { width: 100%; }
+
+/* Action icons (search / account / cart / burger). */
+.site-header__actions { gap: .15rem; }
+.header-icon {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 2.5rem; height: 2.5rem; border-radius: 999px; color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  transition: background-color .2s var(--ease-luxe), color .2s var(--ease-luxe);
+}
+.header-icon:hover { background: color-mix(in oklab, var(--foreground) 7%, transparent); color: var(--foreground); }
+
+/* Small, crisp cart badge with a ring so it reads off the icon. */
+.cart-toggle__count {
+  position: absolute; top: .25rem; right: .2rem; display: flex; align-items: center; justify-content: center;
+  min-width: 1.05rem; height: 1.05rem; padding: 0 .22rem; border-radius: 999px;
+  background: var(--accent); background-image: none; color: var(--accent-foreground);
+  font-size: .6rem; font-weight: 700; line-height: 1; border: 2px solid var(--background);
+}
+.site-header.is-scrolled .cart-toggle__count { border-color: color-mix(in oklab, var(--background) 92%, transparent); }
+
+/* Collapsible search panel. */
+.header-search {
+  display: grid; grid-template-rows: 0fr; overflow: hidden;
+  background: color-mix(in oklab, var(--background) 92%, transparent); backdrop-filter: blur(12px);
+  border-top: 1px solid transparent; transition: grid-template-rows .4s var(--ease-luxe), border-color .4s;
+}
+.site-header.search-open .header-search { grid-template-rows: 1fr; border-top-color: color-mix(in oklab, var(--border) 60%, transparent); }
+.header-search__form { min-height: 0; display: flex; align-items: center; gap: .75rem; max-width: var(--container); margin-inline: auto; padding: 0 1.5rem; }
+.site-header.search-open .header-search__form { padding-block: 1rem; }
+@media (min-width: 1024px) { .header-search__form { padding-inline: 3rem; } }
+.header-search__form svg { color: var(--muted-foreground); flex: 0 0 auto; }
+.header-search__form input[type="search"] {
+  flex: 1; border: 0; background: transparent; font-size: 1.05rem; font-family: var(--font-serif);
+  padding: .25rem 0; outline: none;
 }
