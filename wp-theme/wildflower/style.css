@@ -50,6 +50,9 @@ WC tested up to: 9.0
   --accent:   #5e7042;
   --accent-2: #6f8350;
   --accent-foreground: #f5f1e9;    /* readable text on --accent (per theme)  */
+  /* Highlight used for small text ON dark/green sections (eyebrows, numbers,
+     prices, labels) — adds warmth/hierarchy so dark blocks aren't flat white. */
+  --accent-on-dark: #d4c193;
   --terracotta: var(--accent);     /* legacy alias — follows the theme accent */
   --terracotta-foreground: var(--accent-foreground);
   --ring: var(--accent);
@@ -408,7 +411,13 @@ body.admin-bar .site-header { top: 32px; }
 .how { position: relative; background-color: var(--primary); background-image: var(--grain), var(--primary-grad); color: var(--primary-foreground); transition: background-color .5s var(--ease-luxe); }
 .how__grid { display: grid; gap: 2.5rem; margin-top: 3rem; }
 @media (min-width: 640px){ .how__grid { grid-template-columns: repeat(3,1fr); gap: 2rem; } }
-.how__num { font-family: var(--font-serif); font-size: clamp(3.5rem,6vw,4.5rem); color: color-mix(in oklab, var(--primary-foreground) 40%, transparent); }
+.how__num { font-family: var(--font-serif); font-size: clamp(3.5rem,6vw,4.5rem); color: var(--accent-on-dark); }
+
+/* Accent-on-dark hierarchy: warm highlight for small labels on dark sections. */
+.how .eyebrow, .addons .eyebrow, .cta .eyebrow, .reviews .eyebrow,
+.site-footer .footer-cols h3 { color: var(--accent-on-dark); }
+.addon__price { color: var(--accent-on-dark) !important; }
+.reviews__rating { color: var(--accent-on-dark); }
 .how h3 { font-size: 1.5rem; margin-top: 1rem; }
 .how p { margin-top: .5rem; max-width: 20rem; color: color-mix(in oklab, var(--primary-foreground) 70%, transparent); }
 

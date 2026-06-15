@@ -74,7 +74,7 @@ function wildflower_themes() {
 			'label'  => 'Forest',
 			'desc'   => 'Ivory + ink + matcha. Restrained monochrome — the flowers are the colour.',
 			'primary' => '#45533a', 'primary2' => '#56653f', 'primary3' => '#2f3a25',
-			'accent'  => '#5e7042', 'accent2'  => '#6f8350',
+			'accent'  => '#5e7042', 'accent2'  => '#6f8350', 'ondark' => '#d4c193',
 			'font'    => 'editorial', 'radius' => '3px',
 		),
 		'slate' => array(
@@ -214,9 +214,10 @@ function wildflower_readable_on( $hex ) {
  * @return string CSS declarations (no selector).
  */
 function wildflower_theme_vars( $t ) {
-	$font = wildflower_theme_font_by_key( isset( $t['font'] ) ? $t['font'] : 'editorial' );
+	$font   = wildflower_theme_font_by_key( isset( $t['font'] ) ? $t['font'] : 'editorial' );
+	$ondark = isset( $t['ondark'] ) ? $t['ondark'] : '#d4c193'; // warm champagne fallback.
 	return sprintf(
-		'--primary:%1$s;--primary-2:%2$s;--primary-3:%3$s;--accent:%4$s;--accent-2:%5$s;--accent-foreground:%9$s;--ring:%4$s;--radius-btn:%6$s;--font-serif:%7$s;--font-sans:%8$s;',
+		'--primary:%1$s;--primary-2:%2$s;--primary-3:%3$s;--accent:%4$s;--accent-2:%5$s;--accent-foreground:%9$s;--accent-on-dark:%10$s;--ring:%4$s;--radius-btn:%6$s;--font-serif:%7$s;--font-sans:%8$s;',
 		$t['primary'],
 		$t['primary2'],
 		$t['primary3'],
@@ -225,7 +226,8 @@ function wildflower_theme_vars( $t ) {
 		$t['radius'],
 		$font['heading'],
 		$font['body'],
-		wildflower_readable_on( $t['accent'] )
+		wildflower_readable_on( $t['accent'] ),
+		$ondark
 	);
 }
 

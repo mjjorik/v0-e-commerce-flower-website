@@ -188,7 +188,7 @@ if ( '' === $markup ) {
 <section class="section addons">
 	<div class="container addons__inner">
 		<div class="addons__head reveal">
-			<p class="eyebrow" style="color:color-mix(in oklab,var(--primary-foreground) 70%,transparent);"><?php esc_html_e( 'The little extras', 'wildflower' ); ?></p>
+			<p class="eyebrow"><?php esc_html_e( 'The little extras', 'wildflower' ); ?></p>
 			<h2 class="kinetic" style="margin-top:.5rem;color:var(--primary-foreground);"><?php echo wildflower_kinetic( __( 'Complete the gift', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			<p class="addons__lead"><?php esc_html_e( 'Make it unforgettable — add a little something at checkout.', 'wildflower' ); ?></p>
 		</div>
@@ -332,7 +332,7 @@ if ( '' === $markup ) {
 	<div class="container">
 		<div class="cta">
 			<span class="cta__glow" aria-hidden="true" data-parallax="-70"></span>
-			<p class="eyebrow" style="position:relative;color:color-mix(in oklab,var(--primary-foreground) 70%,transparent);margin-bottom:1.25rem;"><?php esc_html_e( 'No occasion required', 'wildflower' ); ?></p>
+			<p class="eyebrow" style="position:relative;margin-bottom:1.25rem;"><?php esc_html_e( 'No occasion required', 'wildflower' ); ?></p>
 			<h2 class="kinetic"><?php echo wildflower_kinetic( 'Send something beautiful today.' ); ?></h2>
 			<p><?php esc_html_e( 'Fresh, hand-tied and delivered across Boston in hours. The best flowers are the ones nobody expected.', 'wildflower' ); ?></p>
 			<div class="cta__row">
