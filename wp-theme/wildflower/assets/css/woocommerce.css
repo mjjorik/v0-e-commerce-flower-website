@@ -253,9 +253,9 @@
   letter-spacing: -0.02em; margin: 0;
 }
 .woocommerce-products-header__title::before {
-  content: 'The collection'; display: inline-flex; align-items: center; gap: .7rem;
+  content: 'The collection'; display: block;
   font-family: var(--font-sans); font-size: .7rem; font-weight: 600; text-transform: uppercase;
-  letter-spacing: .28em; color: var(--accent); margin-bottom: .9rem;
+  letter-spacing: .28em; color: var(--accent); margin-bottom: 1rem;
 }
 .woocommerce-products-header__title::after { content: ''; }
 .term-description, .woocommerce-archive-description {
