@@ -145,6 +145,10 @@ function wildflower_render_shop_filters() {
 }
 add_action( 'woocommerce_before_shop_loop', 'wildflower_render_shop_filters', 5 );
 
+/* Wrap the toolbar (filters button + result count + ordering) into one row. */
+add_action( 'woocommerce_before_shop_loop', function () { echo '<div class="wf-shop-toolbar">'; }, 4 );
+add_action( 'woocommerce_before_shop_loop', function () { echo '</div>'; }, 35 );
+
 /**
  * Apply the filters to the shop query.
  *
