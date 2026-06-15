@@ -72,7 +72,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   width: 13px; height: 13px; border-radius: 999px; display: block;
   box-shadow: 0 0 0 1.5px rgba(0,0,0,.28);
 }
-.preset__name { font-family: var(--font-serif); font-size: 1.15rem; line-height: 1.1; }
+.preset { color: var(--s-ink); }
+.preset__name { font-family: var(--font-serif); font-size: 1.15rem; line-height: 1.1; color: var(--s-ink); }
 .preset__desc { display: block; font-size: .78rem; color: var(--s-muted); margin-top: .15rem; line-height: 1.35; }
 .preset__meta { display: block; font-size: .66rem; letter-spacing: .04em; text-transform: uppercase; color: #6f6960; margin-top: .35rem; }
 .preset__live {
