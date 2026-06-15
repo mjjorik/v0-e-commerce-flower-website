@@ -790,7 +790,7 @@ textarea { resize: vertical; }
 .product__body .price { display: block; color: var(--accent); font-weight: 600; font-size: 1.05rem; margin-top: .15rem; }
 .product__body .price del { color: var(--muted-foreground); font-weight: 400; margin-right: .35rem; }
 .product__body .button {
-  flex: 0 0 auto; width: 2.6rem; height: 2.6rem; padding: 0; border-radius: 999px;
+  flex: 0 0 auto; width: 2.6rem !important; height: 2.6rem; min-width: 0 !important; padding: 0 !important; border-radius: 999px !important;
   display: inline-flex; align-items: center; justify-content: center;
   background-color: var(--accent) !important; background-image: var(--accent-grad) !important;
   color: var(--accent-foreground) !important; border: 0 !important; font-size: 0 !important; line-height: 0;

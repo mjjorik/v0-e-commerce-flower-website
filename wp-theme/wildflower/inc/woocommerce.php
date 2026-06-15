@@ -40,6 +40,12 @@ add_filter(
 	}
 );
 
+/* Cross-sell / upsell headings — framed as add-on selling. */
+add_filter( 'woocommerce_product_upsells_products_heading', function () { return __( 'Complete the gift', 'wildflower' ); } );
+add_filter( 'woocommerce_product_related_products_heading', function () { return __( 'You may also like', 'wildflower' ); } );
+add_filter( 'woocommerce_cross_sells_columns', function () { return 3; } );
+add_filter( 'woocommerce_cross_sells_total', function () { return 3; } );
+
 /* ============================================================
    Product card — rebuild the loop into an editorial card:
    image with a circular "+" add button in the corner and a
