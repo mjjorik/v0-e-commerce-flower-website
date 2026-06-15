@@ -36,35 +36,33 @@ WC tested up to: 9.0
    entry there; the CSS and the remote ("pult") pick it up automatically.
 */
 :root {
-  /* ── Base — constant across all themes ── */
-  --background: #f4f1ea;            /* warm cream paper            */
-  --cream:      #f7f4ee;            /* lifted cream surface         */
-  --card:       #efe9dd;            /* recessed cream surface       */
-  --foreground: #2b2724;           /* warm charcoal ink            */
-  --muted:      #ece6da;
-  --muted-foreground: #79716a;
-  --border:     #e3dccd;
+  /* ── Base — constant across all themes (Ivory) ── */
+  --background: #f5f1e9;            /* warm ivory paper             */
+  --cream:      #faf7f0;            /* lifted ivory surface          */
+  --card:       #ece6d9;            /* recessed ivory surface        */
+  --foreground: #232520;           /* warm near-black ink           */
+  --muted:      #ebe4d6;
+  --muted-foreground: #79726a;
+  --border:     #e4ddcc;
 
-  /* Two theme accents — both change per theme (defaults below = Slate).
-     --accent  = main accent (prices, links, eyebrow dot, cart, ring, hover)
-     --accent-2 = secondary accent (headline italics, highlights)
-     Theme values are generated in inc/theme-switcher.php (single source). */
-  --accent:   #a8475d;
-  --accent-2: #44607a;
-  --accent-foreground: #f7f4ee;    /* readable text on --accent (per theme)  */
+  /* Two theme accents (defaults below = Forest: a restrained monochrome —
+     the flowers carry the colour). Generated per theme in theme-switcher.php. */
+  --accent:   #4a5838;
+  --accent-2: #5c6b46;
+  --accent-foreground: #f5f1e9;    /* readable text on --accent (per theme)  */
   --terracotta: var(--accent);     /* legacy alias — follows the theme accent */
   --terracotta-foreground: var(--accent-foreground);
   --ring: var(--accent);
 
   /* Soft neutral sage — only used inside placeholder media fallbacks. */
   --sage: #cdd2c4;
-  --sage-foreground: #2b2724;
+  --sage-foreground: #232520;
 
   /* Dark "statement" colour + single-hue gradient stops. */
-  --primary: #3e4c61;
-  --primary-2: #50617a;            /* lighter gradient stop        */
-  --primary-3: #313d4f;            /* darker gradient stop         */
-  --primary-foreground: #f7f4ee;
+  --primary: #38442f;
+  --primary-2: #47553a;            /* lighter gradient stop        */
+  --primary-3: #232b1c;            /* darker gradient stop         */
+  --primary-foreground: #f5f1e9;
 
   /* Button corner radius — per theme; never a pill. */
   --radius-btn: 3px;
@@ -85,11 +83,17 @@ WC tested up to: 9.0
   --container: 80rem;
   --container-wide: 100rem;
 
-  /* Single-hue "expensive" gradients (dark statement surface + accent strip). */
-  --primary-grad: linear-gradient(157deg, var(--primary-2) 0%, var(--primary) 54%, var(--primary-3) 100%);
-  --accent-grad: linear-gradient(120deg, color-mix(in oklab, var(--accent) 90%, white) 0%, var(--accent) 46%, color-mix(in oklab, var(--accent) 88%, black) 100%);
-  /* Fine film grain layered over dark surfaces so flats read as material. */
-  --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
+  /* Single-hue "expensive" gradients: a soft radial light (studio-lit dark
+     wall) plus a smooth one-colour linear fall-off. No second hue — depth only. */
+  --primary-grad:
+    radial-gradient(120% 120% at 16% 8%, color-mix(in oklab, var(--primary-2) 78%, white) 0%, transparent 46%),
+    linear-gradient(152deg, var(--primary-2) 0%, var(--primary) 46%, var(--primary-3) 100%);
+  --accent-grad:
+    radial-gradient(120% 130% at 14% 12%, color-mix(in oklab, var(--accent) 80%, white) 0%, transparent 50%),
+    linear-gradient(150deg, color-mix(in oklab, var(--accent) 94%, white) 0%, var(--accent) 52%, color-mix(in oklab, var(--accent) 84%, black) 100%);
+  /* Fine, DESATURATED film grain (saturate 0) at very low opacity — real grain,
+     not coloured static. Applied subtly over dark surfaces. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
 /* Theme presets ([data-theme="…"] var blocks) are GENERATED from
@@ -112,7 +116,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
 }
 
 img, svg, video { display: block; max-width: 100%; height: auto; }
@@ -669,9 +673,13 @@ textarea { resize: vertical; }
 /* 4 · Trust strip */
 .trust-strip { border-block: 1px solid var(--border); background: color-mix(in oklab, var(--cream) 60%, var(--background)); }
 .trust-strip__row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem 1rem; padding-block: 1.5rem; }
-.trust-strip__item { display: flex; align-items: center; gap: .75rem; }
-.trust-strip__item svg { color: var(--accent); flex: 0 0 auto; }
-.trust-strip__item span { display: flex; flex-direction: column; line-height: 1.25; }
+.trust-strip__item { display: flex; align-items: center; gap: .85rem; }
+.trust-strip__icon {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 2.6rem; height: 2.6rem; border-radius: 999px; color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 13%, transparent);
+}
+.trust-strip__text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
 .trust-strip__item strong { font-size: .9rem; }
 .trust-strip__item em { font-style: normal; font-size: .78rem; color: var(--muted-foreground); }
 @media (min-width: 768px) {
@@ -820,6 +828,11 @@ textarea { resize: vertical; }
 
 /* 12 · Reviews — accent stars */
 .quote-card__stars { color: var(--accent); letter-spacing: 2px; font-size: .9rem; margin-bottom: .75rem; }
+
+/* 11 · Reviews — contained 3-up grid (aligns with every other section). */
+.reviews-grid { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+@media (min-width: 768px) { .reviews-grid { grid-template-columns: repeat(3, 1fr); } }
+.reviews-grid .quote-card { width: auto; flex: initial; border: 1px solid var(--border); }
 
 /* ============================================================
    X3. Mobile sticky action bar (phones only)

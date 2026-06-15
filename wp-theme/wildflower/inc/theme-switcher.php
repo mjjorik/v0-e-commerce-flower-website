@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const WILDFLOWER_THEME_OPTION  = 'wildflower_theme';
-const WILDFLOWER_THEME_DEFAULT = 'slate';
+const WILDFLOWER_THEME_DEFAULT = 'forest';
 
 /**
  * Typography pairs. `google` is the query part of a fonts.googleapis.com URL.
@@ -70,6 +70,13 @@ function wildflower_font_pairs() {
  */
 function wildflower_themes() {
 	return array(
+		'forest' => array(
+			'label'  => 'Forest',
+			'desc'   => 'Ivory + ink + deep olive. Restrained monochrome — the flowers are the colour.',
+			'primary' => '#38442f', 'primary2' => '#47553a', 'primary3' => '#232b1c',
+			'accent'  => '#4a5838', 'accent2'  => '#5c6b46',
+			'font'    => 'editorial', 'radius' => '3px',
+		),
 		'slate' => array(
 			'label'  => 'Slate',
 			'desc'   => 'Cool editorial calm — raspberry on slate. Interior-brand poise.',

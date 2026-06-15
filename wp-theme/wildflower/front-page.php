@@ -88,17 +88,34 @@ if ( '' === $markup ) {
 <section class="trust-strip">
 	<div class="container trust-strip__row">
 		<?php
-		$trust = array(
-			array( 'M5 13l4 4L19 7', __( 'Same-day delivery', 'wildflower' ), __( 'Order by 1 PM', 'wildflower' ) ),
-			array( 'M12 3v18M5 8c3 0 5-2 7-5 2 3 4 5 7 5', __( 'Farm-fresh', 'wildflower' ), __( 'Cut this week', 'wildflower' ) ),
-			array( 'M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6', __( 'Honest pricing', 'wildflower' ), __( '$50–$130, no markups', 'wildflower' ) ),
-			array( 'M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.8 5.7 21l2.3-7.1-6-4.5h7.6z', __( 'Loved in Boston', 'wildflower' ), __( '4.9★ · 820+ reviews', 'wildflower' ) ),
+		$svg_open = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">';
+		$trust    = array(
+			array(
+				$svg_open . '<path d="M3 7.5h10v8.5H3z"/><path d="M13 10.5h4l3.2 3v2.5H13z"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17.2" cy="17.5" r="1.6"/></svg>',
+				__( 'Same-day delivery', 'wildflower' ),
+				__( 'Order by 1 PM', 'wildflower' ),
+			),
+			array(
+				$svg_open . '<path d="M12 21v-9"/><path d="M12 14C8.5 14 6 11 6 7c4 0 6 3 6 7z"/><path d="M12 12c3.2 0 5.5-2.2 5.5-5.5C14 6.5 12 8.6 12 12z"/></svg>',
+				__( 'Farm-fresh', 'wildflower' ),
+				__( 'Cut this week', 'wildflower' ),
+			),
+			array(
+				$svg_open . '<path d="M3.5 12.5V5.5a2 2 0 0 1 2-2h7l8 8-9 9z"/><circle cx="8" cy="8" r="1.5"/></svg>',
+				__( 'Honest pricing', 'wildflower' ),
+				__( '$50–$130, no markups', 'wildflower' ),
+			),
+			array(
+				$svg_open . '<path d="M12 20.5S4 16 4 9.8A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 8 2.8C20 16 12 20.5 12 20.5z"/></svg>',
+				__( 'Loved in Boston', 'wildflower' ),
+				__( '4.9★ · 820+ reviews', 'wildflower' ),
+			),
 		);
 		foreach ( $trust as $t ) :
 			?>
 			<div class="trust-strip__item reveal">
-				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="<?php echo esc_attr( $t[0] ); ?>"/></svg>
-				<span><strong><?php echo esc_html( $t[1] ); ?></strong><em><?php echo esc_html( $t[2] ); ?></em></span>
+				<span class="trust-strip__icon"><?php echo $t[0]; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+				<span class="trust-strip__text"><strong><?php echo esc_html( $t[1] ); ?></strong><em><?php echo esc_html( $t[2] ); ?></em></span>
 			</div>
 		<?php endforeach; ?>
 	</div>
@@ -263,31 +280,31 @@ if ( '' === $markup ) {
 </section>
 
 <!-- 11 · REVIEWS -->
-<section class="section marquee">
-	<div class="container" style="margin-bottom:2.5rem;">
-		<p class="eyebrow"><?php esc_html_e( 'Loved across the city', 'wildflower' ); ?></p>
-		<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Notes from the neighborhood', 'wildflower' ) ); // phpcs:ignore ?></h2>
-	</div>
-	<?php
-	$reviews = array(
-		array( 'The nicest flowers I’ve sent, and somehow the cheapest. My sister cried.', 'Maya R.', 'Back Bay' ),
-		array( 'Subscription is the best $55 I spend each week. The studio has taste.', 'Daniel K.', 'Cambridge' ),
-		array( 'Ordered at noon, delivered by 4. The bouquet looked exactly like the photo.', 'Priya S.', 'Somerville' ),
-		array( 'Finally, flowers that don’t look like a gas-station afterthought.', 'Tom W.', 'Brookline' ),
-	);
-	?>
-	<div class="marquee__track">
-		<?php for ( $g = 0; $g < 2; $g++ ) : ?>
-			<div class="marquee__group"<?php echo $g ? ' aria-hidden="true"' : ''; ?>>
-				<?php foreach ( $reviews as $r ) : ?>
-					<figure class="quote-card">
-						<span class="quote-card__stars">★★★★★</span>
-						<blockquote>&ldquo;<?php echo esc_html( $r[0] ); ?>&rdquo;</blockquote>
-						<figcaption><strong style="color:var(--foreground);"><?php echo esc_html( $r[1] ); ?></strong> · <?php echo esc_html( $r[2] ); ?></figcaption>
-					</figure>
-				<?php endforeach; ?>
+<section class="section">
+	<div class="container">
+		<div class="section-head">
+			<div style="max-width:36rem;">
+				<p class="eyebrow reveal"><?php esc_html_e( 'Loved across the city', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Notes from the neighborhood', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			</div>
-		<?php endfor; ?>
+			<span class="link-underline reveal" style="color:var(--accent);">★ 4.9 · 820+ reviews</span>
+		</div>
+		<?php
+		$reviews = array(
+			array( 'The nicest flowers I’ve sent, and somehow the cheapest. My sister cried.', 'Maya R.', 'Back Bay' ),
+			array( 'Subscription is the best $55 I spend each week. The studio has taste.', 'Daniel K.', 'Cambridge' ),
+			array( 'Ordered at noon, delivered by 4. The bouquet looked exactly like the photo.', 'Priya S.', 'Somerville' ),
+		);
+		?>
+		<div class="reviews-grid">
+			<?php foreach ( $reviews as $ri => $r ) : ?>
+				<figure class="quote-card reveal" data-delay="<?php echo esc_attr( $ri * 110 ); ?>">
+					<span class="quote-card__stars">★★★★★</span>
+					<blockquote>&ldquo;<?php echo esc_html( $r[0] ); ?>&rdquo;</blockquote>
+					<figcaption><strong style="color:var(--foreground);"><?php echo esc_html( $r[1] ); ?></strong> · <?php echo esc_html( $r[2] ); ?></figcaption>
+				</figure>
+			<?php endforeach; ?>
+		</div>
 	</div>
 </section>
 
