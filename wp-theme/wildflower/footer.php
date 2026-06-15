@@ -44,7 +44,7 @@ $brand = wildflower_brand();
 
 			<div>
 				<h3><?php esc_html_e( 'Studio', 'wildflower' ); ?></h3>
-				<p style="margin-top:1rem;font-size:.9rem;color:color-mix(in oklab,var(--foreground) 80%,transparent);">
+				<p class="footer-contact" style="margin-top:1rem;font-size:.9rem;">
 					<?php echo esc_html( $brand['email'] ); ?><br>
 					<?php echo esc_html( $brand['phone'] ); ?>
 				</p>
@@ -55,7 +55,7 @@ $brand = wildflower_brand();
 
 			<div>
 				<h3><?php esc_html_e( 'Newsletter', 'wildflower' ); ?></h3>
-				<p style="margin-top:1rem;font-size:.9rem;color:color-mix(in oklab,var(--foreground) 80%,transparent);">
+				<p style="margin-top:1rem;font-size:.9rem;">
 					<?php esc_html_e( 'Seasonal blooms, delivery news, the occasional secret sale.', 'wildflower' ); ?>
 				</p>
 				<form class="newsletter-form" onsubmit="return false;">

@@ -301,7 +301,7 @@ if ( '' === $markup ) {
 				<figure class="quote-card reveal" data-delay="<?php echo esc_attr( $ri * 110 ); ?>">
 					<span class="quote-card__stars">★★★★★</span>
 					<blockquote>&ldquo;<?php echo esc_html( $r[0] ); ?>&rdquo;</blockquote>
-					<figcaption><strong style="color:var(--foreground);"><?php echo esc_html( $r[1] ); ?></strong> · <?php echo esc_html( $r[2] ); ?></figcaption>
+					<figcaption><strong><?php echo esc_html( $r[1] ); ?></strong> · <?php echo esc_html( $r[2] ); ?></figcaption>
 				</figure>
 			<?php endforeach; ?>
 		</div>

@@ -444,7 +444,8 @@ body.admin-bar .site-header { top: 32px; }
 .site-footer .footer-menu a { color: color-mix(in oklab, var(--primary-foreground) 78%, transparent); }
 .site-footer .footer-cols a:hover,
 .site-footer .footer-menu a:hover { color: var(--primary-foreground); }
-.site-footer p { color: color-mix(in oklab, var(--primary-foreground) 75%, transparent); }
+.site-footer p,
+.site-footer .footer-contact { color: color-mix(in oklab, var(--primary-foreground) 80%, transparent); }
 .site-footer .link-underline { color: var(--primary-foreground); }
 .site-footer .footer-bottom { border-top-color: color-mix(in oklab, var(--primary-foreground) 18%, transparent); color: color-mix(in oklab, var(--primary-foreground) 60%, transparent); }
 .site-footer .newsletter-form { border-bottom-color: color-mix(in oklab, var(--primary-foreground) 40%, transparent); }
