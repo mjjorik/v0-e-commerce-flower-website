@@ -370,6 +370,7 @@ require get_template_directory() . '/inc/theme-switcher.php';
 require get_template_directory() . '/inc/seo.php';
 if ( class_exists( 'WooCommerce' ) ) {
 	require get_template_directory() . '/inc/woocommerce.php';
+	require get_template_directory() . '/inc/shop-filters.php';
 }
 
 /**
