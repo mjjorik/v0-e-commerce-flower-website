@@ -255,8 +255,10 @@ function wildflower_demo_products( $count = 6 ) {
  *
  * @param int $sets Number of pattern repetitions.
  */
-function wildflower_gallery( $sets = 1 ) {
-	$pattern = array( 'w2 h2', '', '', 'h2', 'w2', '', '', 'w2 h2', '', 'h2', 'w2', '', '', '' );
+function wildflower_gallery( $sets = 1, $pattern = null ) {
+	if ( null === $pattern ) {
+		$pattern = array( 'w2 h2', '', '', 'h2', 'w2', '', '', 'w2 h2', '', 'h2', 'w2', '', '', '' );
+	}
 	$len     = count( $pattern );
 	$i       = 0;
 	for ( $s = 0; $s < $sets; $s++ ) {

@@ -319,7 +319,10 @@ if ( '' === $markup ) {
 			<a class="link-underline reveal" href="<?php echo esc_url( $brand['instagram'] ); ?>"><?php echo esc_html( $brand['handle'] ); ?></a>
 		</div>
 		<div class="gallery-grid">
-			<?php wildflower_gallery(); ?>
+			<?php
+			// 10 tiles, tuned to tile flush with no gaps on the 2-col mobile grid.
+			wildflower_gallery( 1, array( 'w2', 'h2', '', '', 'w2', '', 'h2', '', 'w2', 'w2' ) );
+			?>
 		</div>
 	</div>
 </section>

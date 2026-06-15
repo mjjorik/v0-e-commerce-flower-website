@@ -72,9 +72,9 @@ function wildflower_themes() {
 	return array(
 		'forest' => array(
 			'label'  => 'Forest',
-			'desc'   => 'Ivory + ink + deep olive. Restrained monochrome — the flowers are the colour.',
-			'primary' => '#38442f', 'primary2' => '#47553a', 'primary3' => '#232b1c',
-			'accent'  => '#4a5838', 'accent2'  => '#5c6b46',
+			'desc'   => 'Ivory + ink + matcha. Restrained monochrome — the flowers are the colour.',
+			'primary' => '#45533a', 'primary2' => '#56653f', 'primary3' => '#2f3a25',
+			'accent'  => '#5e7042', 'accent2'  => '#6f8350',
 			'font'    => 'editorial', 'radius' => '3px',
 		),
 		'slate' => array(
