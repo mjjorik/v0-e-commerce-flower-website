@@ -234,7 +234,7 @@ function wildflower_demo_products( $count = 6 ) {
 		$out .= '<h2 class="woocommerce-loop-product__title">' . esc_html( $d[0] ) . '</h2>';
 		$out .= '<span class="price">' . esc_html( $d[1] ) . '</span>';
 		$out .= '</a>';
-		$out .= '<a class="btn--accent btn--sm button" href="' . esc_url( $shop ) . '">' . esc_html__( 'View bouquet', 'wildflower' ) . '</a>';
+		$out .= '<a class="btn--outline btn--sm" href="' . esc_url( $shop ) . '">' . esc_html__( 'View bouquet', 'wildflower' ) . '</a>';
 		$out .= '</li>';
 	}
 	$out .= '</ul>';

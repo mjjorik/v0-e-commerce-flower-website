@@ -58,7 +58,11 @@ if ( '' === $markup ) {
 						<a class="btn--primary btn--lg btn--magnetic" data-magnetic="0.25" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 						<a class="btn--outline btn--lg" href="#how"><?php esc_html_e( 'How it works', 'wildflower' ); ?></a>
 					</div>
-					<p class="hero__trust"><span class="hero__stars">★★★★★</span> <strong>4.9</strong> · <?php esc_html_e( '820+ reviews · Same-day before 1 PM · Hand-tied daily', 'wildflower' ); ?></p>
+					<div class="hero__trust">
+						<span class="hero__trust-item hero__rating"><span class="hero__stars">★★★★★</span> <strong>4.9</strong> <span class="hero__trust-sub"><?php esc_html_e( '820+ reviews', 'wildflower' ); ?></span></span>
+						<span class="hero__trust-item"><?php esc_html_e( 'Same-day before 1 PM', 'wildflower' ); ?></span>
+						<span class="hero__trust-item"><?php esc_html_e( 'Hand-tied daily', 'wildflower' ); ?></span>
+					</div>
 				</div>
 			</div>
 			<div class="hero__visual">

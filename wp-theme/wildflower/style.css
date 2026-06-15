@@ -282,10 +282,10 @@ body.admin-bar .site-header { top: 32px; }
 .hero { position: relative; overflow: hidden; padding-block: clamp(4rem, 8vw, 7rem); }
 .hero__glow { position: absolute; right: -10rem; top: -5rem; width: 42rem; height: 42rem; border-radius: 999px; opacity: .6; filter: blur(64px); z-index: -1; background: radial-gradient(circle, color-mix(in oklab, var(--sage) 60%, transparent), transparent 70%); }
 .hero__grid { display: grid; gap: clamp(2.5rem, 6vw, 7rem); align-items: center; }
-.hero__content { min-width: 0; max-width: 46rem; }
+.hero__content { min-width: 0; max-width: 54rem; }
 .hero__badge { display: inline-flex; align-items: center; gap: .5rem; border: 1px solid color-mix(in oklab, var(--foreground) 10%, transparent); border-radius: 999px; padding: .375rem 1rem; font-size: .625rem; font-weight: 600; text-transform: uppercase; letter-spacing: .3em; color: color-mix(in oklab, var(--foreground) 45%, transparent); }
 .hero__badge .dot { width: .375rem; height: .375rem; border-radius: 999px; background: var(--terracotta); }
-.hero h1 { font-size: clamp(3rem, 7.5vw, 6rem); line-height: .92; letter-spacing: -0.04em; margin-top: clamp(1.5rem, 3vw, 2.25rem); }
+.hero h1 { font-size: clamp(3.25rem, 8.8vw, 7.5rem); line-height: .9; letter-spacing: -0.045em; margin-top: clamp(1.5rem, 3vw, 2.25rem); }
 .hero h1 .italic { font-style: italic; color: var(--accent-2); }
 .hero__lead { display: grid; justify-items: start; gap: 1.5rem; margin-top: clamp(1.75rem, 3vw, 2.5rem); }
 .hero__lead p { max-width: 29rem; font-size: clamp(1rem, 1.5vw, 1.125rem); font-weight: 500; line-height: 1.5; color: color-mix(in oklab, var(--foreground) 62%, transparent); }
@@ -305,7 +305,7 @@ body.admin-bar .site-header { top: 32px; }
   .hero__lead .btn--lg { width: 100%; }
 }
 @media (min-width: 768px) {
-  .hero__grid { grid-template-columns: minmax(0, 1.18fr) minmax(17rem, .82fr); }
+  .hero__grid { grid-template-columns: minmax(0, 1.3fr) minmax(15rem, .7fr); }
   .hero__visual { justify-content: flex-end; }
 }
 @media (orientation: landscape) and (min-width: 700px) and (max-height: 680px) {
@@ -631,9 +631,12 @@ textarea { resize: vertical; }
 
 /* Hero additions */
 .hero__cta { display: flex; flex-wrap: wrap; gap: .875rem; align-items: center; }
-.hero__trust { font-size: .82rem; color: color-mix(in oklab, var(--foreground) 55%, transparent); }
+.hero__trust { display: flex; flex-wrap: wrap; align-items: center; row-gap: .35rem; font-size: .85rem; color: color-mix(in oklab, var(--foreground) 58%, transparent); }
+.hero__trust-item { display: inline-flex; align-items: center; gap: .35rem; white-space: nowrap; }
+.hero__trust-item:not(:last-child)::after { content: '·'; margin-inline: .85rem; color: color-mix(in oklab, var(--foreground) 30%, transparent); }
 .hero__stars { color: var(--accent); letter-spacing: 1px; }
-.hero__trust strong { color: var(--foreground); }
+.hero__rating strong { color: var(--foreground); font-weight: 700; }
+.hero__trust-sub { color: color-mix(in oklab, var(--foreground) 48%, transparent); }
 
 /* Hero floating cards (price tag + rating chip) over the media */
 .hero__visual { position: relative; }
@@ -715,7 +718,20 @@ textarea { resize: vertical; }
 .products--scroll .product:hover .media-fallback { transform: scale(1.04); }
 .products--scroll .product .woocommerce-loop-product__title { font-family: var(--font-serif); font-size: 1.4rem; margin-top: .9rem; }
 .products--scroll .product .price { display: block; color: var(--accent); font-weight: 600; font-size: 1.05rem; margin-top: .2rem; }
-.products--scroll .product .button { margin-top: .9rem; }
+/* Product actions stay quiet — outline, not a burning fill (covers Woo's
+   auto-generated add-to-cart button and the demo cards). */
+.products--scroll .product .button,
+.products--scroll .product .btn--outline { margin-top: .9rem; }
+.products--scroll .product .button {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent !important; background-image: none !important; box-shadow: none !important;
+  color: var(--foreground) !important; border: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent) !important;
+  border-radius: var(--radius-btn); padding: .55rem 1.1rem; font-size: .8125rem; font-weight: 500;
+  transition: background-color .25s var(--ease-luxe), color .25s var(--ease-luxe), border-color .25s var(--ease-luxe);
+}
+.products--scroll .product .button:hover {
+  background: var(--foreground) !important; color: var(--background) !important; border-color: var(--foreground) !important;
+}
 
 /* Right-edge fade + hint signal that the row scrolls. */
 .scroller__fade {
