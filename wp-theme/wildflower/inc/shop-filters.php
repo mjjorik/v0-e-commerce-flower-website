@@ -100,7 +100,7 @@ function wildflower_render_shop_filters() {
 				<button type="button" class="wf-filters__close" data-filters-close><?php esc_html_e( 'Close', 'wildflower' ); ?></button>
 			</div>
 			<div class="wf-filters__scroll">
-				<p class="wf-filters__lede"><?php esc_html_e( 'Refine the catalog by flower attributes.', 'wildflower' ); ?></p>
+				<p class="wf-filters__lede"><?php esc_html_e( 'Narrow it down — by type, palette, occasion and more.', 'wildflower' ); ?></p>
 
 				<?php
 				wildflower_filter_group(
