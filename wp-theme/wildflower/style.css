@@ -1056,3 +1056,48 @@ textarea { resize: vertical; }
 
 .rates { list-style: none; margin: 0 0 1.25rem; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; }
 .rate { font-family: var(--font-serif); font-size: 1.05rem; color: var(--accent); background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: .6rem 1.05rem; min-width: 3.4rem; text-align: center; }
+
+/* ============================================================
+   X7. Subscriptions page
+   ============================================================ */
+.page-hero__cta { display: flex; flex-wrap: wrap; gap: .875rem; margin-top: 2rem; }
+
+/* Plan cards */
+.plans { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+@media (min-width: 860px) { .plans { grid-template-columns: repeat(3, 1fr); align-items: stretch; } }
+.plan {
+  position: relative; display: flex; flex-direction: column; background: var(--cream);
+  border: 1px solid var(--border); border-radius: var(--radius-2xl); padding: 2rem 1.75rem;
+  transition: transform .4s var(--ease-luxe), box-shadow .4s var(--ease-luxe);
+}
+.plan:hover { transform: translateY(-4px); box-shadow: var(--shadow-card); }
+.plan--featured { border-color: color-mix(in oklab, var(--accent) 55%, transparent); box-shadow: var(--shadow-soft); }
+@media (min-width: 860px) { .plan--featured { transform: scale(1.03); } .plan--featured:hover { transform: scale(1.03) translateY(-4px); } }
+.plan__badge {
+  position: absolute; top: -.7rem; left: 1.75rem; background-color: var(--accent); background-image: var(--accent-grad);
+  color: var(--accent-foreground); font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+  padding: .3rem .7rem; border-radius: 999px;
+}
+.plan__name { font-family: var(--font-serif); font-size: 1.6rem; }
+.plan__price { font-family: var(--font-serif); font-size: 2.6rem; color: var(--accent); line-height: 1; margin-top: .5rem; }
+.plan__price span { font-family: var(--font-sans); font-size: .9rem; color: var(--muted-foreground); font-weight: 400; }
+.plan__cadence { color: var(--muted-foreground); font-size: .9rem; margin-top: .35rem; }
+.plan__features { list-style: none; margin: 1.5rem 0; padding: 1.5rem 0 0; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: .85rem; flex: 1; }
+.plan__features li { display: flex; align-items: flex-start; gap: .65rem; font-size: .92rem; color: color-mix(in oklab, var(--foreground) 85%, transparent); }
+.plan__features svg { color: var(--accent); flex: 0 0 auto; margin-top: .15rem; }
+.plan__cta { width: 100%; margin-top: auto; }
+
+/* What's included */
+.incl-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .incl-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .incl-grid { grid-template-columns: repeat(4, 1fr); } }
+.incl { background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 1.5rem; }
+.incl__icon { display: inline-flex; align-items: center; justify-content: center; width: 2.6rem; height: 2.6rem; border-radius: 999px; color: var(--accent); background: color-mix(in oklab, var(--accent) 13%, transparent); }
+.incl h3 { font-family: var(--font-serif); font-size: 1.2rem; margin-top: 1rem; }
+.incl p { color: color-mix(in oklab, var(--foreground) 70%, transparent); font-size: .9rem; line-height: 1.55; margin-top: .4rem; }
+
+/* Gift terms (on dark) */
+.gift-terms { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+.gift-terms li { display: flex; align-items: baseline; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid color-mix(in oklab, var(--primary-foreground) 18%, transparent); }
+.gift-terms strong { font-family: var(--font-serif); font-size: 2rem; color: var(--accent-on-dark); line-height: 1; min-width: 2.5rem; }
+.gift-terms span { color: color-mix(in oklab, var(--primary-foreground) 80%, transparent); }
