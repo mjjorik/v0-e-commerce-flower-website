@@ -20,13 +20,16 @@ $brand  = wildflower_brand();
 $cutoff = $brand['cutoff']; // "1 PM"
 $shop   = class_exists( 'WooCommerce' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 
-/* Zones & pricing — single source for both the visible table and schema. */
+/* Zones & pricing — mileage-based, like the brand model: ~1,291 Greater
+   Boston ZIP codes mapped into distance bands. First zone starts at $19,
+   fee rises with distance; $15 flat on orders of $85+. Single source for the
+   visible table and the schema. */
 $zones = array(
-	array( 'Boston — Downtown, Back Bay & South End', 15, true ),
-	array( 'Cambridge & Somerville', 18, true ),
-	array( 'Brookline & Newton', 22, true ),
-	array( 'Medford & Arlington', 25, true ),
-	array( 'Quincy & Milton', 28, false ),
+	array( 'Zone 1 — up to 4 mi', 'Downtown, Back Bay, South End, Beacon Hill', 19, true ),
+	array( 'Zone 2 — 4–8 mi', 'Cambridge, Somerville, Brookline, Charlestown', 24, true ),
+	array( 'Zone 3 — 8–12 mi', 'Newton, Medford, Arlington, Jamaica Plain', 29, true ),
+	array( 'Zone 4 — 12–18 mi', 'Quincy, Milton & inner metro', 34, true ),
+	array( 'Zone 5 — 18–25 mi', 'Outer metro within Route 128', 39, false ),
 );
 
 /* Neighborhoods we cover (GEO depth). */
@@ -44,7 +47,7 @@ $faqs = array(
 	),
 	array(
 		__( 'How much does flower delivery cost?', 'wildflower' ),
-		__( 'Delivery fees range from $15 in downtown Boston to $28 for outer zones such as Quincy and Milton. Delivery is free on orders over $75. The exact fee is shown at checkout based on your address.', 'wildflower' ),
+		__( 'Delivery is zone-based by distance from our studio — about 1,291 Greater Boston ZIP codes mapped into mileage zones. Fees start at $19 for the closest zone and rise with distance to $39 for the outer metro. Spend $85 or more and delivery is a flat $15. Your exact fee is shown at checkout from your ZIP.', 'wildflower' ),
 	),
 	array(
 		__( 'Which areas do you deliver to?', 'wildflower' ),
@@ -73,8 +76,8 @@ $faqs = array(
 		<p class="page-hero__lead reveal"><?php printf( esc_html__( 'Hand-delivered by local couriers who keep your flowers upright and fresh. Order before %s and it lands today.', 'wildflower' ), esc_html( $cutoff ) ); ?></p>
 		<div class="page-hero__facts reveal">
 			<div><strong><?php echo esc_html( $cutoff ); ?></strong><span><?php esc_html_e( 'Same-day cutoff', 'wildflower' ); ?></span></div>
-			<div><strong><?php esc_html_e( 'From $15', 'wildflower' ); ?></strong><span><?php esc_html_e( 'Free over $75', 'wildflower' ); ?></span></div>
-			<div><strong><?php esc_html_e( '16+ areas', 'wildflower' ); ?></strong><span><?php esc_html_e( 'Across the metro', 'wildflower' ); ?></span></div>
+			<div><strong><?php esc_html_e( 'From $19', 'wildflower' ); ?></strong><span><?php esc_html_e( '$15 on orders $85+', 'wildflower' ); ?></span></div>
+			<div><strong><?php esc_html_e( '1,291 ZIPs', 'wildflower' ); ?></strong><span><?php esc_html_e( 'Mapped by distance', 'wildflower' ); ?></span></div>
 		</div>
 	</div>
 </section>
@@ -98,20 +101,20 @@ $faqs = array(
 				<p class="eyebrow reveal"><?php esc_html_e( 'Zones & pricing', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Find your zone', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			</div>
-			<span class="reviews__rating reveal" style="color:var(--accent);"><?php esc_html_e( 'Free over $75', 'wildflower' ); ?></span>
+			<span class="reviews__rating reveal" style="color:var(--accent);"><?php esc_html_e( '$15 on orders $85+', 'wildflower' ); ?></span>
 		</div>
 		<ul class="price-zones reveal">
 			<?php foreach ( $zones as $z ) : ?>
 				<li class="price-zone">
-					<span class="price-zone__name"><?php echo esc_html( $z[0] ); ?></span>
+					<span class="price-zone__name"><?php echo esc_html( $z[0] ); ?><em class="price-zone__areas"><?php echo esc_html( $z[1] ); ?></em></span>
 					<span class="price-zone__meta">
-						<span class="price-zone__badge<?php echo $z[2] ? ' is-same' : ''; ?>"><?php echo $z[2] ? esc_html__( 'Same-day', 'wildflower' ) : esc_html__( 'Next-day', 'wildflower' ); ?></span>
-						<span class="price-zone__fee">$<?php echo esc_html( $z[1] ); ?></span>
+						<span class="price-zone__badge<?php echo $z[3] ? ' is-same' : ''; ?>"><?php echo $z[3] ? esc_html__( 'Same-day', 'wildflower' ) : esc_html__( 'Next-day', 'wildflower' ); ?></span>
+						<span class="price-zone__fee">$<?php echo esc_html( $z[2] ); ?></span>
 					</span>
 				</li>
 			<?php endforeach; ?>
 		</ul>
-		<p class="price-zones__note muted"><?php esc_html_e( 'The exact fee is calculated at checkout from your delivery address. Not sure about your area? Reach out and we’ll confirm.', 'wildflower' ); ?></p>
+		<p class="price-zones__note muted"><?php esc_html_e( 'We split Greater Boston into mileage-based zones — about 1,291 ZIP codes mapped by distance from our studio. Your exact fee is calculated from your delivery ZIP at checkout, starting at $19. Spend $85 or more and delivery is a flat $15.', 'wildflower' ); ?></p>
 	</div>
 </section>
 
@@ -212,10 +215,6 @@ foreach ( $faqs as $f ) {
 		'acceptedAnswer' => array( '@type' => 'Answer', 'text' => $f[1] ),
 	);
 }
-$areas = array();
-foreach ( $zones as $z ) {
-	$areas[] = $z[0];
-}
 wildflower_print_jsonld(
 	array(
 		array(
@@ -224,8 +223,8 @@ wildflower_print_jsonld(
 			'serviceType' => 'Flower delivery',
 			'name'        => 'Same-day flower delivery — Greater Boston',
 			'provider'    => array( '@id' => $home . '#business' ),
-			'areaServed'  => array_merge( $areas, $neighborhoods ),
-			'offers'      => array( '@type' => 'Offer', 'priceCurrency' => 'USD', 'priceSpecification' => array( '@type' => 'PriceSpecification', 'minPrice' => 15, 'maxPrice' => 28, 'priceCurrency' => 'USD' ) ),
+			'areaServed'  => $neighborhoods,
+			'offers'      => array( '@type' => 'Offer', 'priceCurrency' => 'USD', 'priceSpecification' => array( '@type' => 'PriceSpecification', 'minPrice' => 15, 'maxPrice' => 39, 'priceCurrency' => 'USD' ) ),
 			'url'         => get_permalink(),
 		),
 		array(

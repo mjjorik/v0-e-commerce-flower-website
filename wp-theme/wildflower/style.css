@@ -1037,3 +1037,7 @@ textarea { resize: vertical; }
 .faq__item[open] .faq__icon::after { opacity: 0; transform: translateX(-50%) rotate(90deg); }
 .faq__a { padding: 0 0 1.3rem; max-width: 44rem; }
 .faq__a p { color: color-mix(in oklab, var(--foreground) 72%, transparent); line-height: 1.7; }
+
+/* Delivery zone row: name + area subtext on the left */
+.price-zone__name { display: flex; flex-direction: column; gap: .2rem; }
+.price-zone__areas { font-style: normal; font-size: .8rem; color: var(--muted-foreground); }

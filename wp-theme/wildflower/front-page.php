@@ -220,10 +220,10 @@ if ( '' === $markup ) {
 			<div class="delivery__body reveal">
 				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'Delivery', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Same-day across Boston', 'wildflower' ) ); // phpcs:ignore ?></h2>
-				<p class="delivery__lead"><?php printf( esc_html__( 'Order by %s and we hand-deliver the same day across Boston, Cambridge, Somerville and the metro. Free delivery over $75.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>
+				<p class="delivery__lead"><?php printf( esc_html__( 'Order by %s and we hand-deliver the same day across Boston, Cambridge, Somerville and the metro. Zone-based delivery from $19 — a flat $15 on orders over $85.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>
 				<div class="delivery__facts">
 					<div><strong><?php esc_html_e( 'Same-day', 'wildflower' ); ?></strong><span><?php esc_html_e( 'Order by 1 PM', 'wildflower' ); ?></span></div>
-					<div><strong><?php esc_html_e( 'From $9', 'wildflower' ); ?></strong><span><?php esc_html_e( 'Free over $75', 'wildflower' ); ?></span></div>
+					<div><strong><?php esc_html_e( 'From $19', 'wildflower' ); ?></strong><span><?php esc_html_e( '$15 on orders $85+', 'wildflower' ); ?></span></div>
 					<div><strong><?php esc_html_e( 'Metro-wide', 'wildflower' ); ?></strong><span><?php esc_html_e( 'Within Rt-128', 'wildflower' ); ?></span></div>
 				</div>
 				<a class="link-underline" href="<?php echo esc_url( home_url( '/delivery/' ) ); ?>"><?php esc_html_e( 'See zones & full details', 'wildflower' ); ?> →</a>
