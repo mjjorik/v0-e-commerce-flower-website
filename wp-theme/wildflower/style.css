@@ -1101,3 +1101,10 @@ textarea { resize: vertical; }
 .gift-terms li { display: flex; align-items: baseline; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid color-mix(in oklab, var(--primary-foreground) 18%, transparent); }
 .gift-terms strong { font-family: var(--font-serif); font-size: 2rem; color: var(--accent-on-dark); line-height: 1; min-width: 2.5rem; }
 .gift-terms span { color: color-mix(in oklab, var(--primary-foreground) 80%, transparent); }
+
+/* Subscriptions — subscriber moments strip */
+.subs-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+@media (min-width: 640px) { .subs-strip { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .subs-strip { grid-template-columns: repeat(6, 1fr); } }
+.subs-strip .media { aspect-ratio: 1; border-radius: var(--radius-lg); overflow: hidden; }
+.subs-strip .media-fallback { position: absolute; inset: 0; }

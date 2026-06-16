@@ -68,19 +68,44 @@ $faqs = array(
 ?>
 
 <!-- HERO -->
-<section class="section page-hero">
-	<div class="container">
-		<p class="eyebrow reveal"><?php esc_html_e( 'Subscriptions', 'wildflower' ); ?></p>
-		<h1 class="page-hero__title kinetic"><?php echo wildflower_kinetic( __( 'Fresh flowers, on repeat', 'wildflower' ) ); // phpcs:ignore ?></h1>
-		<p class="page-hero__lead reveal"><?php esc_html_e( 'A seasonal bouquet hand-tied by our studio and delivered on your schedule. Pause, skip or cancel anytime — flowers should feel like a treat, never a chore.', 'wildflower' ); ?></p>
-		<div class="page-hero__facts reveal">
-			<div><strong><?php esc_html_e( 'From $45', 'wildflower' ); ?></strong><span><?php esc_html_e( 'per delivery', 'wildflower' ); ?></span></div>
-			<div><strong><?php esc_html_e( 'Free', 'wildflower' ); ?></strong><span><?php esc_html_e( 'delivery on every box', 'wildflower' ); ?></span></div>
-			<div><strong><?php esc_html_e( 'Cancel', 'wildflower' ); ?></strong><span><?php esc_html_e( 'anytime, no fees', 'wildflower' ); ?></span></div>
-		</div>
-		<div class="page-hero__cta reveal">
-			<a class="btn--primary btn--lg btn--magnetic" data-magnetic="0.25" href="#plans"><?php esc_html_e( 'See plans', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
-			<a class="btn--outline btn--lg" href="#how"><?php esc_html_e( 'How it works', 'wildflower' ); ?></a>
+<section class="hero">
+	<span class="hero__glow" aria-hidden="true" data-parallax="90"></span>
+	<div class="container--wide">
+		<div class="hero__grid">
+			<div class="hero__content">
+				<span class="hero__badge"><span class="dot"></span> <?php esc_html_e( 'Subscriptions', 'wildflower' ); ?></span>
+				<h1 class="kinetic">
+					<?php echo wildflower_kinetic( __( 'Fresh flowers,', 'wildflower' ) ); ?><br>
+					<span class="italic"><?php echo wildflower_kinetic( __( 'on repeat.', 'wildflower' ) ); ?></span>
+				</h1>
+				<div class="hero__lead">
+					<p><?php esc_html_e( 'A seasonal bouquet hand-tied by our studio and delivered on your schedule. Pause, skip or cancel anytime — flowers should feel like a treat, never a chore.', 'wildflower' ); ?></p>
+					<div class="hero__cta">
+						<a class="btn--primary btn--lg btn--magnetic" data-magnetic="0.25" href="#plans"><?php esc_html_e( 'See plans', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+						<a class="btn--outline btn--lg" href="#how"><?php esc_html_e( 'How it works', 'wildflower' ); ?></a>
+					</div>
+					<div class="hero__trust">
+						<span class="hero__trust-item"><strong><?php esc_html_e( 'From $45', 'wildflower' ); ?></strong> <?php esc_html_e( 'per delivery', 'wildflower' ); ?></span>
+						<span class="hero__trust-item"><?php esc_html_e( 'Free delivery', 'wildflower' ); ?></span>
+						<span class="hero__trust-item"><?php esc_html_e( 'Cancel anytime', 'wildflower' ); ?></span>
+					</div>
+				</div>
+			</div>
+			<div class="hero__visual">
+				<div class="hero__media media" data-hero-media>
+					<?php wildflower_media( null, 'large', __( 'This week’s bouquet', 'wildflower' ), true ); ?>
+				</div>
+				<span class="hero__chip"><span class="hero__chip-star">★</span> <?php esc_html_e( 'Loved weekly', 'wildflower' ); ?></span>
+				<div class="hero__float">
+					<span class="hero__float-text">
+						<span class="hero__float-name"><?php esc_html_e( 'Bi-weekly plan', 'wildflower' ); ?></span>
+						<span class="hero__float-price">$49 <span style="font-family:var(--font-sans);font-size:.7rem;color:var(--muted-foreground);">/ delivery</span></span>
+					</span>
+					<span class="hero__float-plus" aria-hidden="true">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+					</span>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>
@@ -104,6 +129,24 @@ $faqs = array(
 					<p><?php echo esc_html( $s[2] ); ?></p>
 				</div>
 			<?php endforeach; ?>
+		</div>
+	</div>
+</section>
+
+<!-- EDITORIAL / RITUAL -->
+<section class="section">
+	<div class="container">
+		<div class="sub-teaser">
+			<div class="media">
+				<?php wildflower_media( null, 'large', __( 'Seasonal stems', 'wildflower' ), true ); ?>
+			</div>
+			<div class="sub-teaser__body reveal">
+				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Never the same bouquet twice', 'wildflower' ) ); // phpcs:ignore ?></h2>
+				<p style="margin-top:1.25rem;max-width:30rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.65;"><?php esc_html_e( 'Each delivery is a designer’s-choice arrangement built from the freshest stems of the week — peonies in June, ranunculus in spring, branches in autumn. A small, living change of season on your table, every time.', 'wildflower' ); ?></p>
+				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$45</span> <span style="font-size:1rem;color:var(--muted-foreground);"><?php esc_html_e( '/ delivery', 'wildflower' ); ?></span></p>
+				<a class="btn--primary" style="margin-top:1.5rem;" href="#plans"><?php esc_html_e( 'See plans', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			</div>
 		</div>
 	</div>
 </section>
@@ -170,6 +213,21 @@ $faqs = array(
 			<li><strong>8</strong><span><?php esc_html_e( 'deliveries · two months', 'wildflower' ); ?></span></li>
 			<li><strong>12</strong><span><?php esc_html_e( 'deliveries · a season of fresh', 'wildflower' ); ?></span></li>
 		</ul>
+	</div>
+</section>
+
+<!-- SUBSCRIBER MOMENTS -->
+<section class="section">
+	<div class="container">
+		<div class="section-head">
+			<div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'From our subscribers', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Real moments, real homes', 'wildflower' ) ); // phpcs:ignore ?></h2></div>
+			<a class="link-underline reveal" href="<?php echo esc_url( $brand['instagram'] ); ?>"><?php echo esc_html( $brand['handle'] ); ?></a>
+		</div>
+		<div class="subs-strip reveal">
+			<?php for ( $i = 0; $i < 6; $i++ ) : ?>
+				<span class="media"><span class="media-fallback media-fallback--<?php echo esc_attr( ( $i % 5 ) + 1 ); ?>" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span></span>
+			<?php endfor; ?>
+		</div>
 	</div>
 </section>
 
