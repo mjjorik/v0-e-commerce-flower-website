@@ -1041,3 +1041,18 @@ textarea { resize: vertical; }
 /* Delivery zone row: name + area subtext on the left */
 .price-zone__name { display: flex; flex-direction: column; gap: .2rem; }
 .price-zone__areas { font-style: normal; font-size: .8rem; color: var(--muted-foreground); }
+
+/* Delivery — region tiers + chips + rate ladder */
+.deliv-tiers { display: grid; gap: 0; }
+.deliv-tier { padding-block: 1.75rem; border-top: 1px solid var(--border); }
+.deliv-tier:first-child { border-top: 0; padding-top: .5rem; }
+.deliv-tier__head { display: flex; align-items: baseline; flex-wrap: wrap; gap: .5rem .9rem; margin-bottom: 1.1rem; }
+.deliv-tier__name { font-family: var(--font-serif); font-size: 1.5rem; line-height: 1; }
+.deliv-tier__rate { font-family: var(--font-serif); font-size: 1.15rem; color: var(--accent); }
+.deliv-tier__badge { font-size: .66rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--muted-foreground); border: 1px solid var(--border); border-radius: 999px; padding: .25rem .6rem; }
+.chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .55rem; }
+.chip { font-size: .82rem; color: color-mix(in oklab, var(--foreground) 80%, transparent); background: var(--background); border: 1px solid var(--border); border-radius: 999px; padding: .42rem .85rem; transition: border-color .2s, color .2s; }
+.chip:hover { border-color: color-mix(in oklab, var(--accent) 50%, transparent); color: var(--foreground); }
+
+.rates { list-style: none; margin: 0 0 1.25rem; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; }
+.rate { font-family: var(--font-serif); font-size: 1.05rem; color: var(--accent); background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: .6rem 1.05rem; min-width: 3.4rem; text-align: center; }
