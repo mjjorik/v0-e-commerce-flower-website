@@ -121,7 +121,7 @@ if ( '' === $markup ) {
 	</div>
 </section>
 
-<!-- 5 · SHOP BY OCCASION — ASYMMETRIC BENTO -->
+<!-- 5 · SHOP BY OCCASION — interactive picker (hover swaps the image) -->
 <section class="section">
 	<div class="container">
 		<div class="section-head">
@@ -131,29 +131,41 @@ if ( '' === $markup ) {
 			</div>
 			<a class="link-underline reveal" href="<?php echo esc_url( home_url( '/occasions/' ) ); ?>"><?php esc_html_e( 'All occasions', 'wildflower' ); ?></a>
 		</div>
-		<div class="bento">
-			<?php
-			$occasions = array(
-				array( 'Birthday', 'Make their year bloom.', true ),
-				array( 'Anniversary', 'Romance, distilled into stems.', false ),
-				array( 'Sympathy', 'When words fall short.', false ),
-				array( 'Just Because', 'The best reason there is.', false ),
-				array( 'New Baby', 'A soft hello to someone small.', false ),
-			);
-			foreach ( $occasions as $oi => $o ) {
-				$link = $has_woo ? add_query_arg( 'occasion', sanitize_title( $o[0] ), $shop ) : home_url( '/' );
-				?>
-				<a class="bento__tile reveal <?php echo $o[2] ? 'is-big' : ''; ?>" data-delay="<?php echo esc_attr( $oi * 90 ); ?>" href="<?php echo esc_url( $link ); ?>">
-					<?php wildflower_media( null, 'large', $o[0], false ); ?>
-					<span class="bento__overlay"></span>
-					<span class="bento__caption">
-						<h3><?php echo esc_html( $o[0] ); ?></h3>
-						<p><?php echo esc_html( $o[1] ); ?></p>
-					</span>
-				</a>
-				<?php
-			}
-			?>
+
+		<?php
+		$occasions = array(
+			array( 'Birthday', 'Make their year bloom.' ),
+			array( 'Anniversary', 'Romance, distilled into stems.' ),
+			array( 'Sympathy', 'When words fall short.' ),
+			array( 'Just Because', 'The best reason there is.' ),
+			array( 'New Baby', 'A soft hello to someone small.' ),
+			array( 'Congratulations', 'Toast the big moment.' ),
+		);
+		?>
+		<div class="occasions" data-occasions>
+			<div class="occasions__list">
+				<?php foreach ( $occasions as $oi => $o ) :
+					$link = $has_woo ? add_query_arg( 'occasion', sanitize_title( $o[0] ), $shop ) : home_url( '/occasions/' );
+					?>
+					<a class="occasions__item reveal<?php echo 0 === $oi ? ' is-active' : ''; ?>" href="<?php echo esc_url( $link ); ?>" data-occ="<?php echo esc_attr( $oi ); ?>" data-delay="<?php echo esc_attr( $oi * 70 ); ?>">
+						<span class="occasions__thumb"><span class="media-fallback media-fallback--<?php echo esc_attr( ( $oi % 5 ) + 1 ); ?>" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span></span>
+						<span class="occasions__index"><?php echo esc_html( sprintf( '%02d', $oi + 1 ) ); ?></span>
+						<span class="occasions__text">
+							<span class="occasions__name"><?php echo esc_html( $o[0] ); ?></span>
+							<span class="occasions__desc"><?php echo esc_html( $o[1] ); ?></span>
+						</span>
+						<span class="occasions__arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+					</a>
+				<?php endforeach; ?>
+			</div>
+			<div class="occasions__stage" aria-hidden="true">
+				<?php foreach ( $occasions as $oi => $o ) : ?>
+					<figure class="occasions__media<?php echo 0 === $oi ? ' is-active' : ''; ?>" data-occ-media="<?php echo esc_attr( $oi ); ?>">
+						<span class="media-fallback media-fallback--<?php echo esc_attr( ( $oi % 5 ) + 1 ); ?>"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span>
+						<figcaption class="occasions__cap"><?php echo esc_html( $o[0] ); ?></figcaption>
+					</figure>
+				<?php endforeach; ?>
+			</div>
 		</div>
 	</div>
 </section>

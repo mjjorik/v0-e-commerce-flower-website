@@ -1108,3 +1108,51 @@ textarea { resize: vertical; }
 @media (min-width: 1024px) { .subs-strip { grid-template-columns: repeat(6, 1fr); } }
 .subs-strip .media { aspect-ratio: 1; border-radius: var(--radius-lg); overflow: hidden; }
 .subs-strip .media-fallback { position: absolute; inset: 0; }
+
+/* ============================================================
+   X8. Shop by occasion — interactive picker (Эф4)
+   ============================================================ */
+.occasions { display: grid; gap: clamp(1.5rem, 4vw, 3rem); }
+@media (min-width: 900px) { .occasions { grid-template-columns: 1fr 1fr; align-items: stretch; } }
+
+.occasions__list { display: flex; flex-direction: column; }
+.occasions__item {
+  position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem;
+  padding: 1.25rem .25rem; border-top: 1px solid var(--border); color: var(--foreground);
+  transition: padding-left .35s var(--ease-luxe);
+}
+.occasions__item:last-child { border-bottom: 1px solid var(--border); }
+.occasions__index { font-size: .8rem; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+.occasions__text { min-width: 0; }
+.occasions__name { display: block; font-family: var(--font-serif); font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.05; transition: color .3s var(--ease-luxe); }
+.occasions__desc { display: block; font-size: .9rem; color: var(--muted-foreground); margin-top: .15rem; }
+.occasions__arrow { color: var(--accent); opacity: 0; transform: translateX(-6px); transition: opacity .3s, transform .3s var(--ease-luxe); }
+/* Active state (set by JS / first item) — always visible. */
+.occasions__item.is-active { padding-left: 1rem; }
+.occasions__item.is-active .occasions__name { color: var(--accent); }
+.occasions__item.is-active .occasions__arrow { opacity: 1; transform: none; }
+/* Hover mirrors the active treatment on pointer devices. */
+@media (hover: hover) {
+  .occasions__item:hover { padding-left: 1rem; }
+  .occasions__item:hover .occasions__name { color: var(--accent); }
+  .occasions__item:hover .occasions__arrow { opacity: 1; transform: none; }
+}
+
+.occasions__stage { position: relative; border-radius: var(--radius-2xl); overflow: hidden; background: var(--card); aspect-ratio: 4/5; box-shadow: var(--shadow-card); }
+@media (min-width: 900px) { .occasions__stage { aspect-ratio: auto; min-height: 100%; } }
+.occasions__media { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .6s var(--ease-luxe); }
+.occasions__media.is-active { opacity: 1; }
+.occasions__media .media-fallback { position: absolute; inset: 0; }
+.occasions__media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.45), transparent 55%); }
+.occasions__cap { position: absolute; left: 1.25rem; bottom: 1.1rem; z-index: 1; color: #fff; font-family: var(--font-serif); font-size: 1.6rem; text-shadow: 0 2px 14px rgba(0,0,0,.4); }
+.occasions__thumb { display: none; }
+
+/* Mobile: drop the big stage, show a thumbnail per row */
+@media (max-width: 899px) {
+  .occasions__stage { display: none; }
+  .occasions__index { display: none; }
+  .occasions__thumb { display: block; position: relative; width: 4rem; height: 4rem; border-radius: var(--radius-md); overflow: hidden; }
+  .occasions__thumb .media-fallback { position: absolute; inset: 0; }
+  .occasions__arrow { opacity: 1; transform: none; }
+  .occasions__name { font-size: 1.35rem; }
+}

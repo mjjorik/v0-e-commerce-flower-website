@@ -38,6 +38,20 @@
     }, { threshold: 0.1 }).observe(heroVideo);
   }
 
+  /* ---- Shop by occasion: swap the stage image on hover/focus ---- */
+  document.querySelectorAll('[data-occasions]').forEach(function (root) {
+    var items = root.querySelectorAll('[data-occ]');
+    var medias = root.querySelectorAll('[data-occ-media]');
+    function activate(id) {
+      items.forEach(function (it) { it.classList.toggle('is-active', it.dataset.occ === id); });
+      medias.forEach(function (m) { m.classList.toggle('is-active', m.dataset.occMedia === id); });
+    }
+    items.forEach(function (it) {
+      it.addEventListener('mouseenter', function () { activate(it.dataset.occ); });
+      it.addEventListener('focus', function () { activate(it.dataset.occ); });
+    });
+  });
+
   /* ---- Shop filters drawer ---- */
   var filters = document.querySelector('[data-filters]');
   if (filters) {
