@@ -93,7 +93,8 @@ Branch: `claude/website-redesign-bugs-doj090`.
 - `setup.sh`: one-command WP+Woo+attributes+demo products+cross-sells.
 
 ### Next
-- Effects: next options — Эф11 (animated photo grid) / Эф5 (button hover) / Эф26 (more parallax).
+- Effects DONE: Эф4, Эф28, Эф29, Эф14, Эф11 (gallery hover), Эф5 (button wipe). Эф26 covered by GSAP parallax.
+- Pages still TODO: About, Contact, Occasions landing.
 - Pages still TODO: **About** (story/team/E-E-A-T), **Contact**, **Occasions** landing.
 
 ### Constraints

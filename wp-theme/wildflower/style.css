@@ -1193,3 +1193,23 @@ textarea { resize: vertical; }
 .quote-card__avatar .media-fallback { position: absolute; inset: 0; }
 .quote-card__who { display: flex; flex-direction: column; line-height: 1.25; }
 .quote-card__loc { font-size: .8rem; opacity: .8; }
+
+/* ============================================================
+   X11. Gallery interactive hover (Эф11) + button hover polish (Эф5)
+   ============================================================ */
+.gallery-grid .tile { transition: transform .45s var(--ease-luxe), box-shadow .45s var(--ease-luxe), opacity .45s var(--ease-luxe); }
+@media (hover: hover) {
+  .gallery-grid:hover .tile { opacity: .62; }
+  .gallery-grid:hover .tile:hover { opacity: 1; transform: translateY(-4px); z-index: 2; box-shadow: var(--shadow-soft); }
+}
+
+/* Outline buttons: refined fill-wipe from the bottom on hover */
+.btn--outline { position: relative; isolation: isolate; }
+.btn--outline::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; background: var(--foreground);
+  transform: scaleY(0); transform-origin: bottom; transition: transform .35s var(--ease-luxe);
+}
+@media (hover: hover) {
+  .btn--outline:hover { color: var(--background); border-color: var(--foreground); background: transparent; }
+  .btn--outline:hover::after { transform: scaleY(1); }
+}
