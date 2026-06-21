@@ -88,11 +88,12 @@ Branch: `claude/website-redesign-bugs-doj090`.
 - Theme engine + Studio remote (PWA). Homepage rebuilt (hero/trust/occasions/bestsellers/add-ons/delivery brief/how/subscription/reviews/gallery/CTA), header (logo left + icons), green footer.
 - WooCommerce: product cards (circular +), shop archive + toolbar + filter drawer (attributes + curated), single product, cart, checkout, upsells "Complete the gift" / related "You may also like".
 - Pages: **Delivery** (`page-delivery.php`), **Subscriptions** (`page-subscriptions.php`).
-- Effects: **Эф4** (occasion hover picker), **Эф28** (scroll-story video). See docs/effects/README.md.
+- Effects: **Эф4** (occasion hover picker), **Эф28** (scroll-story video), **Эф29** (hero rotating word), **Эф14** (reviews with photo avatars). See docs/effects/README.md.
+- Enlarged the botanical placeholder motif (media-fallback svg) site-wide + hero.
 - `setup.sh`: one-command WP+Woo+attributes+demo products+cross-sells.
 
 ### Next
-- Effects: **Эф29** (hero headline rotating word) → **Эф14** (reviews w/ photos).
+- Effects: next options — Эф11 (animated photo grid) / Эф5 (button hover) / Эф26 (more parallax).
 - Pages still TODO: **About** (story/team/E-E-A-T), **Contact**, **Occasions** landing.
 
 ### Constraints

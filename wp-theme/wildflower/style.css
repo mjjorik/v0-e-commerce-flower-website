@@ -218,7 +218,7 @@ p { text-wrap: pretty; }
     radial-gradient(110% 90% at 88% 92%, color-mix(in oklab, var(--terracotta) 45%, transparent) 0%, transparent 50%),
     linear-gradient(135deg, color-mix(in oklab, var(--cream) 90%, var(--sage)) 0%, var(--card) 100%);
 }
-.media-fallback svg { width: 40%; max-width: 8rem; color: color-mix(in oklab, var(--foreground) 10%, transparent); }
+.media-fallback svg { width: 58%; max-width: 13rem; color: color-mix(in oklab, var(--foreground) 14%, transparent); }
 .media-fallback__label {
   position: absolute; bottom: .75rem; left: 1rem; font-family: var(--font-serif);
   font-style: italic; font-size: .875rem; color: color-mix(in oklab, var(--foreground) 25%, transparent);
@@ -315,7 +315,7 @@ body.admin-bar .site-header { top: 32px; }
     radial-gradient(100% 80% at 92% 92%, color-mix(in oklab, var(--terracotta) 72%, transparent) 0%, transparent 64%),
     linear-gradient(145deg, color-mix(in oklab, var(--cream) 55%, var(--sage)) 0%, color-mix(in oklab, var(--cream) 62%, var(--terracotta)) 100%);
 }
-.hero__media .media-fallback svg { width: 48%; max-width: 12rem; color: color-mix(in oklab, var(--primary) 28%, transparent); }
+.hero__media .media-fallback svg { width: 64%; max-width: 20rem; color: color-mix(in oklab, var(--primary) 30%, transparent); }
 .hero__media .media-fallback__label { bottom: 1.25rem; left: 1.5rem; color: color-mix(in oklab, var(--primary) 48%, transparent); }
 @media (max-width: 767px) {
   .hero { padding-block: 3.5rem 4.5rem; }
@@ -1186,3 +1186,10 @@ textarea { resize: vertical; }
 .hero__rotate-word:first-child { position: relative; }       /* in-flow sizer / no-JS fallback */
 .hero__rotate-word.is-active { opacity: 1; transform: none; }
 .hero__rotate-word.is-out { opacity: 0; transform: translateY(-.28em); }
+
+/* Reviews with photo (Эф14) */
+.quote-card__by { display: flex; align-items: center; gap: .75rem; margin-top: 1.5rem; }
+.quote-card__avatar { position: relative; flex: 0 0 auto; width: 2.75rem; height: 2.75rem; border-radius: 999px; overflow: hidden; box-shadow: 0 0 0 1px color-mix(in oklab, #fff 25%, transparent); }
+.quote-card__avatar .media-fallback { position: absolute; inset: 0; }
+.quote-card__who { display: flex; flex-direction: column; line-height: 1.25; }
+.quote-card__loc { font-size: .8rem; opacity: .8; }

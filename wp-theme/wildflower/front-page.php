@@ -336,7 +336,10 @@ if ( '' === $markup ) {
 				<figure class="quote-card reveal" data-delay="<?php echo esc_attr( $ri * 110 ); ?>">
 					<span class="quote-card__stars">★★★★★</span>
 					<blockquote>&ldquo;<?php echo esc_html( $r[0] ); ?>&rdquo;</blockquote>
-					<figcaption><strong><?php echo esc_html( $r[1] ); ?></strong> · <?php echo esc_html( $r[2] ); ?></figcaption>
+					<figcaption class="quote-card__by">
+						<span class="quote-card__avatar"><span class="media-fallback media-fallback--<?php echo esc_attr( ( $ri % 5 ) + 1 ); ?>" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span></span>
+						<span class="quote-card__who"><strong><?php echo esc_html( $r[1] ); ?></strong><span class="quote-card__loc"><?php echo esc_html( $r[2] ); ?> · <?php esc_html_e( 'Verified buyer', 'wildflower' ); ?></span></span>
+					</figcaption>
 				</figure>
 			<?php endforeach; ?>
 		</div>
