@@ -34,7 +34,13 @@ $occasions = array(
 <section class="section page-hero" style="padding-bottom:0;">
 	<div class="container">
 		<p class="eyebrow reveal"><?php esc_html_e( 'Occasions', 'wildflower' ); ?></p>
-		<h1 class="page-hero__title kinetic"><?php echo wildflower_kinetic( __( 'Flowers that say it for you', 'wildflower' ) ); // phpcs:ignore ?></h1>
+		<?php $occ_say = array( 'happy birthday.', 'thank you.', 'get well soon.', 'I’m sorry.', 'congrats.', 'just because.' ); ?>
+		<h1 class="page-hero__title kinetic"><?php echo wildflower_kinetic( __( 'Flowers that say', 'wildflower' ) ); ?><br>
+			<span class="hero__rotate" data-rotate style="color:var(--accent);" aria-label="<?php echo esc_attr( implode( ' ', $occ_say ) ); ?>">
+				<?php foreach ( $occ_say as $si => $w ) : ?>
+					<span class="hero__rotate-word<?php echo 0 === $si ? ' is-active' : ''; ?>"><?php echo esc_html( $w ); ?></span>
+				<?php endforeach; ?>
+			</span></h1>
 		<p class="page-hero__lead reveal"><?php esc_html_e( 'Whatever the moment, there’s a bouquet for it — hand-tied and delivered same-day across Greater Boston. Pick an occasion to start.', 'wildflower' ); ?></p>
 	</div>
 </section>

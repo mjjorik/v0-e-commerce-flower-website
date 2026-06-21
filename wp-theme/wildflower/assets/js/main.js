@@ -38,6 +38,31 @@
     }, { threshold: 0.1 }).observe(heroVideo);
   }
 
+  /* ---- Count-up numbers when scrolled into view (stats) ---- */
+  (function () {
+    var nums = document.querySelectorAll('.story__stats strong, .page-hero__facts strong, .gift-terms strong, .deliv-rule__inner .gift-terms strong');
+    if (!nums.length || !('IntersectionObserver' in window)) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function run(el) {
+      var t = el.textContent.trim();
+      var m = t.match(/^(\$?)(\d+(?:\.\d+)?)(.*)$/);
+      if (!m || reduce) return;
+      var pre = m[1], target = parseFloat(m[2]), suf = m[3], dec = (m[2].split('.')[1] || '').length, dur = 1100, start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var p = Math.min(1, (ts - start) / dur);
+        var v = target * (1 - Math.pow(1 - p, 3));
+        el.textContent = pre + v.toFixed(dec) + suf;
+        if (p < 1) requestAnimationFrame(step); else el.textContent = pre + target.toFixed(dec) + suf;
+      }
+      requestAnimationFrame(step);
+    }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) { run(en.target); io.unobserve(en.target); } });
+    }, { threshold: 0.4 });
+    nums.forEach(function (n) { io.observe(n); });
+  })();
+
   /* ---- Hero headline: rotate the accent word ---- */
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.querySelectorAll('[data-rotate]').forEach(function (box) {

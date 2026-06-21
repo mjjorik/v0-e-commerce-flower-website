@@ -74,9 +74,14 @@ $faqs = array(
 		<div class="hero__grid">
 			<div class="hero__content">
 				<span class="hero__badge"><span class="dot"></span> <?php esc_html_e( 'Subscriptions', 'wildflower' ); ?></span>
+				<?php $sub_rot = array( 'on repeat.', 'weekly.', 'for you.', 'always fresh.' ); ?>
 				<h1 class="kinetic">
 					<?php echo wildflower_kinetic( __( 'Fresh flowers,', 'wildflower' ) ); ?><br>
-					<span class="italic"><?php echo wildflower_kinetic( __( 'on repeat.', 'wildflower' ) ); ?></span>
+					<span class="italic hero__rotate" data-rotate aria-label="<?php echo esc_attr( implode( ' ', $sub_rot ) ); ?>">
+						<?php foreach ( $sub_rot as $si => $w ) : ?>
+							<span class="hero__rotate-word<?php echo 0 === $si ? ' is-active' : ''; ?>"><?php echo esc_html( $w ); ?></span>
+						<?php endforeach; ?>
+					</span>
 				</h1>
 				<div class="hero__lead">
 					<p><?php esc_html_e( 'A seasonal bouquet hand-tied by our studio and delivered on your schedule. Pause, skip or cancel anytime — flowers should feel like a treat, never a chore.', 'wildflower' ); ?></p>
