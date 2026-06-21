@@ -1223,3 +1223,29 @@ textarea { resize: vertical; }
 .team-member__photo .media-fallback { position: absolute; inset: 0; }
 .team-member__name { font-family: var(--font-serif); font-size: 1.2rem; margin-top: .9rem; }
 .team-member__role { color: var(--muted-foreground); font-size: .88rem; margin-top: .1rem; }
+
+/* ============================================================
+   X13. Contact page
+   ============================================================ */
+.contact { display: grid; gap: clamp(2rem, 5vw, 3.5rem); }
+@media (min-width: 900px) { .contact { grid-template-columns: 1.2fr .8fr; align-items: start; } }
+.contact__form { display: flex; flex-direction: column; gap: 1.1rem; }
+.field { display: flex; flex-direction: column; gap: .4rem; }
+.field > span { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-foreground); }
+.field input, .field textarea, .field select {
+  width: 100%; border: 1px solid var(--border); border-radius: var(--radius-btn); padding: .85rem 1rem; background: var(--cream);
+  font: inherit; color: var(--foreground); outline: none; transition: border-color .2s, box-shadow .2s;
+}
+.field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 20%, transparent); }
+.field textarea { resize: vertical; }
+.field-row { display: grid; gap: 1.1rem; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .field-row { grid-template-columns: 1fr 1fr; } }
+.contact__form .btn--primary { align-self: flex-start; margin-top: .5rem; }
+.contact__note { font-size: .85rem; }
+.contact__card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-2xl); padding: 1.75rem; }
+.contact__details { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.1rem; }
+.contact__details li { display: flex; flex-direction: column; gap: .2rem; }
+.contact__label { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+.contact__details a:hover { color: var(--accent); }
+.contact__map { position: relative; aspect-ratio: 4/3; border-radius: var(--radius-2xl); overflow: hidden; margin-top: 1.25rem; background-color: var(--card); background-image: radial-gradient(120% 100% at 30% 20%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 55%), radial-gradient(120% 100% at 80% 90%, color-mix(in oklab, var(--primary) 22%, transparent), transparent 55%), linear-gradient(140deg, var(--cream), var(--card)); box-shadow: var(--shadow-card); }
+.contact__map .media-fallback__label { position: absolute; bottom: 1rem; left: 1.25rem; }
