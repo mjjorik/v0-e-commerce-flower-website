@@ -94,8 +94,8 @@ Branch: `claude/website-redesign-bugs-doj090`.
 
 ### Next
 - Effects DONE: Эф4, Эф28, Эф29, Эф14, Эф11 (gallery hover), Эф5 (button wipe). Эф26 covered by GSAP parallax.
-- Pages still TODO: About, Contact, Occasions landing.
-- Pages still TODO: **About** (story/team/E-E-A-T), **Contact**, **Occasions** landing.
+- Pages DONE: About (page-about.php), Contact (page-contact.php), Occasions (page-occasions.php) — all with imagery + JSON-LD.
+- Remaining: Journal/blog styling (optional), real photos, live Woo verification.
 
 ### Constraints
 - Can't run live WP/Woo in sandbox → validate via `php -l` + static renders; user verifies in WP.

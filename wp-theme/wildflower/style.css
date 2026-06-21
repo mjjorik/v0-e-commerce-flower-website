@@ -1249,3 +1249,21 @@ textarea { resize: vertical; }
 .contact__details a:hover { color: var(--accent); }
 .contact__map { position: relative; aspect-ratio: 4/3; border-radius: var(--radius-2xl); overflow: hidden; margin-top: 1.25rem; background-color: var(--card); background-image: radial-gradient(120% 100% at 30% 20%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 55%), radial-gradient(120% 100% at 80% 90%, color-mix(in oklab, var(--primary) 22%, transparent), transparent 55%), linear-gradient(140deg, var(--cream), var(--card)); box-shadow: var(--shadow-card); }
 .contact__map .media-fallback__label { position: absolute; bottom: 1rem; left: 1.25rem; }
+
+/* ============================================================
+   X14. Occasions landing grid
+   ============================================================ */
+.occ-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 760px) { .occ-grid { grid-template-columns: repeat(3, 1fr); } }
+.occ-card__link { position: relative; display: block; aspect-ratio: 4/5; border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-card); }
+.occ-card__media { position: absolute; inset: 0; }
+.occ-card__media .media-fallback { position: absolute; inset: 0; transition: transform .7s var(--ease-luxe); }
+.occ-card__link:hover .occ-card__media .media-fallback { transform: scale(1.05); }
+.occ-card__overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,.05) 55%); }
+.occ-card__cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.25rem; color: #fff; display: flex; flex-direction: column; gap: .15rem; }
+.occ-card__name { font-family: var(--font-serif); font-size: clamp(1.25rem, 2.2vw, 1.6rem); }
+.occ-card__desc { font-size: .85rem; color: rgba(255,255,255,.82); }
+.occ-card__go { margin-top: .5rem; font-size: .76rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--accent-on-dark); display: inline-flex; align-items: center; gap: .4rem; opacity: 0; transform: translateY(6px); transition: opacity .3s, transform .3s var(--ease-luxe); }
+.occ-card__go svg { width: 1rem; height: 1rem; }
+@media (hover: hover) { .occ-card__link:hover .occ-card__go { opacity: 1; transform: none; } }
+@media (hover: none) { .occ-card__go { opacity: 1; transform: none; } }
