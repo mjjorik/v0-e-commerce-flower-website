@@ -72,3 +72,29 @@ to switch/publish looks, plus a **rebuilt, editorial homepage** (new rhythm) wit
 - Cannot run live WordPress in sandbox (no MySQL/Woo, restricted net). Validate
   via `php -l` + static token renders; user verifies in real WP.
 - Studio page must live at `/studio/` (manifest start_url). Configurable later.
+
+## PROGRESS LOG (persistent memory — keep updated)
+Branch: `claude/website-redesign-bugs-doj090`.
+
+### Locked decisions
+- Default palette: **Ivory & Forest (matcha)**, restrained monochrome. NO copper.
+- `--accent-on-dark` = **champagne** (#d4c193 family) for small text on dark sections.
+- Gradients: single-hue, dark end UNDER text, soft light glow to empty corner; grain desaturated ~5%.
+- 10 curated themes in the pult (forest, slate, evergreen, aubergine, harbor, noir, bordeaux, midnight, stone, blush). Each = colours + 2 accents + on-dark + font pair + button radius.
+- Delivery model (from boston-flowers.com refs): 3 region tiers (Boston&Nearby **from $19**, Greater Boston from $25, Regional quoted) + rate ladder $19…$165+, exact fee by ZIP, **$15 on orders $85+**, 1 PM cutoff.
+- Pages are classic PHP templates; data-theme/pult-aware; SEO/GEO/AEO/E-E-A-T + JSON-LD.
+
+### Done
+- Theme engine + Studio remote (PWA). Homepage rebuilt (hero/trust/occasions/bestsellers/add-ons/delivery brief/how/subscription/reviews/gallery/CTA), header (logo left + icons), green footer.
+- WooCommerce: product cards (circular +), shop archive + toolbar + filter drawer (attributes + curated), single product, cart, checkout, upsells "Complete the gift" / related "You may also like".
+- Pages: **Delivery** (`page-delivery.php`), **Subscriptions** (`page-subscriptions.php`).
+- Effects: **Эф4** (occasion hover picker), **Эф28** (scroll-story video). See docs/effects/README.md.
+- `setup.sh`: one-command WP+Woo+attributes+demo products+cross-sells.
+
+### Next
+- Effects: **Эф29** (hero headline rotating word) → **Эф14** (reviews w/ photos).
+- Pages still TODO: **About** (story/team/E-E-A-T), **Contact**, **Occasions** landing.
+
+### Constraints
+- Can't run live WP/Woo in sandbox → validate via `php -l` + static renders; user verifies in WP.
+- Effects raw refs saved in docs/effects/ (zip + ЭфN.txt).
