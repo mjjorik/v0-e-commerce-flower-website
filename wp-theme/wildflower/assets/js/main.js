@@ -357,4 +357,26 @@
       x0 = null;
     });
   }
+
+  /* ---- Reading-progress bar (article pages) ---- */
+  (function () {
+    var bar = document.querySelector('[data-read-progress] span');
+    var article = document.querySelector('.article');
+    if (!bar || !article) return;
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var rect = article.getBoundingClientRect();
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      // Total scrollable distance through the article within the viewport.
+      var total = rect.height - vh;
+      var scrolled = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : (rect.top <= 0 ? 1 : 0);
+      bar.style.width = (scrolled * 100).toFixed(2) + '%';
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
 })();

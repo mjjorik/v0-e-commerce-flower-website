@@ -323,6 +323,56 @@ function wildflower_kinetic( $text ) {
 }
 
 /**
+ * Render one Journal post card from the current loop post (shared by the
+ * Journal index and single.php related posts).
+ *
+ * @param bool $featured Render the large featured layout.
+ */
+function wildflower_post_card( $featured = false ) {
+	$cat   = get_the_category();
+	$cname = ! empty( $cat ) ? $cat[0]->name : __( 'Journal', 'wildflower' );
+	$cls   = $featured ? 'journal-feature reveal' : 'post-card reveal';
+	?>
+	<article <?php post_class( $cls ); ?>>
+		<a class="<?php echo $featured ? 'journal-feature__media' : 'post-card__media'; ?> media" href="<?php the_permalink(); ?>">
+			<?php
+			if ( has_post_thumbnail() ) {
+				the_post_thumbnail( $featured ? 'large' : 'medium_large' );
+			} else {
+				echo '<span class="media-fallback" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+			}
+			?>
+		</a>
+		<div class="<?php echo $featured ? 'journal-feature__body' : 'post-card__body'; ?>">
+			<span class="post-card__cat"><?php echo esc_html( $featured ? __( 'Featured', 'wildflower' ) : $cname ); ?></span>
+			<?php if ( $featured ) : ?>
+				<h2 class="journal-feature__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+			<?php else : ?>
+				<h3 class="post-card__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+			<?php endif; ?>
+			<p class="post-card__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), $featured ? 32 : 18 ) ); ?></p>
+			<span class="post-card__meta"><?php echo esc_html( get_the_date() ); ?> · <?php echo esc_html( wildflower_read_time() ); ?></span>
+			<?php if ( $featured ) : ?><a class="link-underline post-card__more" href="<?php the_permalink(); ?>"><?php esc_html_e( 'Read story', 'wildflower' ); ?> →</a><?php endif; ?>
+		</div>
+	</article>
+	<?php
+}
+
+/**
+ * Estimated reading time for a post.
+ *
+ * @param int|null $post_id Post ID (defaults to current).
+ * @return string e.g. "4 min read".
+ */
+function wildflower_read_time( $post_id = null ) {
+	$content = get_post_field( 'post_content', $post_id ? $post_id : get_the_ID() );
+	$words   = str_word_count( wp_strip_all_tags( (string) $content ) );
+	$min     = max( 1, (int) ceil( $words / 200 ) );
+	/* translators: %d: minutes. */
+	return sprintf( _n( '%d min read', '%d min read', $min, 'wildflower' ), $min );
+}
+
+/**
  * Small inline arrow icon for buttons.
  *
  * @return string

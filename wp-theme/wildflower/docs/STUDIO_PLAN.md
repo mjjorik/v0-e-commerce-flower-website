@@ -96,7 +96,8 @@ Branch: `claude/website-redesign-bugs-doj090`.
 - Effects DONE: Эф4, Эф28, Эф29, Эф14, Эф11 (gallery hover), Эф5 (button wipe). Эф26 covered by GSAP parallax.
 - Pages DONE: About (page-about.php), Contact (page-contact.php), Occasions (page-occasions.php) — all with imagery + JSON-LD.
 - Inner-page effects added: count-up stats (About/Delivery/Subscriptions/Occasions), rotating headline word (Эф29) on Occasions + Subscriptions heroes, bigger hero placeholder.
-- Remaining: Journal/blog styling (optional), real photos, live Woo verification.
+- **Journal DONE**: `page-journal.php` (editorial index — featured story + 3-col `.journal-grid` of `.post-card`, demo fallback when no posts) + `single.php` (article template — fixed reading-progress bar, centered head/meta, 16:9 cover, readable `.prose` column with accent blockquote, author block, related posts via WP_Query, BlogPosting JSON-LD). Shared `wildflower_post_card()` + `wildflower_read_time()` in functions.php. Reading-progress JS in main.js (rAF-throttled, reduced-motion safe). Rendered + verified.
+- Remaining: real photos/video (Customizer), live Woo verification by user.
 
 ### Constraints
 - Can't run live WP/Woo in sandbox → validate via `php -l` + static renders; user verifies in WP.
