@@ -38,6 +38,24 @@
     }, { threshold: 0.1 }).observe(heroVideo);
   }
 
+  /* ---- Hero headline: rotate the accent word ---- */
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('[data-rotate]').forEach(function (box) {
+      var words = box.querySelectorAll('.hero__rotate-word');
+      if (words.length < 2) return;
+      var i = 0;
+      setInterval(function () {
+        words[i].classList.remove('is-active');
+        words[i].classList.add('is-out');
+        var prev = i;
+        i = (i + 1) % words.length;
+        words[i].classList.remove('is-out');
+        words[i].classList.add('is-active');
+        setTimeout(function () { words[prev].classList.remove('is-out'); }, 650);
+      }, 2600);
+    });
+  }
+
   /* ---- Scroll-story: zoom the video from a card to full-bleed on scroll ---- */
   var vstory = document.querySelector('[data-vstory]');
   if (vstory) {

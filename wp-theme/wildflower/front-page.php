@@ -48,9 +48,16 @@ if ( '' === $markup ) {
 		<div class="hero__grid">
 			<div class="hero__content">
 				<span class="hero__badge"><span class="dot"></span> <?php printf( esc_html__( 'Fresh flowers · %s', 'wildflower' ), esc_html( $brand['city'] ) ); ?></span>
+				<?php
+				$rotate = array( 'today.', 'for you.', 'hand-tied.', 'in bloom.', 'same-day.' );
+				?>
 				<h1 class="hero__title kinetic">
 					<?php echo wildflower_kinetic( 'Fresh flowers' ); ?><br>
-					<span class="hero__title-accent"><?php echo wildflower_kinetic( 'today.' ); ?></span>
+					<span class="hero__title-accent hero__rotate" data-rotate aria-label="<?php echo esc_attr( implode( ' ', $rotate ) ); ?>">
+						<?php foreach ( $rotate as $ri => $word ) : ?>
+							<span class="hero__rotate-word<?php echo 0 === $ri ? ' is-active' : ''; ?>"><?php echo esc_html( $word ); ?></span>
+						<?php endforeach; ?>
+					</span>
 				</h1>
 				<div class="hero__lead">
 					<p><?php printf( esc_html__( 'Farm-fresh bouquets and weekly subscriptions, hand-delivered same-day across Greater Boston. Order by %s.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>
