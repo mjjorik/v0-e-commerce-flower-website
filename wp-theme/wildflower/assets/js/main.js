@@ -38,6 +38,30 @@
     }, { threshold: 0.1 }).observe(heroVideo);
   }
 
+  /* ---- Scroll-story: zoom the video from a card to full-bleed on scroll ---- */
+  var vstory = document.querySelector('[data-vstory]');
+  if (vstory) {
+    var vmedia = vstory.querySelector('[data-vstory-media]');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (vmedia && window.gsap && window.ScrollTrigger && !reduce) {
+      window.gsap.registerPlugin(window.ScrollTrigger);
+      window.gsap.to(vmedia, {
+        scale: 1, borderRadius: 0, ease: 'none',
+        scrollTrigger: { trigger: vstory, start: 'top top', end: 'bottom bottom', scrub: 0.5 },
+      });
+      var vov = vstory.querySelector('[data-vstory-overlay]');
+      if (vov) {
+        window.gsap.from(vov, {
+          autoAlpha: 0, y: 40, ease: 'none',
+          scrollTrigger: { trigger: vstory, start: 'top top', end: '40% top', scrub: 0.5 },
+        });
+      }
+    } else if (vmedia) {
+      vmedia.style.transform = 'none';
+      vmedia.style.borderRadius = '0';
+    }
+  }
+
   /* ---- Shop by occasion: swap the stage image on hover/focus ---- */
   document.querySelectorAll('[data-occasions]').forEach(function (root) {
     var items = root.querySelectorAll('[data-occ]');

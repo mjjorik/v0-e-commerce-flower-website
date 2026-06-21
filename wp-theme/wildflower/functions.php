@@ -247,6 +247,30 @@ function wildflower_demo_products( $count = 6 ) {
 }
 
 /**
+ * Render the scroll-story visual: a video (uploaded or URL) that the homepage
+ * zooms on scroll, or the elegant botanical placeholder when none is set.
+ */
+function wildflower_story_visual() {
+	$video_id  = (int) get_theme_mod( 'wildflower_story_video', 0 );
+	$video_url = trim( (string) get_theme_mod( 'wildflower_story_video_url', '' ) );
+	$poster_id = (int) get_theme_mod( 'wildflower_story_image', 0 );
+
+	$src = $video_id ? (string) wp_get_attachment_url( $video_id ) : $video_url;
+
+	if ( $src ) {
+		$poster = $poster_id ? wp_get_attachment_image_url( $poster_id, 'full' ) : '';
+		printf(
+			'<video class="vstory__video" data-hero-video autoplay muted loop playsinline preload="metadata"%1$s><source src="%2$s" type="%3$s"></video>',
+			$poster ? ' poster="' . esc_url( $poster ) . '"' : '',
+			esc_url( $src ),
+			esc_attr( wildflower_video_mime( $src ) )
+		);
+		return;
+	}
+	echo '<span class="media-fallback media-fallback--2" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+}
+
+/**
  * Render a rich mosaic of clickable placeholder tiles (varied sizes — big,
  * tall and wide) that open in a lightbox. The size pattern has a total area
  * that's a multiple of 12, so it tiles flush on 2 / 3 / 4 columns with no gaps
@@ -358,6 +382,42 @@ function wildflower_customize( $wp_customize ) {
 			'description' => __( 'External MP4/WebM URL — used if no video is uploaded above.', 'wildflower' ),
 			'section'     => 'wildflower_home',
 			'type'        => 'url',
+		)
+	);
+
+	// Scroll-story video (the cinematic zoom section on the homepage).
+	$wp_customize->add_setting( 'wildflower_story_video', array( 'sanitize_callback' => 'absint' ) );
+	$wp_customize->add_control(
+		new WP_Customize_Media_Control(
+			$wp_customize,
+			'wildflower_story_video',
+			array(
+				'label'       => __( 'Scroll-story video', 'wildflower' ),
+				'description' => __( 'MP4/WebM for the full-width zoom section. Falls back to a placeholder.', 'wildflower' ),
+				'section'     => 'wildflower_home',
+				'mime_type'   => 'video',
+			)
+		)
+	);
+	$wp_customize->add_setting( 'wildflower_story_video_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
+	$wp_customize->add_control(
+		'wildflower_story_video_url',
+		array(
+			'label'       => __( 'Scroll-story video URL (optional)', 'wildflower' ),
+			'section'     => 'wildflower_home',
+			'type'        => 'url',
+		)
+	);
+	$wp_customize->add_setting( 'wildflower_story_image', array( 'sanitize_callback' => 'absint' ) );
+	$wp_customize->add_control(
+		new WP_Customize_Media_Control(
+			$wp_customize,
+			'wildflower_story_image',
+			array(
+				'label'     => __( 'Scroll-story poster image', 'wildflower' ),
+				'section'   => 'wildflower_home',
+				'mime_type' => 'image',
+			)
 		)
 	);
 }

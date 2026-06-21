@@ -196,6 +196,22 @@ if ( '' === $markup ) {
 </section>
 <?php endif; ?>
 
+<!-- 6.5 · SCROLL-STORY VIDEO (cinematic zoom) -->
+<section class="vstory" data-vstory>
+	<div class="vstory__sticky">
+		<div class="vstory__media" data-vstory-media>
+			<?php wildflower_story_visual(); ?>
+			<div class="vstory__scrim" aria-hidden="true"></div>
+			<div class="vstory__overlay" data-vstory-overlay>
+				<p class="eyebrow"><?php esc_html_e( 'In the studio', 'wildflower' ); ?></p>
+				<h2 class="vstory__title"><?php esc_html_e( 'Hand-tied, every single morning', 'wildflower' ); ?></h2>
+				<p class="vstory__lead"><?php esc_html_e( 'Real florists, real flowers, cut this week — not a warehouse. Watch a bouquet come together before it heads to your door.', 'wildflower' ); ?></p>
+				<a class="btn--accent btn--lg" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			</div>
+		</div>
+	</div>
+</section>
+
 <!-- 7 · COMPLETE THE GIFT — ADD-ONS (dark) -->
 <section class="section addons">
 	<div class="container addons__inner">
