@@ -1301,6 +1301,7 @@ body.admin-bar .read-progress { top: 32px; }
 @media (max-width: 782px) { body.admin-bar .read-progress { top: 46px; } }
 
 /* Article */
+.article { padding-bottom: clamp(3.5rem, 7vw, 6rem); }
 .article__head { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); text-align: center; }
 .article__head-inner { max-width: 46rem; margin-inline: auto; }
 .article__title { font-size: clamp(2.25rem, 5vw, 3.75rem); line-height: 1.04; margin: .5rem 0 1rem; }

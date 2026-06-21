@@ -57,6 +57,7 @@ $journal = new WP_Query(
 				array( 'Gifting', 'The right flowers for every occasion', 'A simple guide to choosing blooms that say exactly what you mean.' ),
 				array( 'Care Guide', 'Reviving a tired bouquet', 'Three quick tricks to bring drooping stems back to life.' ),
 				array( 'Seasonal', 'Why we buy local & seasonal', 'Fresher, longer-lasting, lower-impact — the case for flowers grown nearby.' ),
+				array( 'Gifting', 'Flowers that say thank you', 'Our florists’ picks for showing a little gratitude — and why they work so well.' ),
 			);
 			?>
 			<article class="journal-feature">
