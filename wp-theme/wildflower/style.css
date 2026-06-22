@@ -1182,9 +1182,8 @@ textarea { resize: vertical; }
 /* ============================================================
    X10. Hero headline rotating word (Эф29)
    ============================================================ */
-.hero__rotate { position: relative; display: inline-block; vertical-align: top; }
-.hero__rotate-word { position: absolute; left: 0; top: 0; white-space: nowrap; opacity: 0; transform: translateY(.28em); transition: opacity .45s var(--ease-luxe), transform .5s var(--ease-spring); }
-.hero__rotate-word:first-child { position: relative; }       /* in-flow sizer / no-JS fallback */
+.hero__rotate { position: relative; display: inline-grid; vertical-align: top; }
+.hero__rotate-word { grid-area: 1 / 1; white-space: nowrap; opacity: 0; transform: translateY(.28em); transition: opacity .45s var(--ease-luxe), transform .5s var(--ease-spring); }
 .hero__rotate-word.is-active { opacity: 1; transform: none; }
 .hero__rotate-word.is-out { opacity: 0; transform: translateY(-.28em); }
 

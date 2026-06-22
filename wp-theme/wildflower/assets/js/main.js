@@ -117,6 +117,17 @@
       it.addEventListener('mouseenter', function () { activate(it.dataset.occ); });
       it.addEventListener('focus', function () { activate(it.dataset.occ); });
     });
+
+    // Touch devices (no hover): tapping a link navigates, so drive the preview
+    // from scroll position — the item nearest the viewport centre wins.
+    if (window.matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting && en.intersectionRatio > 0.6) { activate(en.target.dataset.occ); }
+        });
+      }, { threshold: [0.6, 0.9], rootMargin: '-30% 0px -30% 0px' });
+      items.forEach(function (it) { io.observe(it); });
+    }
   });
 
   /* ---- Shop filters drawer ---- */
@@ -141,6 +152,9 @@
       });
     });
   }
+
+  /* ---- Site header (declared early; used by search toggle + scrolled state) ---- */
+  var header = document.querySelector('[data-site-header]');
 
   /* ---- Header search toggle ---- */
   var searchToggle = document.querySelector('[data-search-toggle]');
@@ -205,7 +219,6 @@
   }
 
   /* ---- Sticky header scrolled state ---- */
-  var header = document.querySelector('[data-site-header]');
   if (header) {
     var onScroll = function () { header.classList.toggle('is-scrolled', window.scrollY > 24); };
     onScroll();
@@ -268,16 +281,23 @@
   }
 
   /* ---- Parallax on scroll (depth on media + drifting glows) ---- */
-  if (window.gsap && window.ScrollTrigger && window.matchMedia('(min-width: 768px)').matches) {
+  if (window.gsap && window.ScrollTrigger &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     window.gsap.registerPlugin(window.ScrollTrigger);
+    // iOS/Android: don't recalc (or freeze scrubbed tweens) when the browser
+    // chrome shows/hides and resizes the viewport — keeps motion alive on mobile.
+    window.ScrollTrigger.config({ ignoreMobileResize: true });
+
+    // Lighter travel on small screens so it reads as depth, not jitter.
+    var pScale = window.matchMedia('(min-width: 768px)').matches ? 1 : 0.55;
 
     // Media layers drift at alternating speeds for depth (gallery + occasions).
     document.querySelectorAll('.gallery-grid .tile .media-fallback, .bento__tile .media-fallback').forEach(function (el, i) {
       var dir = (i % 2 === 0) ? 1 : -1;
       window.gsap.fromTo(el,
-        { yPercent: -7 * dir },
+        { yPercent: -7 * dir * pScale },
         {
-          yPercent: 7 * dir, ease: 'none',
+          yPercent: 7 * dir * pScale, ease: 'none',
           scrollTrigger: { trigger: el.closest('.tile, .bento__tile') || el, start: 'top bottom', end: 'bottom top', scrub: 0.5 },
         }
       );
@@ -285,7 +305,7 @@
 
     // Decorative blocks (glows) drift on scroll.
     document.querySelectorAll('[data-parallax]').forEach(function (el) {
-      var amt = parseFloat(el.getAttribute('data-parallax')) || 60;
+      var amt = (parseFloat(el.getAttribute('data-parallax')) || 60) * pScale;
       window.gsap.to(el, {
         y: amt, ease: 'none',
         scrollTrigger: { trigger: el.parentElement || el, start: 'top bottom', end: 'bottom top', scrub: 0.5 },
