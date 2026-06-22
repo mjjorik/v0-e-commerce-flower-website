@@ -29,8 +29,11 @@ if ( $has_woo ) {
 
 	// Six bestsellers — shown 3 at a time in a horizontal scroller.
 	$markup = do_shortcode( '[products limit="6" columns="6" visibility="featured"]' );
-	if ( false === strpos( $markup, '<li' ) ) {
-		$markup = do_shortcode( '[products limit="6" columns="6" orderby="popularity"]' );
+	if ( substr_count( $markup, '<li' ) < 6 ) {
+		$markup = do_shortcode( '[products limit="6" columns="6" category="bouquets" orderby="date" order="DESC"]' );
+	}
+	if ( substr_count( $markup, '<li' ) < 6 ) {
+		$markup = do_shortcode( '[products limit="6" columns="6" orderby="date" order="DESC"]' );
 	}
 	$markup = false === strpos( $markup, '<li' ) ? '' : $markup;
 }

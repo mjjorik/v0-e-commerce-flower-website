@@ -50,12 +50,42 @@
   display: grid !important; grid-template-columns: repeat(2, 1fr); gap: clamp(1.5rem, 3vw, 2.75rem) clamp(1rem, 2vw, 1.5rem);
   margin: 0 !important; padding: 0; list-style: none;
 }
+.woocommerce ul.products::before,
+.woocommerce ul.products::after,
+.woocommerce-page ul.products::before,
+.woocommerce-page ul.products::after {
+  content: none !important; display: none !important;
+}
 @media (min-width: 1024px) {
   .woocommerce ul.products, .woocommerce-page ul.products { grid-template-columns: repeat(3, 1fr); }
 }
 .woocommerce ul.products li.product,
 .woocommerce-page ul.products li.product {
-  width: auto !important; margin: 0 !important; float: none !important; text-align: left; position: relative;
+  width: auto !important; margin: 0 !important; float: none !important; clear: none !important; text-align: left; position: relative;
+}
+/* Homepage bestseller scroller: keep Woo's archive grid from collapsing the
+   horizontal row. The main stylesheet defines the actual card widths. */
+.products--scroll ul.products,
+.woocommerce .products--scroll ul.products,
+.woocommerce-page .products--scroll ul.products {
+  display: flex !important; gap: clamp(1rem, 2vw, 1.5rem);
+  flex: 0 0 auto; width: max-content; max-width: none;
+  margin: 0 !important; padding: 0; list-style: none;
+}
+.products--scroll ul.products li.product,
+.woocommerce .products--scroll ul.products li.product,
+.woocommerce-page .products--scroll ul.products li.product {
+  flex: 0 0 min(80vw, 22rem) !important;
+  width: min(80vw, 22rem) !important;
+  max-width: none !important;
+}
+@media (min-width: 700px) {
+  .products--scroll ul.products li.product,
+  .woocommerce .products--scroll ul.products li.product,
+  .woocommerce-page .products--scroll ul.products li.product {
+    flex-basis: clamp(14rem, 28vw, 23rem) !important;
+    width: clamp(14rem, 28vw, 23rem) !important;
+  }
 }
 /* Woo's default onsale flag → our accent badge, pinned to the media corner. */
 .woocommerce span.onsale,

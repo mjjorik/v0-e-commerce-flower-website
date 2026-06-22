@@ -234,7 +234,7 @@ p { text-wrap: pretty; }
 .reveal.is-visible { opacity: 1; transform: none; filter: none; }
 
 /* Masked, word-by-word headline reveal (the signature 2026 text motion). */
-.kinetic .word { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .12em; margin-bottom: -.12em; }
+.kinetic .word { display: inline-block; overflow: hidden; vertical-align: bottom; padding: .02em .04em .14em; margin: -.02em -.04em -.14em; }
 .kinetic .word > span { display: inline-block; transition: transform 1s var(--ease-spring); }
 .js .kinetic .word > span { transform: translateY(118%); }
 .kinetic.is-visible .word > span { transform: none; }
@@ -301,13 +301,14 @@ body.admin-bar .site-header { top: 32px; }
 .hero__badge .dot { width: .375rem; height: .375rem; border-radius: 999px; background: var(--terracotta); }
 .hero h1 { font-size: clamp(3.25rem, 8.8vw, 7.5rem); line-height: .9; letter-spacing: -0.045em; margin-top: clamp(1.5rem, 3vw, 2.25rem); }
 /* Big, bold, uppercase hero headline (reference: "FLOWERS TODAY."). */
-.hero__title { text-transform: uppercase; font-weight: 700; font-size: clamp(3.75rem, 11vw, 9rem); line-height: .86; letter-spacing: -0.04em; }
+.hero__title { text-transform: uppercase; font-weight: 700; font-size: clamp(3.75rem, 10.4vw, 8.4rem); line-height: .9; letter-spacing: -0.035em; }
+.hero__title.kinetic .word { padding: .04em .08em .16em; margin: -.04em -.08em -.16em; }
 .hero__title-accent { color: var(--accent); }
 .hero h1 .italic { font-style: italic; color: var(--accent-2); }
 .hero__lead { display: grid; justify-items: start; gap: 1.5rem; margin-top: clamp(1.75rem, 3vw, 2.5rem); }
 .hero__lead p { max-width: 29rem; font-size: clamp(1rem, 1.5vw, 1.125rem); font-weight: 500; line-height: 1.5; color: color-mix(in oklab, var(--foreground) 62%, transparent); }
 .hero__visual { min-width: 0; display: flex; justify-content: center; }
-.hero__media { position: relative; isolation: isolate; aspect-ratio: 4/5; width: min(100%, 34rem); border-radius: var(--radius-2xl); background: color-mix(in oklab, var(--sage) 60%, var(--cream)); box-shadow: 0 30px 70px -28px rgba(20,36,22,.38); }
+.hero__media { position: relative; isolation: isolate; aspect-ratio: 4/5; width: min(100%, 38rem); border-radius: var(--radius-2xl); background: color-mix(in oklab, var(--sage) 60%, var(--cream)); box-shadow: 0 30px 70px -28px rgba(20,36,22,.38); }
 .hero__media .media-fallback {
   background-color: color-mix(in oklab, var(--sage) 62%, var(--cream));
   background-image:
@@ -716,6 +717,12 @@ textarea { resize: vertical; }
 .trust-strip__text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
 .trust-strip__item strong { font-size: .9rem; }
 .trust-strip__item em { font-style: normal; font-size: .78rem; color: var(--muted-foreground); }
+@media (max-width: 767px) {
+  .trust-strip__row { gap: 1.25rem .85rem; }
+  .trust-strip__item { gap: .75rem; align-items: flex-start; }
+  .trust-strip__item strong { font-size: .98rem; line-height: 1.1; }
+  .trust-strip__item em { font-size: .84rem; line-height: 1.25; }
+}
 @media (min-width: 768px) {
   .trust-strip__row { grid-template-columns: repeat(4, 1fr); gap: 2rem; }
   .trust-strip__item + .trust-strip__item { position: relative; }
@@ -749,13 +756,24 @@ textarea { resize: vertical; }
 }
 .products--scroll::-webkit-scrollbar { display: none; }
 @media (min-width: 1024px) { .products--scroll { scroll-padding-left: 3rem; } }
-/* Woo outputs ul.products > li.product — flatten it into the flex row. */
-.products--scroll ul.products { display: contents; margin: 0; padding: 0; list-style: none; }
+/* Woo outputs ul.products > li.product; keep that list as the horizontal track. */
+.products--scroll ul.products {
+  display: flex !important; gap: clamp(1rem, 2vw, 1.5rem);
+  flex: 0 0 auto; width: max-content; max-width: none;
+  margin: 0 !important; padding: 0; list-style: none;
+}
 .products--scroll li.product,
 .products--scroll > .product {
-  flex: 0 0 80%; max-width: 80%; margin: 0; width: auto; float: none; scroll-snap-align: start;
+  flex: 0 0 min(80vw, 22rem) !important; width: min(80vw, 22rem) !important; max-width: none !important;
+  margin: 0 !important; float: none; clear: none; scroll-snap-align: start;
 }
-@media (min-width: 700px) { .products--scroll li.product, .products--scroll > .product { flex-basis: 31.5%; max-width: 31.5%; } }
+@media (min-width: 700px) {
+  .products--scroll li.product,
+  .products--scroll > .product {
+    flex-basis: clamp(14rem, 28vw, 23rem) !important;
+    width: clamp(14rem, 28vw, 23rem) !important;
+  }
+}
 /* ── Editorial product card (used in the scroller AND the shop grid) ── */
 .product { position: relative; }
 .product__media {
@@ -791,14 +809,23 @@ textarea { resize: vertical; }
 .product__body .price { display: block; color: var(--accent); font-weight: 600; font-size: 1.05rem; margin-top: .15rem; }
 .product__body .price del { color: var(--muted-foreground); font-weight: 400; margin-right: .35rem; }
 .product__body .button {
-  flex: 0 0 auto; width: 2.6rem !important; height: 2.6rem; min-width: 0 !important; padding: 0 !important; border-radius: 999px !important;
-  display: inline-flex; align-items: center; justify-content: center;
-  background-color: var(--accent) !important; background-image: var(--accent-grad) !important;
-  color: var(--accent-foreground) !important; border: 0 !important; font-size: 0 !important; line-height: 0;
-  box-shadow: 0 8px 18px -10px rgba(0,0,0,.5); transition: transform .25s var(--ease-luxe), box-shadow .25s;
+  position: relative; flex: 0 0 auto; width: 2.6rem !important; height: 2.6rem; min-width: 0 !important; padding: 0 !important; border-radius: 999px !important;
+  display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
+  background: transparent !important;
+  color: var(--accent) !important; border: 1px solid color-mix(in oklab, var(--accent) 58%, var(--border)) !important; font-size: 0 !important; line-height: 0;
+  transform: translateX(-5px);
+  box-shadow: none; transition: transform .25s var(--ease-luxe), background-color .25s var(--ease-luxe), border-color .25s var(--ease-luxe), color .25s var(--ease-luxe);
 }
-.product__body .button::before { content: '+'; font-size: 1.45rem; font-weight: 400; line-height: 1; }
-.product__body .button:hover { transform: scale(1.09); box-shadow: 0 12px 24px -10px rgba(0,0,0,.55); }
+.product__body .button::before {
+  content: '+'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 1.45rem; font-weight: 400; line-height: 1; transform: translateY(-.04em);
+}
+.product__body .button:hover {
+  transform: translateX(-5px) scale(1.06);
+  background: color-mix(in oklab, var(--accent) 9%, transparent) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
 
 /* Right-edge fade + hint signal that the row scrolls. */
 .scroller__fade {
@@ -888,13 +915,13 @@ textarea { resize: vertical; }
    X3. Mobile sticky action bar (phones only)
    ============================================================ */
 .mobile-bar {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  position: fixed; left: .75rem; right: .75rem; bottom: max(.75rem, env(safe-area-inset-bottom, 0px)); z-index: 60;
   display: none; align-items: center; justify-content: space-between; gap: 1rem;
-  padding: .7rem 1rem calc(.7rem + env(safe-area-inset-bottom, 0px));
+  padding: .7rem .85rem;
   background: color-mix(in oklab, var(--background) 90%, transparent);
-  backdrop-filter: blur(14px); border-top: 1px solid var(--border);
-  box-shadow: 0 -12px 30px -20px rgba(0,0,0,.4);
-  transform: translateY(120%); transition: transform .45s var(--ease-luxe);
+  backdrop-filter: blur(14px); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: 0 18px 36px -22px rgba(0,0,0,.45);
+  transform: translateY(calc(100% + 1.5rem)); transition: transform .45s var(--ease-luxe);
 }
 .mobile-bar.is-visible { transform: none; }
 .mobile-bar__info { display: flex; flex-direction: column; line-height: 1.2; }
@@ -903,6 +930,7 @@ textarea { resize: vertical; }
 .mobile-bar .btn--accent { white-space: nowrap; }
 @media (max-width: 767px) {
   .mobile-bar { display: flex; }
+  body { padding-bottom: 5.75rem; }
   .site-footer { padding-bottom: 4.5rem; }
 }
 
