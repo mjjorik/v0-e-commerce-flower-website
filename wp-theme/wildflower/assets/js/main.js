@@ -105,25 +105,91 @@
     }
   }
 
-  /* ---- Shop by occasion: swap the stage image on hover/focus ---- */
+  /* ---- Shop by occasion: a calm, visible-only rotating preview ---- */
   document.querySelectorAll('[data-occasions]').forEach(function (root) {
     var items = root.querySelectorAll('[data-occ]');
     var medias = root.querySelectorAll('[data-occ-media]');
-    function activate(id) {
-      items.forEach(function (it) { it.classList.toggle('is-active', it.dataset.occ === id); });
-      medias.forEach(function (m) { m.classList.toggle('is-active', m.dataset.occMedia === id); });
+    var list = root.querySelector('.occasions__list');
+    var current = 0;
+    var timer = null;
+    var rootVisible = false;
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function activate(index) {
+      if (index < 0 || index >= items.length) return;
+      current = index;
+      items.forEach(function (it, itemIndex) { it.classList.toggle('is-active', itemIndex === index); });
+      medias.forEach(function (m, mediaIndex) { m.classList.toggle('is-active', mediaIndex === index); });
     }
+
+    function stopAutoplay() {
+      if (timer) {
+        window.clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    function startAutoplay() {
+      if (reducedMotion || !rootVisible || timer || items.length < 2) return;
+      timer = window.setInterval(function () {
+        activate((current + 1) % items.length);
+      }, 3600);
+    }
+
     items.forEach(function (it) {
-      it.addEventListener('mouseenter', function () { activate(it.dataset.occ); });
-      it.addEventListener('focus', function () { activate(it.dataset.occ); });
+      var index = Number(it.dataset.occ);
+      it.addEventListener('mouseenter', function () { stopAutoplay(); activate(index); });
+      it.addEventListener('focus', function () { stopAutoplay(); activate(index); });
     });
 
-    // Touch devices (no hover): tapping a link navigates, so drive the preview
-    // from scroll position — the item nearest the viewport centre wins.
+    root.addEventListener('mouseleave', startAutoplay);
+    root.addEventListener('focusout', function (event) {
+      if (!root.contains(event.relatedTarget)) startAutoplay();
+    });
+
+    if ('IntersectionObserver' in window) {
+      var sectionObserver = new IntersectionObserver(function (entries) {
+        rootVisible = entries[0].isIntersecting;
+        if (rootVisible) startAutoplay();
+        else stopAutoplay();
+      }, { threshold: 0.2 });
+      sectionObserver.observe(root);
+    } else {
+      rootVisible = true;
+      startAutoplay();
+    }
+
+    // Desktop lists can be scrolled independently. Keep the visible row and
+    // the large preview in lockstep, then continue the gentle rotation.
+    if (list) {
+      var scrollResumeTimer = null;
+      list.addEventListener('scroll', function () {
+        var listRect = list.getBoundingClientRect();
+        var listCentre = listRect.top + (listRect.height / 2);
+        var nearestIndex = current;
+        var nearestDistance = Infinity;
+        items.forEach(function (it, index) {
+          var rect = it.getBoundingClientRect();
+          var distance = Math.abs((rect.top + (rect.height / 2)) - listCentre);
+          if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestIndex = index;
+          }
+        });
+        stopAutoplay();
+        activate(nearestIndex);
+        window.clearTimeout(scrollResumeTimer);
+        scrollResumeTimer = window.setTimeout(startAutoplay, 900);
+      }, { passive: true });
+    }
+
+    // On touch, pause as soon as the visitor starts interacting; a tap remains
+    // a normal link navigation, while vertical page scrolling updates the stage.
+    root.addEventListener('touchstart', stopAutoplay, { passive: true });
     if (window.matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) {
-          if (en.isIntersecting && en.intersectionRatio > 0.6) { activate(en.target.dataset.occ); }
+          if (en.isIntersecting && en.intersectionRatio > 0.6) { activate(Number(en.target.dataset.occ)); }
         });
       }, { threshold: [0.6, 0.9], rootMargin: '-30% 0px -30% 0px' });
       items.forEach(function (it) { io.observe(it); });

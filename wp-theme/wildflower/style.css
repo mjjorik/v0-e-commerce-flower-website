@@ -318,7 +318,7 @@ body.admin-bar .site-header { top: 32px; }
 }
 .hero__media .media-fallback svg { width: 64%; max-width: 20rem; color: color-mix(in oklab, var(--primary) 30%, transparent); }
 .hero__media .media-fallback__label { bottom: 1.25rem; left: 1.5rem; color: color-mix(in oklab, var(--primary) 48%, transparent); }
-.hero__video { object-position: center; }
+.hero__video { object-position: 50% 16%; }
 @media (max-width: 767px) {
   .hero { padding-block: 3.5rem 4.5rem; }
   .hero__lead .btn--lg { width: 100%; }
@@ -846,18 +846,31 @@ textarea { resize: vertical; }
 .addons__inner { display: grid; gap: 2rem; justify-items: start; }
 .addons__lead { margin-top: 1rem; max-width: 30rem; color: color-mix(in oklab, var(--primary-foreground) 78%, transparent); line-height: 1.6; }
 .addons__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; }
-@media (min-width: 768px) { .addons__grid { grid-template-columns: repeat(4, 1fr); } }
 .addon {
-  display: flex; flex-direction: column; gap: .5rem; padding: 1.5rem 1.25rem;
+  display: flex; flex-direction: column; gap: .5rem; min-height: 12rem; padding: 1.25rem;
   border: 1px solid color-mix(in oklab, var(--primary-foreground) 18%, transparent);
   border-radius: var(--radius-xl); background: color-mix(in oklab, var(--primary-foreground) 6%, transparent);
   transition: transform .3s var(--ease-luxe), background-color .3s var(--ease-luxe), border-color .3s var(--ease-luxe);
 }
 .addon:hover { transform: translateY(-3px); background: color-mix(in oklab, var(--primary-foreground) 11%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent); }
 .addon svg { color: var(--accent); }
-.addon__image { width: 3.25rem; height: 3.25rem; object-fit: contain; border-radius: .7rem; }
+.addon__image { width: clamp(4.25rem, 13vw, 6rem); height: clamp(4.25rem, 13vw, 6rem); object-fit: contain; border-radius: .7rem; margin-bottom: auto; }
 .addon__name { font-family: var(--font-serif); font-size: 1.1rem; margin-top: .25rem; }
 .addon__price { font-size: .85rem; color: color-mix(in oklab, var(--primary-foreground) 70%, transparent); }
+@media (min-width: 960px) {
+  .addons__inner {
+    grid-template-columns: minmax(16rem, .78fr) minmax(0, 1.22fr);
+    grid-template-areas: 'head grid' 'cta grid';
+    column-gap: clamp(2.5rem, 6vw, 6rem); row-gap: 1.5rem;
+    align-items: start;
+  }
+  .addons__head { grid-area: head; }
+  .addons__grid { grid-area: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+  .addons__inner > .btn--accent { grid-area: cta; }
+  .addon { min-height: clamp(14rem, 19vw, 17rem); padding: clamp(1.5rem, 2.5vw, 2.25rem); }
+  .addon__image { width: clamp(5.5rem, 8vw, 8.25rem); height: clamp(5.5rem, 8vw, 8.25rem); }
+  .addon__name { font-size: 1.35rem; }
+}
 
 /* 10 · Our story */
 .story { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
