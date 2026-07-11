@@ -292,7 +292,7 @@
     var pScale = window.matchMedia('(min-width: 768px)').matches ? 1 : 0.55;
 
     // Media layers drift at alternating speeds for depth (gallery + occasions).
-    document.querySelectorAll('.gallery-grid .tile .media-fallback, .bento__tile .media-fallback').forEach(function (el, i) {
+    document.querySelectorAll('.gallery-grid .tile .media-fallback, .gallery-grid .tile img, .bento__tile .media-fallback, .bento__tile img').forEach(function (el, i) {
       var dir = (i % 2 === 0) ? 1 : -1;
       window.gsap.fromTo(el,
         { yPercent: -7 * dir * pScale },

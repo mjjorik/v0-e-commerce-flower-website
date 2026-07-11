@@ -15,6 +15,7 @@ $has_woo = class_exists( 'WooCommerce' );
 $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 $cats    = array();
 $markup  = '';
+$home_media = wildflower_home_media();
 
 if ( $has_woo ) {
 	$cats = get_terms(
@@ -144,35 +145,57 @@ if ( '' === $markup ) {
 
 		<?php
 		$occasions = array(
-			array( 'Birthday', 'Make their year bloom.' ),
-			array( 'Anniversary', 'Romance, distilled into stems.' ),
-			array( 'Sympathy', 'When words fall short.' ),
-			array( 'Just Because', 'The best reason there is.' ),
-			array( 'New Baby', 'A soft hello to someone small.' ),
-			array( 'Congratulations', 'Toast the big moment.' ),
+			array( 'birthday', 'Birthday', 'Make their year bloom.', 'birthday' ),
+			array( 'anniversary', 'Anniversary', 'Romance, distilled into stems.', 'anniversary' ),
+			array( 'congratulations', 'Congratulations', 'Toast the big moment.', 'congratulations' ),
+			array( 'corporate_gifts', 'Corporate gifts', 'A thoughtful thank-you, beautifully delivered.', '' ),
+			array( 'get_well', 'Get well', 'A little brightness for the road back.', 'get-well' ),
+			array( 'housewarming', 'Housewarming', 'Something beautiful for the new place.', '' ),
+			array( 'just_because', 'Just because', 'The best reason there is.', 'just-because' ),
+			array( 'love_romance', 'Love & romance', 'Say it with flowers.', 'love-romance' ),
+			array( 'new_baby', 'New baby', 'A soft hello to someone small.', 'new-baby' ),
+			array( 'sympathy', 'Sympathy', 'When words fall short.', 'sympathy' ),
+			array( 'wedding_events', 'Wedding & events', 'Flowers for a day worth remembering.', 'wedding' ),
 		);
 		?>
 		<div class="occasions" data-occasions>
 			<div class="occasions__list">
 				<?php foreach ( $occasions as $oi => $o ) :
-					$link = $has_woo ? add_query_arg( 'occasion', sanitize_title( $o[0] ), $shop ) : home_url( '/occasions/' );
+					$link = $has_woo && $o[3] ? add_query_arg( 'occasion', $o[3], $shop ) : $shop;
+					$occasion_media_id = isset( $home_media[ 'occasion_' . $o[0] ] ) ? absint( $home_media[ 'occasion_' . $o[0] ] ) : 0;
 					?>
 					<a class="occasions__item reveal<?php echo 0 === $oi ? ' is-active' : ''; ?>" href="<?php echo esc_url( $link ); ?>" data-occ="<?php echo esc_attr( $oi ); ?>" data-delay="<?php echo esc_attr( $oi * 70 ); ?>">
-						<span class="occasions__thumb"><span class="media-fallback media-fallback--<?php echo esc_attr( ( $oi % 5 ) + 1 ); ?>" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span></span>
+						<span class="occasions__thumb">
+							<?php
+							if ( $occasion_media_id ) {
+								echo wp_get_attachment_image( $occasion_media_id, 'medium', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							} else {
+								echo '<span class="media-fallback media-fallback--' . esc_attr( ( $oi % 5 ) + 1 ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+							}
+							?>
+						</span>
 						<span class="occasions__index"><?php echo esc_html( sprintf( '%02d', $oi + 1 ) ); ?></span>
 						<span class="occasions__text">
-							<span class="occasions__name"><?php echo esc_html( $o[0] ); ?></span>
-							<span class="occasions__desc"><?php echo esc_html( $o[1] ); ?></span>
+							<span class="occasions__name"><?php echo esc_html( $o[1] ); ?></span>
+							<span class="occasions__desc"><?php echo esc_html( $o[2] ); ?></span>
 						</span>
 						<span class="occasions__arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
 					</a>
 				<?php endforeach; ?>
 			</div>
 			<div class="occasions__stage" aria-hidden="true">
-				<?php foreach ( $occasions as $oi => $o ) : ?>
+				<?php foreach ( $occasions as $oi => $o ) :
+					$occasion_media_id = isset( $home_media[ 'occasion_' . $o[0] ] ) ? absint( $home_media[ 'occasion_' . $o[0] ] ) : 0;
+					?>
 					<figure class="occasions__media<?php echo 0 === $oi ? ' is-active' : ''; ?>" data-occ-media="<?php echo esc_attr( $oi ); ?>">
-						<span class="media-fallback media-fallback--<?php echo esc_attr( ( $oi % 5 ) + 1 ); ?>"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span>
-						<figcaption class="occasions__cap"><?php echo esc_html( $o[0] ); ?></figcaption>
+						<?php
+						if ( $occasion_media_id ) {
+							echo wp_get_attachment_image( $occasion_media_id, 'large', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						} else {
+							echo '<span class="media-fallback media-fallback--' . esc_attr( ( $oi % 5 ) + 1 ) . '">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+						}
+						?>
+						<figcaption class="occasions__cap"><?php echo esc_html( $o[1] ); ?></figcaption>
 					</figure>
 				<?php endforeach; ?>
 			</div>
@@ -233,17 +256,20 @@ if ( '' === $markup ) {
 		<div class="addons__grid">
 			<?php
 			$addons = array(
-				array( 'Glass vase', '+ $18', 'M7 3h10l-1 5a5 5 0 0 1-8 0z' ),
-				array( 'Soy candle', '+ $24', 'M12 3c2 2 2 4 0 6-2-2-2-4 0-6zM8 11h8v9H8z' ),
-				array( 'Belgian truffles', '+ $16', 'M4 9h16l-2 11H6zM8 9a4 4 0 0 1 8 0' ),
-				array( 'Handwritten card', 'Free', 'M3 5h18v14H3zM3 7l9 6 9-6' ),
+				array( 'addon_vase', 'Glass vase', '+ $18' ),
+				array( 'addon_candle', 'Soy candle', '+ $24' ),
+				array( 'addon_chocolate', 'Belgian truffles', '+ $16' ),
+				array( 'addon_card', 'Handwritten card', 'Free' ),
 			);
 			foreach ( $addons as $ai => $a ) :
+				$addon_media_id = isset( $home_media[ $a[0] ] ) ? absint( $home_media[ $a[0] ] ) : 0;
 				?>
 				<div class="addon reveal" data-delay="<?php echo esc_attr( $ai * 90 ); ?>">
-					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="<?php echo esc_attr( $a[2] ); ?>"/></svg>
-					<span class="addon__name"><?php echo esc_html( $a[0] ); ?></span>
-					<span class="addon__price"><?php echo esc_html( $a[1] ); ?></span>
+					<?php if ( $addon_media_id ) : ?>
+						<?php echo wp_get_attachment_image( $addon_media_id, 'medium', false, array( 'class' => 'addon__image', 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<?php endif; ?>
+					<span class="addon__name"><?php echo esc_html( $a[1] ); ?></span>
+					<span class="addon__price"><?php echo esc_html( $a[2] ); ?></span>
 				</div>
 			<?php endforeach; ?>
 		</div>
@@ -267,6 +293,12 @@ if ( '' === $markup ) {
 				<a class="link-underline" href="<?php echo esc_url( home_url( '/delivery/' ) ); ?>"><?php esc_html_e( 'See zones & full details', 'wildflower' ); ?> →</a>
 			</div>
 			<div class="delivery__map media" aria-hidden="true">
+				<?php
+				$map_media_id = wildflower_home_media_id( 'delivery_map' );
+				if ( $map_media_id ) {
+					echo wp_get_attachment_image( $map_media_id, 'large', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+				?>
 				<span class="delivery__pin"></span>
 				<span class="media-fallback__label"><?php esc_html_e( 'Greater Boston', 'wildflower' ); ?></span>
 			</div>
@@ -304,7 +336,7 @@ if ( '' === $markup ) {
 	<div class="container">
 		<div class="sub-teaser">
 			<div class="media">
-				<?php wildflower_media( null, 'large', 'Weekly ritual', true ); ?>
+				<?php wildflower_media( wildflower_home_media_id( 'weekly_ritual' ), 'large', 'Wildflower florist holding a seasonal hand-tied bouquet', true ); ?>
 			</div>
 			<div class="sub-teaser__body reveal">
 				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
@@ -329,19 +361,28 @@ if ( '' === $markup ) {
 		</div>
 		<?php
 		$reviews = array(
-			array( 'The nicest flowers I’ve sent, and somehow the cheapest. My sister cried.', 'Maya R.', 'Back Bay' ),
-			array( 'Subscription is the best $55 I spend each week. The studio has taste.', 'Daniel K.', 'Cambridge' ),
-			array( 'Ordered at noon, delivered by 4. The bouquet looked exactly like the photo.', 'Priya S.', 'Somerville' ),
+			array( 'review_maya', 'The nicest flowers I’ve sent, and somehow the cheapest. My sister cried.', 'Maya R.', 'Back Bay' ),
+			array( 'review_daniel', 'Subscription is the best $55 I spend each week. The studio has taste.', 'Daniel K.', 'Cambridge' ),
+			array( 'review_priya', 'Ordered at noon, delivered by 4. The bouquet looked exactly like the photo.', 'Priya S.', 'Somerville' ),
 		);
 		?>
 		<div class="reviews-grid">
 			<?php foreach ( $reviews as $ri => $r ) : ?>
 				<figure class="quote-card reveal" data-delay="<?php echo esc_attr( $ri * 110 ); ?>">
 					<span class="quote-card__stars">★★★★★</span>
-					<blockquote>&ldquo;<?php echo esc_html( $r[0] ); ?>&rdquo;</blockquote>
+					<blockquote>&ldquo;<?php echo esc_html( $r[1] ); ?>&rdquo;</blockquote>
 					<figcaption class="quote-card__by">
-						<span class="quote-card__avatar"><span class="media-fallback media-fallback--<?php echo esc_attr( ( $ri % 5 ) + 1 ); ?>" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span></span>
-						<span class="quote-card__who"><strong><?php echo esc_html( $r[1] ); ?></strong><span class="quote-card__loc"><?php echo esc_html( $r[2] ); ?> · <?php esc_html_e( 'Verified buyer', 'wildflower' ); ?></span></span>
+						<span class="quote-card__avatar">
+							<?php
+							$review_media_id = wildflower_home_media_id( $r[0] );
+							if ( $review_media_id ) {
+								echo wp_get_attachment_image( $review_media_id, 'thumbnail', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							} else {
+								echo '<span class="media-fallback media-fallback--' . esc_attr( ( $ri % 5 ) + 1 ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+							}
+							?>
+						</span>
+						<span class="quote-card__who"><strong><?php echo esc_html( $r[2] ); ?></strong><span class="quote-card__loc"><?php echo esc_html( $r[3] ); ?> · <?php esc_html_e( 'Verified buyer', 'wildflower' ); ?></span></span>
 					</figcaption>
 				</figure>
 			<?php endforeach; ?>
@@ -362,7 +403,7 @@ if ( '' === $markup ) {
 		<div class="gallery-grid">
 			<?php
 			// 10 tiles, tuned to tile flush with no gaps on the 2-col mobile grid.
-			wildflower_gallery( 1, array( 'w2', 'h2', '', '', 'w2', '', 'h2', '', 'w2', 'w2' ) );
+			wildflower_gallery( 1, array( 'w2', 'h2', '', '', 'w2', '', 'h2', '', 'w2', 'w2' ), isset( $home_media['gallery'] ) && is_array( $home_media['gallery'] ) ? $home_media['gallery'] : array() );
 			?>
 		</div>
 	</div>

@@ -318,6 +318,7 @@ body.admin-bar .site-header { top: 32px; }
 }
 .hero__media .media-fallback svg { width: 64%; max-width: 20rem; color: color-mix(in oklab, var(--primary) 30%, transparent); }
 .hero__media .media-fallback__label { bottom: 1.25rem; left: 1.5rem; color: color-mix(in oklab, var(--primary) 48%, transparent); }
+.hero__video { object-position: center; }
 @media (max-width: 767px) {
   .hero { padding-block: 3.5rem 4.5rem; }
   .hero__lead .btn--lg { width: 100%; }
@@ -854,6 +855,7 @@ textarea { resize: vertical; }
 }
 .addon:hover { transform: translateY(-3px); background: color-mix(in oklab, var(--primary-foreground) 11%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent); }
 .addon svg { color: var(--accent); }
+.addon__image { width: 3.25rem; height: 3.25rem; object-fit: contain; border-radius: .7rem; }
 .addon__name { font-family: var(--font-serif); font-size: 1.1rem; margin-top: .25rem; }
 .addon__price { font-size: .85rem; color: color-mix(in oklab, var(--primary-foreground) 70%, transparent); }
 
@@ -884,6 +886,7 @@ textarea { resize: vertical; }
 .cutoff svg { color: var(--accent); }
 .cutoff strong { color: var(--accent); }
 .delivery__map { position: relative; aspect-ratio: 4/3; border-radius: var(--radius-3xl); overflow: hidden; background-color: var(--card); background-image: radial-gradient(120% 100% at 30% 20%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 55%), radial-gradient(120% 100% at 80% 90%, color-mix(in oklab, var(--primary) 22%, transparent), transparent 55%), linear-gradient(140deg, var(--cream), var(--card)); }
+.delivery__map img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .delivery__pin { position: absolute; left: 50%; top: 46%; width: 18px; height: 18px; transform: translate(-50%,-50%); border-radius: 999px; background: var(--accent); box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 28%, transparent), 0 0 0 14px color-mix(in oklab, var(--accent) 14%, transparent); }
 .delivery__map .media-fallback__label { position: absolute; bottom: 1rem; left: 1.25rem; }
 
@@ -1145,6 +1148,7 @@ textarea { resize: vertical; }
 @media (min-width: 900px) { .occasions { grid-template-columns: 1fr 1fr; align-items: stretch; } }
 
 .occasions__list { display: flex; flex-direction: column; }
+@media (min-width: 900px) { .occasions__list { max-height: 48rem; overflow-y: auto; padding-right: .75rem; scrollbar-color: color-mix(in oklab, var(--accent) 55%, transparent) transparent; scrollbar-width: thin; } }
 .occasions__item {
   position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem;
   padding: 1.25rem .25rem; border-top: 1px solid var(--border); color: var(--foreground);
@@ -1172,6 +1176,7 @@ textarea { resize: vertical; }
 .occasions__media { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .6s var(--ease-luxe); }
 .occasions__media.is-active { opacity: 1; }
 .occasions__media .media-fallback { position: absolute; inset: 0; }
+.occasions__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .occasions__media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.45), transparent 55%); }
 .occasions__cap { position: absolute; left: 1.25rem; bottom: 1.1rem; z-index: 1; color: #fff; font-family: var(--font-serif); font-size: 1.6rem; text-shadow: 0 2px 14px rgba(0,0,0,.4); }
 .occasions__thumb { display: none; }
@@ -1182,6 +1187,7 @@ textarea { resize: vertical; }
   .occasions__index { display: none; }
   .occasions__thumb { display: block; position: relative; width: 4rem; height: 4rem; border-radius: var(--radius-md); overflow: hidden; }
   .occasions__thumb .media-fallback { position: absolute; inset: 0; }
+  .occasions__thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .occasions__arrow { opacity: 1; transform: none; }
   .occasions__name { font-size: 1.35rem; }
 }
@@ -1219,6 +1225,7 @@ textarea { resize: vertical; }
 .quote-card__by { display: flex; align-items: center; gap: .75rem; margin-top: 1.5rem; }
 .quote-card__avatar { position: relative; flex: 0 0 auto; width: 2.75rem; height: 2.75rem; border-radius: 999px; overflow: hidden; box-shadow: 0 0 0 1px color-mix(in oklab, #fff 25%, transparent); }
 .quote-card__avatar .media-fallback { position: absolute; inset: 0; }
+.quote-card__avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .quote-card__who { display: flex; flex-direction: column; line-height: 1.25; }
 .quote-card__loc { font-size: .8rem; opacity: .8; }
 

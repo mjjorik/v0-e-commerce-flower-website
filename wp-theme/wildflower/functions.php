@@ -155,6 +155,30 @@ function wildflower_media( $attachment_id = null, $size = 'large', $alt = '', $s
 }
 
 /**
+ * Return the attachment IDs assigned to the homepage media slots.
+ *
+ * The IDs live in WordPress rather than the theme so a future deployment does
+ * not hard-code environment-specific attachment IDs.
+ *
+ * @return array<string, mixed>
+ */
+function wildflower_home_media() {
+	$media = get_option( 'wildflower_home_media', array() );
+	return is_array( $media ) ? $media : array();
+}
+
+/**
+ * Return one homepage media attachment ID.
+ *
+ * @param string $key Media slot key.
+ * @return int
+ */
+function wildflower_home_media_id( $key ) {
+	$media = wildflower_home_media();
+	return isset( $media[ $key ] ) ? absint( $media[ $key ] ) : 0;
+}
+
+/**
  * Map a media URL to a video MIME type by extension.
  *
  * @param string $url Media URL.
@@ -279,7 +303,7 @@ function wildflower_story_visual() {
  *
  * @param int $sets Number of pattern repetitions.
  */
-function wildflower_gallery( $sets = 1, $pattern = null ) {
+function wildflower_gallery( $sets = 1, $pattern = null, $attachment_ids = array() ) {
 	if ( null === $pattern ) {
 		$pattern = array( 'w2 h2', '', '', 'h2', 'w2', '', '', 'w2 h2', '', 'h2', 'w2', '', '', '' );
 	}
@@ -289,8 +313,13 @@ function wildflower_gallery( $sets = 1, $pattern = null ) {
 		foreach ( $pattern as $span ) {
 			$variant = ( $i % 5 ) + 1;
 			$delay   = ( $i % $len ) * 55;
+			$attachment_id = isset( $attachment_ids[ $i ] ) ? absint( $attachment_ids[ $i ] ) : 0;
 			echo '<button type="button" class="tile ' . esc_attr( $span ) . '" data-index="' . esc_attr( $i ) . '" data-delay="' . esc_attr( $delay ) . '" aria-label="' . esc_attr__( 'Open gallery image', 'wildflower' ) . '">';
-			echo '<span class="media-fallback media-fallback--' . esc_attr( $variant ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+			if ( $attachment_id ) {
+				echo wp_get_attachment_image( $attachment_id, 'large', false, array( 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			} else {
+				echo '<span class="media-fallback media-fallback--' . esc_attr( $variant ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+			}
 			echo '</button>';
 			$i++;
 		}
