@@ -98,7 +98,7 @@ $faqs = array(
 				</div>
 			</div>
 			<div class="hero__visual">
-				<div class="hero__media media" data-hero-media>
+				<div class="hero__media hero__media--subscription media" data-hero-media>
 					<?php wildflower_media( isset( $media['hero'] ) ? absint( $media['hero'] ) : 0, 'large', __( 'This week’s Wild Flower subscription bouquet', 'wildflower' ), true ); ?>
 				</div>
 				<span class="hero__chip"><span class="hero__chip-star">★</span> <?php esc_html_e( 'Loved weekly', 'wildflower' ); ?></span>
