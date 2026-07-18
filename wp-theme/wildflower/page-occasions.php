@@ -13,6 +13,7 @@ get_header();
 $brand   = wildflower_brand();
 $has_woo = class_exists( 'WooCommerce' );
 $shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+$media   = wildflower_page_media( 'occasions' );
 
 $occasions = array(
 	array( 'Birthday', 'Make their whole year bloom.' ),
@@ -49,11 +50,19 @@ $occasions = array(
 	<div class="container">
 		<ul class="occ-grid">
 			<?php foreach ( $occasions as $oi => $o ) :
-				$link = $has_woo ? add_query_arg( 'occasion', sanitize_title( $o[0] ), $shop ) : $shop;
+				$occasion_slug     = sanitize_title( $o[0] );
+				$link              = $has_woo ? add_query_arg( 'occasion', $occasion_slug, $shop ) : $shop;
+				$occasion_image_id = isset( $media[ $occasion_slug ] ) ? absint( $media[ $occasion_slug ] ) : 0;
 				?>
 				<li class="occ-card reveal" data-delay="<?php echo esc_attr( ( $oi % 3 ) * 80 ); ?>">
 					<a class="occ-card__link" href="<?php echo esc_url( $link ); ?>">
-						<span class="occ-card__media"><span class="media-fallback media-fallback--<?php echo esc_attr( ( $oi % 5 ) + 1 ); ?>" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span></span>
+						<span class="occ-card__media">
+							<?php if ( $occasion_image_id ) : ?>
+								<?php echo wp_get_attachment_image( $occasion_image_id, 'large', false, array( 'alt' => esc_attr( sprintf( __( '%s flowers by Wild Flower Boston', 'wildflower' ), $o[0] ) ), 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<?php else : ?>
+								<span class="media-fallback media-fallback--<?php echo esc_attr( ( $oi % 5 ) + 1 ); ?>" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span>
+							<?php endif; ?>
+						</span>
 						<span class="occ-card__overlay" aria-hidden="true"></span>
 						<span class="occ-card__cap">
 							<span class="occ-card__name"><?php echo esc_html( $o[0] ); ?></span>
