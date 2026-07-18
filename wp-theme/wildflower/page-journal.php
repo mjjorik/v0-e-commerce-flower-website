@@ -10,6 +10,7 @@
  */
 
 get_header();
+$journal_feature_id = wildflower_page_media_id( 'journal', 'feature' );
 
 $paged   = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
 $journal = new WP_Query(
@@ -61,7 +62,7 @@ $journal = new WP_Query(
 			);
 			?>
 			<article class="journal-feature">
-				<span class="journal-feature__media media"><span class="media-fallback media-fallback--2" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span></span>
+				<span class="journal-feature__media media"><?php wildflower_media( $journal_feature_id, 'large', __( 'Seasonal flower care arrangement by Wild Flower Boston', 'wildflower' ), true ); ?></span>
 				<div class="journal-feature__body">
 					<span class="post-card__cat"><?php esc_html_e( 'Featured', 'wildflower' ); ?></span>
 					<h2 class="journal-feature__title"><a href="#"><?php echo esc_html( $demo[0][1] ); ?></a></h2>

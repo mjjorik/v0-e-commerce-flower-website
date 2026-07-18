@@ -13,6 +13,7 @@
 
 get_header();
 $brand = wildflower_brand();
+$contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 ?>
 
 <!-- CONTACT: HEADER -->
@@ -72,9 +73,13 @@ $brand = wildflower_brand();
 						</li>
 					</ul>
 				</div>
-				<div class="contact__map media" aria-hidden="true">
-					<span class="delivery__pin"></span>
-					<span class="media-fallback__label"><?php echo esc_html( $brand['city'] ); ?></span>
+				<div class="contact__map media">
+					<?php if ( $contact_map_id ) : ?>
+						<?php echo wp_get_attachment_image( $contact_map_id, 'large', false, array( 'alt' => esc_attr__( 'Greater Boston flower delivery area map', 'wildflower' ), 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<?php else : ?>
+						<span class="delivery__pin"></span>
+						<span class="media-fallback__label"><?php echo esc_html( $brand['city'] ); ?></span>
+					<?php endif; ?>
 				</div>
 			</aside>
 		</div>

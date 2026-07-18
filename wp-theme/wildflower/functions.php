@@ -179,6 +179,35 @@ function wildflower_home_media_id( $key ) {
 }
 
 /**
+ * Return media assignment for a non-homepage template.
+ *
+ * Assignments are stored in WordPress so a theme deployment never contains
+ * environment-specific attachment IDs.
+ *
+ * @param string $page_slug Page slug used as the media group key.
+ * @return array<string, mixed>
+ */
+function wildflower_page_media( $page_slug ) {
+	$all_media = get_option( 'wildflower_page_media', array() );
+	if ( ! is_array( $all_media ) || ! isset( $all_media[ $page_slug ] ) || ! is_array( $all_media[ $page_slug ] ) ) {
+		return array();
+	}
+	return $all_media[ $page_slug ];
+}
+
+/**
+ * Return one non-homepage media attachment ID.
+ *
+ * @param string $page_slug Page slug used as the media group key.
+ * @param string $key       Media slot key.
+ * @return int
+ */
+function wildflower_page_media_id( $page_slug, $key ) {
+	$media = wildflower_page_media( $page_slug );
+	return isset( $media[ $key ] ) ? absint( $media[ $key ] ) : 0;
+}
+
+/**
  * Map a media URL to a video MIME type by extension.
  *
  * @param string $url Media URL.

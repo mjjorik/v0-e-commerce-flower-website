@@ -16,6 +16,7 @@
 get_header();
 $brand = wildflower_brand();
 $shop  = class_exists( 'WooCommerce' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+$media = wildflower_page_media( 'subscriptions' );
 
 /* Plans: name, price, cadence, featured, perks[] */
 $plans = array(
@@ -98,7 +99,7 @@ $faqs = array(
 			</div>
 			<div class="hero__visual">
 				<div class="hero__media media" data-hero-media>
-					<?php wildflower_media( null, 'large', __( 'This week’s bouquet', 'wildflower' ), true ); ?>
+					<?php wildflower_media( isset( $media['hero'] ) ? absint( $media['hero'] ) : 0, 'large', __( 'This week’s Wild Flower subscription bouquet', 'wildflower' ), true ); ?>
 				</div>
 				<span class="hero__chip"><span class="hero__chip-star">★</span> <?php esc_html_e( 'Loved weekly', 'wildflower' ); ?></span>
 				<div class="hero__float">
@@ -143,7 +144,7 @@ $faqs = array(
 	<div class="container">
 		<div class="sub-teaser">
 			<div class="media">
-				<?php wildflower_media( null, 'large', __( 'Seasonal stems', 'wildflower' ), true ); ?>
+				<?php wildflower_media( isset( $media['ritual'] ) ? absint( $media['ritual'] ) : 0, 'large', __( 'Seasonal stems from Wild Flower Boston', 'wildflower' ), true ); ?>
 			</div>
 			<div class="sub-teaser__body reveal">
 				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
@@ -230,7 +231,8 @@ $faqs = array(
 		</div>
 		<div class="subs-strip reveal">
 			<?php for ( $i = 0; $i < 6; $i++ ) : ?>
-				<span class="media"><span class="media-fallback media-fallback--<?php echo esc_attr( ( $i % 5 ) + 1 ); ?>" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span></span>
+				<?php $home_moment_id = isset( $media['homes'][ $i ] ) ? absint( $media['homes'][ $i ] ) : 0; ?>
+				<span class="media"><?php wildflower_media( $home_moment_id, 'large', sprintf( __( 'Wild Flower subscription bouquet in a Boston home %d', 'wildflower' ), $i + 1 ), false ); ?></span>
 			<?php endfor; ?>
 		</div>
 	</div>

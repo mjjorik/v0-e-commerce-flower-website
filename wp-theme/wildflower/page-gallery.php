@@ -8,6 +8,7 @@
  */
 
 get_header();
+$gallery_media = wildflower_page_media( 'gallery' );
 ?>
 <header class="page-header container">
 	<p class="eyebrow"><?php esc_html_e( 'The gallery', 'wildflower' ); ?></p>
@@ -33,7 +34,11 @@ get_header();
 	endwhile;
 	?>
 	<div class="gallery-grid">
-		<?php wildflower_gallery( 2 ); ?>
+		<?php
+		$gallery_pattern = array( 'w2 h2', '', 'h2', 'w2', '', '', 'h2', 'w2', '', '', 'w2 h2', '', 'h2', '', '', 'w2' );
+		$gallery_images  = isset( $gallery_media['images'] ) && is_array( $gallery_media['images'] ) ? $gallery_media['images'] : array();
+		wildflower_gallery( 1, $gallery_pattern, $gallery_images );
+		?>
 	</div>
 </div>
 <?php

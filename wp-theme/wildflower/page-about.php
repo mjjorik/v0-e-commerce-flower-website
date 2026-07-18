@@ -12,6 +12,7 @@
 get_header();
 $brand = wildflower_brand();
 $shop  = class_exists( 'WooCommerce' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+$media = wildflower_page_media( 'about' );
 
 $values = array(
 	array( 'M12 21v-9M12 14C8.5 14 6 11 6 7c4 0 6 3 6 7zM12 12c3.2 0 5.5-2.2 5.5-5.5C14 6.5 12 8.6 12 12z', __( 'Seasonal & local', 'wildflower' ), __( 'Cut this week from New England growers — what’s freshest, not what ships cheapest.', 'wildflower' ) ),
@@ -48,7 +49,7 @@ $team = array(
 				</div>
 			</div>
 			<div class="hero__visual">
-				<div class="hero__media media"><?php wildflower_media( null, 'large', __( 'In the studio', 'wildflower' ), true ); ?></div>
+				<div class="hero__media media"><?php wildflower_media( isset( $media['hero'] ) ? absint( $media['hero'] ) : 0, 'large', __( 'Wild Flower Boston studio bouquet', 'wildflower' ), true ); ?></div>
 			</div>
 		</div>
 	</div>
@@ -58,7 +59,7 @@ $team = array(
 <section class="section">
 	<div class="container">
 		<div class="story">
-			<div class="story__media media"><?php wildflower_media( null, 'large', __( 'Hands at work', 'wildflower' ), true ); ?></div>
+			<div class="story__media media"><?php wildflower_media( isset( $media['story'] ) ? absint( $media['story'] ) : 0, 'large', __( 'Wild Flower florist arranging seasonal flowers', 'wildflower' ), true ); ?></div>
 			<div class="story__body reveal">
 				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'Since 2015', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Flowers, the way a neighbor would do it', 'wildflower' ) ); // phpcs:ignore ?></h2>
