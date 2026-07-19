@@ -1,0 +1,29 @@
+name: FTP Path Check (diagnostic, no upload)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/wild-flower-ftp-deploy-kxx0r0
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List FTP root and public_html (read-only, uploads nothing)
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          USER: ${{ secrets.FTP_USERNAME }}
+          PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          echo "=================================================="
+          echo "WHERE DOES THIS FTP ACCOUNT LAND? (root listing)"
+          echo "=================================================="
+          curl -s --user "$USER:$PASS" "ftp://$SERVER/" || echo "root listing failed"
+          echo ""
+          echo "=================================================="
+          echo "Does a public_html/ folder exist at the root?"
+          echo "=================================================="
+          curl -s --user "$USER:$PASS" "ftp://$SERVER/public_html/" \
+            && echo ">> public_html EXISTS at root -> use server-dir: public_html/wildflower/" \
+            || echo ">> no public_html at root -> account is ALREADY inside public_html -> use server-dir: wildflower/"
