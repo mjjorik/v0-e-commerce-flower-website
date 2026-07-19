@@ -42,5 +42,8 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           protocol: ftp
+          # The FTP account lands directly INSIDE public_html (WordPress root),
+          # so the target is just wildflower/ — NOT public_html/wildflower/,
+          # which would create a nested public_html/public_html.
           local-dir: ./out/
-          server-dir: public_html/wildflower/
+          server-dir: wildflower/
