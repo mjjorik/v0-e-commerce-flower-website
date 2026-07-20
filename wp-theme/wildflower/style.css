@@ -1012,6 +1012,16 @@ textarea { resize: vertical; }
 .reviews-grid { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
 @media (min-width: 768px) { .reviews-grid { grid-template-columns: repeat(3, 1fr); } }
 .reviews-grid .quote-card { width: auto; flex: initial; border: 1px solid var(--border); }
+/* Phones: swipeable row instead of a tall stack (next card peeks). */
+@media (max-width: 767px) {
+  .reviews-grid {
+    display: flex; grid-template-columns: none; gap: .9rem;
+    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: .4rem;
+  }
+  .reviews-grid::-webkit-scrollbar { display: none; }
+  .reviews-grid .quote-card { flex: 0 0 82%; width: auto; scroll-snap-align: start; }
+}
 
 /* Matcha testimonial block — calm sage surface, light text (reference look). */
 .reviews { position: relative; background-color: var(--surface-soft); background-image: var(--grain); color: var(--surface-soft-foreground); }
@@ -1445,14 +1455,20 @@ textarea { resize: vertical; }
 .corder-hero__lead { margin: 1.5rem 0 2rem; max-width: 42rem; font-size: 1.1rem; line-height: 1.65; color: color-mix(in oklab, var(--foreground) 75%, transparent); }
 .corder-hero__cta { display: flex; flex-wrap: wrap; gap: .85rem; }
 .corder-hero__meta { margin-top: 1.5rem; font-size: .85rem; letter-spacing: .01em; color: var(--muted-foreground); }
-.corder-types { display: grid; gap: 1.25rem; grid-template-columns: 1fr; margin-top: 2.75rem; }
-@media (min-width: 620px) { .corder-types { grid-template-columns: repeat(2, 1fr); } }
+/* Many cards → a 2-up grid on phones (never one tall vertical strip),
+   3-up on desktop. */
+.corder-types { display: grid; gap: .75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 2.5rem; }
+@media (min-width: 620px) { .corder-types { gap: 1.25rem; } }
 @media (min-width: 960px) { .corder-types { grid-template-columns: repeat(3, 1fr); } }
-.corder-type { padding: 1.6rem; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--cream); transition: transform .3s var(--ease-luxe), border-color .3s var(--ease-luxe); }
+.corder-type { padding: 1.05rem; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--cream); transition: transform .3s var(--ease-luxe), border-color .3s var(--ease-luxe); }
+@media (min-width: 620px) { .corder-type { padding: 1.6rem; } }
 .corder-type:hover { transform: translateY(-3px); border-color: color-mix(in oklab, var(--accent) 55%, transparent); }
-.corder-type__ic { display: inline-flex; width: 2.6rem; height: 2.6rem; align-items: center; justify-content: center; border-radius: 999px; background: color-mix(in oklab, var(--accent) 12%, transparent); color: var(--accent); margin-bottom: 1rem; }
-.corder-type h3 { font-family: var(--font-serif); font-size: 1.25rem; }
-.corder-type p { margin-top: .4rem; font-size: .95rem; line-height: 1.55; color: color-mix(in oklab, var(--foreground) 72%, transparent); }
+.corder-type__ic { display: inline-flex; width: 2.2rem; height: 2.2rem; align-items: center; justify-content: center; border-radius: 999px; background: color-mix(in oklab, var(--accent) 12%, transparent); color: var(--accent); margin-bottom: .7rem; }
+@media (min-width: 620px) { .corder-type__ic { width: 2.6rem; height: 2.6rem; margin-bottom: 1rem; } }
+.corder-type h3 { font-family: var(--font-serif); font-size: 1.05rem; line-height: 1.15; }
+@media (min-width: 620px) { .corder-type h3 { font-size: 1.25rem; } }
+.corder-type p { margin-top: .4rem; font-size: .85rem; line-height: 1.5; color: color-mix(in oklab, var(--foreground) 72%, transparent); }
+@media (min-width: 620px) { .corder-type p { font-size: .95rem; line-height: 1.55; } }
 .corder-price { margin-top: 2.75rem; }
 .corder-price__note { margin-top: 1.75rem; max-width: 46rem; }
 .corder { display: grid; gap: clamp(2rem, 5vw, 3.5rem); }
