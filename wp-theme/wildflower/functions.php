@@ -231,6 +231,17 @@ function wildflower_brand() {
 		'handle'  => '@wildflower.boston',
 		'instagram' => 'https://instagram.com/wildflower.boston',
 		'facebook'  => 'https://facebook.com/wildflower.boston',
+		/*
+		 * Real address / geo for LocalBusiness schema + local SEO. Leave blank
+		 * until you have the exact studio details — never publish an invented
+		 * address, it hurts local ranking. Fill these to match Google Business
+		 * Profile byte-for-byte (street, ZIP, coordinates, Google Maps URL).
+		 */
+		'street'  => '',
+		'postal'  => '',
+		'lat'     => '',
+		'lng'     => '',
+		'maps'    => '',
 	);
 }
 
