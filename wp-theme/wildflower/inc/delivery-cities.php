@@ -116,6 +116,29 @@ function wildflower_delivery_cities() {
 			),
 		),
 
+		'flower-delivery-brighton' => array(
+			'name'      => 'Brighton',
+			'title'     => 'Same-Day Flower Delivery in Brighton, MA (Boston) | Wildflower',
+			'metadesc'  => 'Same-day flower delivery in Brighton, Boston — Brighton Center, Oak Square, Cleveland Circle & Washington Heights. Order by 1 PM. St. Elizabeth’s deliveries welcome.',
+			'answer'    => 'Yes — Wildflower delivers hand-tied flowers same-day throughout Brighton, from Brighton Center and Oak Square to Cleveland Circle and Washington Heights. Order by 1 PM ET for same-day.',
+			'lead'      => 'Brighton is one of the neighborhoods we deliver to most. It is dense, residential and always moving — students and young families off Comm Ave, longtime residents around Oak Square, and a steady run of get-well arrangements to St. Elizabeth’s Medical Center. We know the walk-ups and the buzzers here.',
+			'zips'      => array( '02135' ),
+			'areas'     => array( 'Brighton Center', 'Oak Square', 'Cleveland Circle', 'Washington Heights', 'Aberdeen', 'Chestnut Hill Ave', 'Brighton Mills', 'Faneuil' ),
+			'fee'       => 'Brighton is in our closest Boston & Nearby zone — same-day delivery from $19, flat $15 on orders $85+.',
+			'angle_t'   => 'St. Elizabeth’s & the everyday Brighton run',
+			'angle_b'   => 'We deliver daily to St. Elizabeth’s Medical Center — bright, low-scent bouquets sized for a bedside — and handle the everyday Brighton moments: birthdays to a triple-decker off Washington Street, move-in flowers near Boston College, and just-because bouquets around Brighton Center.',
+			'occasions' => array(
+				array( 'Get-well & St. Elizabeth’s', 'Cheerful, unscented arrangements to St. Elizabeth’s Medical Center, sized for a patient room.' ),
+				array( 'Student & family', 'Move-in and celebration flowers for the students and families along Comm Ave and Oak Square.' ),
+				array( 'Just because', 'A midweek bouquet to a Brighton walk-up that turns an ordinary day around.' ),
+			),
+			'faqs'      => array(
+				array( 'Do you deliver flowers to St. Elizabeth’s in Brighton?', 'Yes — we deliver to St. Elizabeth’s Medical Center daily. Add the patient’s floor and room at checkout and we keep hospital arrangements bright and low-scent.' ),
+				array( 'Is same-day delivery available in Brighton?', 'Yes — order by 1 PM ET for same-day delivery across Brighton, including Brighton Center, Oak Square, Cleveland Circle and Washington Heights (02135).' ),
+				array( 'Can you deliver to a Brighton apartment or triple-decker?', 'Of course. Brighton is full of walk-ups and multi-families — add the unit and any buzzer notes at checkout and our courier will reach the right door.' ),
+			),
+		),
+
 		'flower-delivery-newton' => array(
 			'name'      => 'Newton',
 			'title'     => 'Same-Day Flower Delivery in Newton, MA | Wildflower',

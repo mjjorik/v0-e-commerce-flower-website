@@ -22,7 +22,7 @@ add_action( 'after_switch_theme', 'wildflower_provision_pages' );
  * Create the theme's required pages if they do not already exist.
  */
 function wildflower_provision_pages() {
-	if ( 'v2' === get_option( 'wildflower_provisioned' ) ) {
+	if ( 'v3' === get_option( 'wildflower_provisioned' ) ) {
 		return;
 	}
 	if ( ! current_user_can( 'manage_options' ) && ! ( defined( 'DOING_CRON' ) && DOING_CRON ) && ! did_action( 'after_switch_theme' ) ) {
@@ -98,7 +98,7 @@ function wildflower_provision_pages() {
 		update_option( 'wp_page_for_privacy_policy', $ids['privacy-policy'] );
 	}
 
-	update_option( 'wildflower_provisioned', 'v2' );
+	update_option( 'wildflower_provisioned', 'v3' );
 }
 
 /**
