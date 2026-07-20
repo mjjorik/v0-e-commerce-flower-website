@@ -114,6 +114,51 @@ function wildflower_nav_items() {
 	return apply_filters( 'wildflower_nav_items', $items );
 }
 
+/**
+ * Top-level WooCommerce product categories, for the Shop dropdown.
+ *
+ * Pulled live from the catalog so the menu always mirrors whatever sections
+ * exist in the shop (Roses, Bouquets, …) without hard-coding anything. Empty
+ * categories are included so a freshly organised catalog still shows up; only
+ * the default "Uncategorized" bucket is hidden.
+ *
+ * @return array Array of array( url, label ).
+ */
+function wildflower_shop_categories() {
+	if ( ! class_exists( 'WooCommerce' ) || ! taxonomy_exists( 'product_cat' ) ) {
+		return array();
+	}
+
+	$terms = get_terms(
+		array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => false,
+			'parent'     => 0,
+			'orderby'    => 'menu_order',
+			'order'      => 'ASC',
+			'number'     => 10,
+			'exclude'    => array( (int) get_option( 'default_product_cat', 0 ) ),
+		)
+	);
+
+	if ( is_wp_error( $terms ) || empty( $terms ) ) {
+		return array();
+	}
+
+	$out = array();
+	foreach ( $terms as $term ) {
+		if ( 'uncategorized' === $term->slug ) {
+			continue;
+		}
+		$link = get_term_link( $term );
+		if ( is_wp_error( $link ) ) {
+			continue;
+		}
+		$out[] = array( $link, $term->name );
+	}
+	return $out;
+}
+
 function wildflower_nav( $menu_class = 'site-header__menu' ) {
 	$current = '';
 	if ( isset( $_SERVER['REQUEST_URI'] ) ) {
@@ -121,12 +166,33 @@ function wildflower_nav( $menu_class = 'site-header__menu' ) {
 		$current = untrailingslashit( home_url( $path ) );
 	}
 
-	$items = wildflower_nav_items();
+	$items         = wildflower_nav_items();
+	$shop_url      = ( class_exists( 'WooCommerce' ) && wc_get_page_permalink( 'shop' ) ) ? untrailingslashit( wc_get_page_permalink( 'shop' ) ) : '';
+	$shop_cats     = $shop_url ? wildflower_shop_categories() : array();
+	$is_mobile_nav = ( false !== strpos( $menu_class, 'mobile' ) );
 
 	echo '<ul class="' . esc_attr( $menu_class ) . '">';
 	foreach ( $items as $it ) {
-		$active = ( untrailingslashit( $it[0] ) === $current ) ? ' current-menu-item' : '';
-		echo '<li class="menu-item' . esc_attr( $active ) . '"><a href="' . esc_url( $it[0] ) . '">' . esc_html( $it[1] ) . '</a></li>';
+		$active       = ( untrailingslashit( $it[0] ) === $current ) ? ' current-menu-item' : '';
+		$is_shop      = ( '' !== $shop_url && untrailingslashit( $it[0] ) === $shop_url );
+		$has_children = ( $is_shop && ! empty( $shop_cats ) );
+
+		echo '<li class="menu-item' . esc_attr( $active ) . ( $has_children ? ' menu-item--has-children' : '' ) . '">';
+
+		if ( $has_children ) {
+			echo '<a href="' . esc_url( $it[0] ) . '" class="menu-item__link">' . esc_html( $it[1] );
+			echo '<svg class="menu-caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>';
+			echo '<ul class="submenu">';
+			foreach ( $shop_cats as $cat ) {
+				echo '<li><a href="' . esc_url( $cat[0] ) . '">' . esc_html( $cat[1] ) . '</a></li>';
+			}
+			echo '<li class="submenu__all"><a href="' . esc_url( $it[0] ) . '">' . esc_html__( 'All flowers', 'wildflower' ) . '</a></li>';
+			echo '</ul>';
+		} else {
+			echo '<a href="' . esc_url( $it[0] ) . '">' . esc_html( $it[1] ) . '</a>';
+		}
+
+		echo '</li>';
 	}
 	echo '</ul>';
 }

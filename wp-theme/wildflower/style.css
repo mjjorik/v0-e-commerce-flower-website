@@ -894,7 +894,7 @@ textarea { resize: vertical; }
 }
 .addon:hover { transform: translateY(-3px); background: color-mix(in oklab, var(--primary-foreground) 11%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent); }
 .addon svg { color: var(--accent); }
-.addon__image { width: clamp(4.25rem, 13vw, 6rem); height: clamp(4.25rem, 13vw, 6rem); object-fit: contain; border-radius: .7rem; margin-bottom: auto; }
+.addon__image { width: clamp(4.25rem, 13vw, 6rem); height: clamp(4.25rem, 13vw, 6rem); object-fit: cover; border-radius: .7rem; margin-bottom: auto; background: color-mix(in oklab, var(--primary-foreground) 8%, transparent); }
 .addon__name { font-family: var(--font-serif); font-size: 1.1rem; margin-top: .25rem; }
 .addon__price { font-size: .85rem; color: color-mix(in oklab, var(--primary-foreground) 70%, transparent); }
 /* Mobile: keep a 2x2 grid. Inside each card, name + price sit in their own
@@ -922,6 +922,10 @@ textarea { resize: vertical; }
     gap: 1.25rem; padding-bottom: .85rem; scroll-snap-type: x proximity;
     scrollbar-width: thin; scrollbar-color: color-mix(in oklab, var(--accent) 55%, transparent) transparent;
     scroll-padding-left: 0;
+    /* Soft fade on the right so the clipped last card melts out instead of
+       being hard-cut — hints there's more to scroll without a harsh edge. */
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 3.5rem), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 3.5rem), transparent 100%);
   }
   .addon {
     flex: 0 0 clamp(16rem, 26vw, 20rem); scroll-snap-align: start;
@@ -940,6 +944,29 @@ textarea { resize: vertical; }
 .addons .scroller__arrow:hover { background: var(--accent); color: var(--accent-foreground); border-color: var(--accent); }
 .addons .scroller__arrow:disabled:hover { background: none; color: var(--primary-foreground); border-color: color-mix(in oklab, var(--primary-foreground) 40%, transparent); }
 @media (min-width: 768px) { .addons .scroller__arrow { display: inline-flex; } }
+
+/* Buttons ON the dark green (matcha) sections. A green accent button on a green
+   section loses all contrast, so on these blocks swap the green gradient for a
+   warm champagne (the same gold used for eyebrows/prices here) with dark-green
+   text — clear and elegant, never garish. */
+.addons .btn--accent,
+.cta .btn--accent,
+.how .btn--accent {
+  background-image: none;
+  background-color: var(--accent-on-dark);
+  color: var(--primary-3);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+}
+.addons .btn--accent:hover,
+.cta .btn--accent:hover,
+.how .btn--accent:hover {
+  background-color: color-mix(in oklab, var(--accent-on-dark) 88%, white);
+  color: var(--primary-3);
+  box-shadow: 0 14px 32px -10px rgba(0, 0, 0, .5);
+}
+.addons .btn--accent .btn-arrow,
+.cta .btn--accent .btn-arrow,
+.how .btn--accent .btn-arrow { color: var(--primary-3); }
 
 /* 10 · Our story */
 .story { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
@@ -1039,6 +1066,54 @@ textarea { resize: vertical; }
 }
 .site-header__menu a:hover::after,
 .site-header__menu .current-menu-item > a::after { width: 100%; }
+
+/* ---- Shop dropdown: live catalog categories ---- */
+.site-header__menu .menu-item--has-children { position: relative; }
+.site-header__menu .menu-item__link { display: inline-flex; align-items: center; gap: .28rem; }
+.menu-caret { opacity: .65; transition: transform .25s var(--ease-luxe); }
+.site-header__menu .menu-item--has-children:hover .menu-caret,
+.site-header__menu .menu-item--has-children:focus-within .menu-caret { transform: rotate(180deg); }
+/* Invisible bridge across the gap so the panel stays open on the way down. */
+.site-header__menu .menu-item--has-children::before {
+  content: ''; position: absolute; top: 100%; left: -.5rem; right: -.5rem; height: 1.1rem;
+}
+.site-header__menu .submenu {
+  position: absolute; top: 100%; left: 50%; margin-top: .7rem; padding: .5rem;
+  transform: translateX(-50%) translateY(8px);
+  min-width: 13.5rem; list-style: none;
+  background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: 0 22px 46px -22px rgba(0, 0, 0, .38);
+  display: grid; gap: .05rem;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .24s var(--ease-luxe), transform .24s var(--ease-luxe), visibility .24s;
+  z-index: 70;
+}
+.site-header__menu .menu-item--has-children:hover .submenu,
+.site-header__menu .menu-item--has-children:focus-within .submenu {
+  opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0);
+}
+.site-header__menu .submenu a {
+  display: block; padding: .5rem .7rem; border-radius: var(--radius-md);
+  font-size: .875rem; font-weight: 500; color: color-mix(in oklab, var(--foreground) 78%, transparent);
+  transition: background-color .2s, color .2s;
+}
+.site-header__menu .submenu a::after { display: none; }
+.site-header__menu .submenu a:hover { background: var(--muted); color: var(--foreground); }
+.site-header__menu .submenu__all { margin-top: .2rem; border-top: 1px solid var(--border); padding-top: .3rem; }
+.site-header__menu .submenu__all a { color: var(--accent); font-weight: 600; }
+
+/* Mobile: categories sit indented under Shop (menu is a full-screen list). */
+.mobile-nav__menu .menu-item__link { display: inline-flex; align-items: center; gap: .4rem; }
+.mobile-nav__menu .menu-caret { display: none; }
+.mobile-nav__menu .submenu {
+  list-style: none; margin: .5rem 0 .7rem; padding-left: .15rem;
+  display: flex; flex-direction: column; gap: .45rem;
+}
+.mobile-nav__menu .submenu a {
+  font-family: var(--font-sans); font-size: 1.15rem; font-weight: 500;
+  color: color-mix(in oklab, var(--foreground) 70%, transparent);
+}
+.mobile-nav__menu .submenu__all a { color: var(--accent); font-weight: 600; }
 
 /* Action icons (search / account / cart / burger). */
 .site-header__actions { gap: .15rem; }
