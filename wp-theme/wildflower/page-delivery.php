@@ -92,6 +92,36 @@ $faqs = array(
 	</div>
 </section>
 
+<!-- COVERAGE AT A GLANCE (table — scannable + AI-citable) -->
+<section class="section">
+	<div class="container">
+		<div class="section-head"><div style="max-width:40rem;"><p class="eyebrow reveal"><?php esc_html_e( 'Coverage at a glance', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Zones, cut-off & rates', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
+		<div class="deliv-table__scroll reveal">
+			<table class="deliv-table">
+				<thead>
+					<tr>
+						<th scope="col"><?php esc_html_e( 'Zone', 'wildflower' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Same-day cut-off', 'wildflower' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Delivery from', 'wildflower' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Example areas', 'wildflower' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $tiers as $t ) : ?>
+						<tr>
+							<th scope="row"><?php echo esc_html( $t[0] ); ?></th>
+							<td><?php echo esc_html( 'By arrangement' === $t[2] ? __( 'By arrangement', 'wildflower' ) : sprintf( __( 'Same-day · order by %s', 'wildflower' ), $cutoff ) ); ?></td>
+							<td class="deliv-table__fee"><?php echo esc_html( str_replace( array( 'Rates from ', 'Quoted individually' ), array( '', __( 'By quote', 'wildflower' ) ), $t[1] ) ); ?></td>
+							<td><?php echo esc_html( implode( ', ', array_slice( $t[3], 0, 6 ) ) ); ?><?php echo count( $t[3] ) > 6 ? '…' : ''; ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
+		<p class="price-zones__note muted" style="margin-top:1.25rem;"><?php printf( esc_html__( 'Exact fee is set by destination ZIP and shown at checkout. Delivery is a flat $15 on orders of $85+. We deliver across all of Greater Boston and, by arrangement, beyond — order by %s ET for same-day.', 'wildflower' ), esc_html( $cutoff ) ); ?></p>
+	</div>
+</section>
+
 <!-- COVERAGE BY REGION (GEO) -->
 <section class="section section--alt">
 	<div class="container">
