@@ -63,8 +63,10 @@
     nums.forEach(function (n) { io.observe(n); });
   })();
 
-  /* ---- Hero headline: rotate the accent word ---- */
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  /* ---- Hero headline: rotate the accent word ----
+     Runs regardless of the OS "reduce motion" setting: this is a small,
+     non-vestibular text swap the brand wants on every device. */
+  {
     document.querySelectorAll('[data-rotate]').forEach(function (box) {
       var words = box.querySelectorAll('.hero__rotate-word');
       if (words.length < 2) return;
@@ -113,7 +115,9 @@
     var current = 0;
     var timer = null;
     var rootVisible = false;
-    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Auto-advance on every device — the brand wants this picker moving on
+    // mobile too, so we do not gate it behind the OS "reduce motion" flag.
+    var reducedMotion = false;
 
     function activate(index) {
       if (index < 0 || index >= items.length) return;
@@ -339,9 +343,10 @@
     }
   }
 
-  /* ---- Parallax on scroll (depth on media + drifting glows) ---- */
-  if (window.gsap && window.ScrollTrigger &&
-      !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  /* ---- Parallax on scroll (depth on media + drifting glows) ----
+     Runs on all devices (incl. when the OS "reduce motion" flag is on) — the
+     brand wants the gallery/media parallax visible on mobile too. */
+  if (window.gsap && window.ScrollTrigger) {
     window.gsap.registerPlugin(window.ScrollTrigger);
     // iOS/Android: don't recalc (or freeze scrubbed tweens) when the browser
     // chrome shows/hides and resizes the viewport — keeps motion alive on mobile.
