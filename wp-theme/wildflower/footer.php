@@ -41,6 +41,18 @@ $brand = wildflower_brand();
 		?>
 		<div class="footer-cols">
 			<div>
+				<h3><?php esc_html_e( 'Shop', 'wildflower' ); ?></h3>
+				<ul class="footer-menu">
+					<?php
+					$wf_shop_menu = function_exists( 'wildflower_shop_menu' ) ? wildflower_shop_menu() : array();
+					foreach ( $wf_shop_menu as $wf_sit ) :
+						?>
+						<li><a href="<?php echo esc_url( $wf_sit[0] ); ?>"><?php echo esc_html( $wf_sit[1] ); ?></a></li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+
+			<div>
 				<h3><?php esc_html_e( 'Explore', 'wildflower' ); ?></h3>
 				<ul class="footer-menu">
 					<?php foreach ( $wf_explore as $wf_it ) : ?>

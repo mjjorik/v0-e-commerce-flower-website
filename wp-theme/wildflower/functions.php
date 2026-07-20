@@ -115,48 +115,66 @@ function wildflower_nav_items() {
 }
 
 /**
- * Top-level WooCommerce product categories, for the Shop dropdown.
+ * Resolve a WooCommerce product category to its archive URL by trying a list of
+ * candidate slugs/names. Returns the real term link when the category exists;
+ * otherwise a safe fallback to the shop filtered by the first candidate slug
+ * (which shows all products until the category is created, never a 404, and
+ * self-heals into the clean category URL once the term exists).
  *
- * Pulled live from the catalog so the menu always mirrors whatever sections
- * exist in the shop (Roses, Bouquets, …) without hard-coding anything. Empty
- * categories are included so a freshly organised catalog still shows up; only
- * the default "Uncategorized" bucket is hidden.
+ * @param array  $candidates Slugs/names to try, in order.
+ * @param string $shop_url   Shop page URL (fallback base).
+ * @return string
+ */
+function wildflower_resolve_product_cat( $candidates, $shop_url ) {
+	$candidates = (array) $candidates;
+	if ( class_exists( 'WooCommerce' ) && taxonomy_exists( 'product_cat' ) ) {
+		foreach ( $candidates as $c ) {
+			$term = get_term_by( 'slug', sanitize_title( $c ), 'product_cat' );
+			if ( ! $term ) {
+				$term = get_term_by( 'name', $c, 'product_cat' );
+			}
+			if ( $term && ! is_wp_error( $term ) ) {
+				$link = get_term_link( $term );
+				if ( ! is_wp_error( $link ) ) {
+					return $link;
+				}
+			}
+		}
+	}
+	$slug = ! empty( $candidates ) ? sanitize_title( $candidates[0] ) : '';
+	return $slug ? add_query_arg( 'product_cat', $slug, $shop_url ) : $shop_url;
+}
+
+/**
+ * Curated "Shop" dropdown: the sections the studio sells, in a fixed order.
+ *
+ * Best sellers / New arrivals are the shop sorted by popularity / date (no
+ * setup needed). Roses, Bouquets, Tin Can Bouquets and Gifts resolve to the
+ * matching product category (created in WooCommerce → Products → Categories);
+ * until a category exists the link falls back to the shop, so nothing 404s.
+ * Custom order points at the dedicated /custom-order/ page.
  *
  * @return array Array of array( url, label ).
  */
-function wildflower_shop_categories() {
-	if ( ! class_exists( 'WooCommerce' ) || ! taxonomy_exists( 'product_cat' ) ) {
-		return array();
-	}
+function wildflower_shop_menu() {
+	$shop = ( class_exists( 'WooCommerce' ) && wc_get_page_permalink( 'shop' ) ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 
-	$terms = get_terms(
-		array(
-			'taxonomy'   => 'product_cat',
-			'hide_empty' => false,
-			'parent'     => 0,
-			'orderby'    => 'menu_order',
-			'order'      => 'ASC',
-			'number'     => 10,
-			'exclude'    => array( (int) get_option( 'default_product_cat', 0 ) ),
-		)
+	$items = array(
+		array( add_query_arg( 'orderby', 'popularity', $shop ), __( 'Best sellers', 'wildflower' ) ),
+		array( add_query_arg( 'orderby', 'date', $shop ), __( 'New arrivals', 'wildflower' ) ),
+		array( wildflower_resolve_product_cat( array( 'roses', 'rose' ), $shop ), __( 'Roses', 'wildflower' ) ),
+		array( wildflower_resolve_product_cat( array( 'bouquets', 'bouquet' ), $shop ), __( 'Bouquets', 'wildflower' ) ),
+		array( wildflower_resolve_product_cat( array( 'tin-can-bouquets', 'tin can bouquets', 'tin-can', 'tin can' ), $shop ), __( 'Tin Can Bouquets', 'wildflower' ) ),
+		array( wildflower_resolve_product_cat( array( 'gifts', 'gift', 'add-ons', 'addons' ), $shop ), __( 'Gifts', 'wildflower' ) ),
+		array( home_url( '/custom-order/' ), __( 'Custom order', 'wildflower' ) ),
 	);
 
-	if ( is_wp_error( $terms ) || empty( $terms ) ) {
-		return array();
-	}
-
-	$out = array();
-	foreach ( $terms as $term ) {
-		if ( 'uncategorized' === $term->slug ) {
-			continue;
-		}
-		$link = get_term_link( $term );
-		if ( is_wp_error( $link ) ) {
-			continue;
-		}
-		$out[] = array( $link, $term->name );
-	}
-	return $out;
+	/**
+	 * Filter the curated Shop dropdown items (header + footer share this list).
+	 *
+	 * @param array $items Array of array( url, label ).
+	 */
+	return apply_filters( 'wildflower_shop_menu', $items );
 }
 
 function wildflower_nav( $menu_class = 'site-header__menu' ) {
@@ -168,7 +186,7 @@ function wildflower_nav( $menu_class = 'site-header__menu' ) {
 
 	$items         = wildflower_nav_items();
 	$shop_url      = ( class_exists( 'WooCommerce' ) && wc_get_page_permalink( 'shop' ) ) ? untrailingslashit( wc_get_page_permalink( 'shop' ) ) : '';
-	$shop_cats     = $shop_url ? wildflower_shop_categories() : array();
+	$shop_cats     = $shop_url ? wildflower_shop_menu() : array();
 	$is_mobile_nav = ( false !== strpos( $menu_class, 'mobile' ) );
 
 	echo '<ul class="' . esc_attr( $menu_class ) . '">';
