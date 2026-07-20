@@ -90,22 +90,6 @@ $team = array(
 	</div>
 </section>
 
-<!-- TEAM (E-E-A-T) -->
-<section class="section">
-	<div class="container">
-		<div class="section-head"><div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'The hands behind it', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Meet the studio', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
-		<ul class="team-grid">
-			<?php foreach ( $team as $ti => $m ) : ?>
-				<li class="team-member reveal" data-delay="<?php echo esc_attr( $ti * 80 ); ?>">
-					<span class="team-member__photo"><span class="media-fallback media-fallback--<?php echo esc_attr( ( $ti % 5 ) + 1 ); ?>" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span></span>
-					<h3 class="team-member__name"><?php echo esc_html( $m[0] ); ?></h3>
-					<p class="team-member__role"><?php echo esc_html( $m[1] ); ?></p>
-				</li>
-			<?php endforeach; ?>
-		</ul>
-	</div>
-</section>
-
 <!-- CTA -->
 <section class="section" style="padding-top:0;">
 	<div class="container">

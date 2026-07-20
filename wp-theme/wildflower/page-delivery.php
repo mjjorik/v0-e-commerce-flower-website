@@ -36,7 +36,7 @@ $tiers = array(
 );
 
 /* The published rate ladder (exact fee resolved by destination ZIP). */
-$rates = array( '$19', '$25', '$35', '$40', '$45', '$50', '$55', '$65', '$75', '$85', '$105', '$135', '$165+' );
+$rates = array( '$19', '$25', '$35', '$40', '$45+' );
 
 /* FAQ — drives the on-page accordion and FAQPage schema (AEO). */
 $faqs = array(
@@ -46,7 +46,7 @@ $faqs = array(
 	),
 	array(
 		__( 'How much does flower delivery cost?', 'wildflower' ),
-		__( 'Delivery is calculated from the destination ZIP code: Boston & Nearby starts at $19, Greater Boston from $25, and regional deliveries are quoted individually. Rates step up by distance ($19, $25, $35 … up to $165+) and the exact fee is shown at checkout. Spend $85 or more and delivery is a flat $15.', 'wildflower' ),
+		__( 'Delivery is calculated from the destination ZIP code: Boston & Nearby starts at $19, Greater Boston from $25, and regional deliveries are quoted individually. Rates step up by distance ($19, $25, $35 … up to $45+) and the exact fee is shown at checkout. Spend $85 or more and delivery is a flat $15.', 'wildflower' ),
 	),
 	array(
 		__( 'Which areas do you deliver to?', 'wildflower' ),
@@ -232,7 +232,7 @@ wildflower_print_jsonld(
 			'name'        => 'Same-day flower delivery — Greater Boston',
 			'provider'    => array( '@id' => $home . '#business' ),
 			'areaServed'  => $all_areas,
-			'offers'      => array( '@type' => 'Offer', 'priceCurrency' => 'USD', 'priceSpecification' => array( '@type' => 'PriceSpecification', 'minPrice' => 15, 'maxPrice' => 165, 'priceCurrency' => 'USD' ) ),
+			'offers'      => array( '@type' => 'Offer', 'priceCurrency' => 'USD', 'priceSpecification' => array( '@type' => 'PriceSpecification', 'minPrice' => 15, 'maxPrice' => 45, 'priceCurrency' => 'USD' ) ),
 			'url'         => get_permalink(),
 		),
 		array(

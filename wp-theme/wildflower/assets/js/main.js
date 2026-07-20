@@ -183,17 +183,10 @@
       }, { passive: true });
     }
 
-    // On touch, pause as soon as the visitor starts interacting; a tap remains
-    // a normal link navigation, while vertical page scrolling updates the stage.
-    root.addEventListener('touchstart', stopAutoplay, { passive: true });
-    if (window.matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (en.isIntersecting && en.intersectionRatio > 0.6) { activate(Number(en.target.dataset.occ)); }
-        });
-      }, { threshold: [0.6, 0.9], rootMargin: '-30% 0px -30% 0px' });
-      items.forEach(function (it) { io.observe(it); });
-    }
+    // On touch devices the section simply auto-advances on its own (like the
+    // WeFixit Electronics picker) — the row highlights each occasion in turn and
+    // the large preview swaps to match. We intentionally do NOT drive the active
+    // item from finger swipes / page scroll, which felt unpredictable.
   });
 
   /* ---- Shop filters drawer ---- */
@@ -354,17 +347,19 @@
     // chrome shows/hides and resizes the viewport — keeps motion alive on mobile.
     window.ScrollTrigger.config({ ignoreMobileResize: true });
 
-    // Lighter travel on small screens so it reads as depth, not jitter.
-    var pScale = window.matchMedia('(min-width: 768px)').matches ? 1 : 0.55;
+    // Lighter travel on small screens so it reads as depth, not jitter — but
+    // still clearly visible (the media has 11% headroom to drift within).
+    var pScale = window.matchMedia('(min-width: 768px)').matches ? 1 : 0.7;
 
-    // Media layers drift at alternating speeds for depth (gallery + occasions).
-    document.querySelectorAll('.gallery-grid .tile .media-fallback, .gallery-grid .tile img, .bento__tile .media-fallback, .bento__tile img').forEach(function (el, i) {
+    // Media layers drift at alternating speeds for depth (gallery, occasions,
+    // and journal article-preview cards — same parallax as the gallery tiles).
+    document.querySelectorAll('.gallery-grid .tile .media-fallback, .gallery-grid .tile img, .bento__tile .media-fallback, .bento__tile img, .post-card__media img, .post-card__media .media-fallback, .journal-feature__media img, .journal-feature__media .media-fallback').forEach(function (el, i) {
       var dir = (i % 2 === 0) ? 1 : -1;
       window.gsap.fromTo(el,
         { yPercent: -7 * dir * pScale },
         {
           yPercent: 7 * dir * pScale, ease: 'none',
-          scrollTrigger: { trigger: el.closest('.tile, .bento__tile') || el, start: 'top bottom', end: 'bottom top', scrub: 0.5 },
+          scrollTrigger: { trigger: el.closest('.tile, .bento__tile, .post-card__media, .journal-feature__media') || el, start: 'top bottom', end: 'bottom top', scrub: 0.5 },
         }
       );
     });

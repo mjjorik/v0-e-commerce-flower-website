@@ -558,13 +558,12 @@ textarea { resize: vertical; }
 .gallery-grid .tile:hover .media-fallback, .gallery-grid .tile:hover img { transform: scale(1.05); }
 
 /* Parallax: give media layers vertical headroom so they can drift on scroll
-   without revealing edges (desktop/tablet only — disabled on small screens). */
-@media (min-width: 768px) {
-  .gallery-grid .tile .media-fallback,
-  .gallery-grid .tile img,
-  .bento__tile .media-fallback,
-  .bento__tile .media img { inset: -11% 0 auto 0; height: 122%; will-change: transform; }
-}
+   without revealing edges. Applied on ALL screen sizes so the effect works on
+   mobile too (JS drives it at a gentler amplitude on small screens). */
+.gallery-grid .tile .media-fallback,
+.gallery-grid .tile img,
+.bento__tile .media-fallback,
+.bento__tile .media img { inset: -11% 0 auto 0; height: 122%; will-change: transform; }
 
 /* ============================================================
    14b. Lightbox
@@ -848,13 +847,17 @@ textarea { resize: vertical; }
 .addons { position: relative; background-color: var(--primary); background-image: var(--grain), var(--primary-grad); color: var(--primary-foreground); border-radius: 0; }
 .addons__inner { display: grid; gap: 2rem; justify-items: start; }
 .addons__lead { margin-top: 1rem; max-width: 30rem; color: color-mix(in oklab, var(--primary-foreground) 78%, transparent); line-height: 1.6; }
-.addons__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; }
+.addons__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; width: 100%; }
+/* Narrow phones: a single column so the cards can never crowd or overlap. */
+@media (max-width: 460px) { .addons__grid { grid-template-columns: 1fr; } .addon { min-height: 0; } }
 .addon {
+  min-width: 0;
   display: flex; flex-direction: column; gap: .5rem; min-height: 12rem; padding: 1.25rem;
   border: 1px solid color-mix(in oklab, var(--primary-foreground) 18%, transparent);
   border-radius: var(--radius-xl); background: color-mix(in oklab, var(--primary-foreground) 6%, transparent);
   transition: transform .3s var(--ease-luxe), background-color .3s var(--ease-luxe), border-color .3s var(--ease-luxe);
 }
+.addon__name { overflow-wrap: anywhere; }
 .addon:hover { transform: translateY(-3px); background: color-mix(in oklab, var(--primary-foreground) 11%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent); }
 .addon svg { color: var(--accent); }
 .addon__image { width: clamp(4.25rem, 13vw, 6rem); height: clamp(4.25rem, 13vw, 6rem); object-fit: contain; border-radius: .7rem; margin-bottom: auto; }
@@ -1325,7 +1328,7 @@ textarea { resize: vertical; }
 .journal-feature { display: grid; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
 @media (min-width: 860px) { .journal-feature { grid-template-columns: 1.1fr .9fr; } }
 .journal-feature__media { position: relative; display: block; aspect-ratio: 4/3; border-radius: var(--radius-2xl); overflow: hidden; background: var(--card); box-shadow: var(--shadow-card); }
-.journal-feature__media img, .journal-feature__media .media-fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease-luxe); }
+.journal-feature__media img, .journal-feature__media .media-fallback { position: absolute; inset: -11% 0 auto 0; width: 100%; height: 122%; object-fit: cover; transition: transform .7s var(--ease-luxe); will-change: transform; }
 .journal-feature:hover .journal-feature__media img, .journal-feature:hover .journal-feature__media .media-fallback { transform: scale(1.04); }
 .journal-feature__title { font-family: var(--font-serif); font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.05; margin: .5rem 0 .75rem; }
 .journal-feature__title a:hover { color: var(--accent); }
@@ -1334,7 +1337,7 @@ textarea { resize: vertical; }
 @media (min-width: 640px) { .journal-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .journal-grid { grid-template-columns: repeat(3, 1fr); } }
 .post-card__media { position: relative; display: block; aspect-ratio: 4/3; border-radius: var(--radius-lg); overflow: hidden; background: var(--card); box-shadow: var(--shadow-card); }
-.post-card__media img, .post-card__media .media-fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease-luxe); }
+.post-card__media img, .post-card__media .media-fallback { position: absolute; inset: -11% 0 auto 0; width: 100%; height: 122%; object-fit: cover; transition: transform .7s var(--ease-luxe); will-change: transform; }
 .post-card:hover .post-card__media img, .post-card:hover .post-card__media .media-fallback { transform: scale(1.05); }
 .post-card__body { padding-top: 1rem; }
 .post-card__cat { font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .14em; color: var(--accent); }
