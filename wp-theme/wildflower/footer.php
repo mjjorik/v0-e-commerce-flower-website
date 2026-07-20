@@ -13,32 +13,52 @@ $brand = wildflower_brand();
 	<div class="container site-footer__main">
 		<h2 class="site-footer__statement"><?php esc_html_e( 'Flowers for every day, not just occasions.', 'wildflower' ); ?></h2>
 
+		<?php
+		/*
+		 * Footer navigation is built from the SAME source as the header
+		 * (wildflower_nav_items), split into two balanced columns so every page
+		 * in the header also appears in the footer. Add WooCommerce account
+		 * links so the footer is complete.
+		 */
+		$wf_nav_items  = function_exists( 'wildflower_nav_items' ) ? wildflower_nav_items() : array();
+		$wf_info_slugs = array( '/journal/', '/delivery/', '/about/', '/contact/' );
+		$wf_explore    = array();
+		$wf_company    = array();
+		foreach ( $wf_nav_items as $wf_it ) {
+			$wf_is_info = false;
+			foreach ( $wf_info_slugs as $wf_slug ) {
+				if ( false !== strpos( trailingslashit( $wf_it[0] ), $wf_slug ) ) {
+					$wf_is_info = true;
+					break;
+				}
+			}
+			if ( $wf_is_info ) {
+				$wf_company[] = $wf_it;
+			} else {
+				$wf_explore[] = $wf_it;
+			}
+		}
+		?>
 		<div class="footer-cols">
-			<?php if ( has_nav_menu( 'footer' ) ) : ?>
-				<div>
-					<h3><?php esc_html_e( 'Explore', 'wildflower' ); ?></h3>
-					<?php
-					wp_nav_menu(
-						array(
-							'theme_location' => 'footer',
-							'container'      => false,
-							'menu_class'     => 'footer-menu',
-							'depth'          => 1,
-							'fallback_cb'    => false,
-						)
-					);
-					?>
-				</div>
-			<?php endif; ?>
+			<div>
+				<h3><?php esc_html_e( 'Explore', 'wildflower' ); ?></h3>
+				<ul class="footer-menu">
+					<?php foreach ( $wf_explore as $wf_it ) : ?>
+						<li><a href="<?php echo esc_url( $wf_it[0] ); ?>"><?php echo esc_html( $wf_it[1] ); ?></a></li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
 
 			<div>
-				<h3><?php esc_html_e( 'Help', 'wildflower' ); ?></h3>
+				<h3><?php esc_html_e( 'Company', 'wildflower' ); ?></h3>
 				<ul class="footer-menu">
+					<?php foreach ( $wf_company as $wf_it ) : ?>
+						<li><a href="<?php echo esc_url( $wf_it[0] ); ?>"><?php echo esc_html( $wf_it[1] ); ?></a></li>
+					<?php endforeach; ?>
 					<?php if ( class_exists( 'WooCommerce' ) ) : ?>
-						<li><a href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>"><?php esc_html_e( 'Shop', 'wildflower' ); ?></a></li>
+						<li><a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>"><?php esc_html_e( 'My account', 'wildflower' ); ?></a></li>
 						<li><a href="<?php echo esc_url( wc_get_cart_url() ); ?>"><?php esc_html_e( 'Basket', 'wildflower' ); ?></a></li>
 					<?php endif; ?>
-					<li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Contact', 'wildflower' ); ?></a></li>
 				</ul>
 			</div>
 

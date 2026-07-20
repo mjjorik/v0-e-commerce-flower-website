@@ -86,13 +86,14 @@ add_action( 'wp_enqueue_scripts', 'wildflower_assets' );
  *
  * @param string $menu_class Class for the <ul>.
  */
-function wildflower_nav( $menu_class = 'site-header__menu' ) {
-	$current = '';
-	if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-		$path    = wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH );
-		$current = untrailingslashit( home_url( $path ) );
-	}
-
+/**
+ * The single source of truth for the primary navigation. Used by BOTH the
+ * header and the footer so the two never drift apart. Each item is
+ * array( url, label ).
+ *
+ * @return array
+ */
+function wildflower_nav_items() {
 	$items = array( array( home_url( '/' ), __( 'Home', 'wildflower' ) ) );
 	if ( class_exists( 'WooCommerce' ) && wc_get_page_permalink( 'shop' ) ) {
 		$items[] = array( wc_get_page_permalink( 'shop' ), __( 'Shop', 'wildflower' ) );
@@ -104,6 +105,23 @@ function wildflower_nav( $menu_class = 'site-header__menu' ) {
 	$items[] = array( home_url( '/delivery/' ), __( 'Delivery', 'wildflower' ) );
 	$items[] = array( home_url( '/about/' ), __( 'About', 'wildflower' ) );
 	$items[] = array( home_url( '/contact/' ), __( 'Contact', 'wildflower' ) );
+
+	/**
+	 * Filter the primary nav items (header + footer share this list).
+	 *
+	 * @param array $items Array of array( url, label ).
+	 */
+	return apply_filters( 'wildflower_nav_items', $items );
+}
+
+function wildflower_nav( $menu_class = 'site-header__menu' ) {
+	$current = '';
+	if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+		$path    = wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH );
+		$current = untrailingslashit( home_url( $path ) );
+	}
+
+	$items = wildflower_nav_items();
 
 	echo '<ul class="' . esc_attr( $menu_class ) . '">';
 	foreach ( $items as $it ) {
