@@ -87,12 +87,71 @@ add_action(
 	20
 );
 
+/* ------------------------------------------------------------------
+   Per-card photo slider: replace the single loop thumbnail with a
+   swipeable gallery (featured image + product gallery images). Flip
+   with arrows on desktop, native swipe on touch. Falls back to a
+   single image (no chrome) or the placeholder when there's <2 images.
+   ------------------------------------------------------------------ */
+remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
+add_action( 'woocommerce_before_shop_loop_item_title', 'wildflower_loop_product_gallery', 10 );
+
+function wildflower_loop_product_gallery() {
+	global $product;
+	if ( ! $product ) {
+		return;
+	}
+
+	$ids      = array();
+	$featured = $product->get_image_id();
+	if ( $featured ) {
+		$ids[] = (int) $featured;
+	}
+	foreach ( (array) $product->get_gallery_image_ids() as $gid ) {
+		$gid = (int) $gid;
+		if ( $gid && ! in_array( $gid, $ids, true ) ) {
+			$ids[] = $gid;
+		}
+	}
+
+	// No images → theme flower placeholder.
+	if ( empty( $ids ) ) {
+		echo '<span class="media-fallback" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+		return;
+	}
+
+	// One image → plain, no slider chrome.
+	if ( count( $ids ) < 2 ) {
+		echo wp_get_attachment_image( $ids[0], 'woocommerce_thumbnail', false, array( 'class' => 'product__img', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore
+		return;
+	}
+
+	// Multiple images → slider.
+	$stroke = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+	echo '<div class="card-slider" data-card-slider>';
+	echo '<div class="card-slider__track" data-card-slider-track>';
+	foreach ( $ids as $i => $id ) {
+		echo '<div class="card-slider__slide">';
+		echo wp_get_attachment_image( $id, 'woocommerce_thumbnail', false, array( 'class' => 'product__img', 'loading' => 0 === $i ? 'eager' : 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore
+		echo '</div>';
+	}
+	echo '</div>';
+	echo '<button type="button" class="card-slider__arrow card-slider__arrow--prev" data-card-prev aria-label="' . esc_attr__( 'Previous photo', 'wildflower' ) . '"><svg width="18" height="18" viewBox="0 0 24 24" ' . $stroke . '><path d="M15 18l-6-6 6-6"/></svg></button>'; // phpcs:ignore
+	echo '<button type="button" class="card-slider__arrow card-slider__arrow--next" data-card-next aria-label="' . esc_attr__( 'Next photo', 'wildflower' ) . '"><svg width="18" height="18" viewBox="0 0 24 24" ' . $stroke . '><path d="M9 6l6 6-6 6"/></svg></button>'; // phpcs:ignore
+	echo '<div class="card-slider__dots" aria-hidden="true">';
+	foreach ( $ids as $i => $id ) {
+		echo '<span class="card-slider__dot' . ( 0 === $i ? ' is-active' : '' ) . '"></span>';
+	}
+	echo '</div>';
+	echo '</div>';
+}
+
 /* Friendlier add-to-cart label in loops. */
 add_filter(
 	'woocommerce_product_add_to_cart_text',
 	function ( $text, $product ) {
 		if ( $product && $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock() ) {
-			return __( 'Add to basket', 'wildflower' );
+			return __( 'Add to cart', 'wildflower' );
 		}
 		return $text;
 	},

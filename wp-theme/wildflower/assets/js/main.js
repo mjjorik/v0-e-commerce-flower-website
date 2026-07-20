@@ -274,6 +274,40 @@
     update();
   });
 
+  /* ---- Per-card photo slider (each product card flips through its own photos) ---- */
+  document.querySelectorAll('[data-card-slider]').forEach(function (root) {
+    var track = root.querySelector('[data-card-slider-track]');
+    if (!track) return;
+    var prev = root.querySelector('[data-card-prev]');
+    var next = root.querySelector('[data-card-next]');
+    var dots = root.querySelectorAll('.card-slider__dot');
+
+    function slideWidth() {
+      var s = track.querySelector('.card-slider__slide');
+      return s ? s.getBoundingClientRect().width : track.clientWidth;
+    }
+    function update() {
+      var w = slideWidth() || 1;
+      var idx = Math.round(track.scrollLeft / w);
+      dots.forEach(function (d, i) { d.classList.toggle('is-active', i === idx); });
+      if (prev) prev.disabled = track.scrollLeft <= 2;
+      if (next) next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+    }
+    function go(dir, e) {
+      // Don't let the arrow click bubble to the card's "View bouquet" link.
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      track.scrollBy({ left: dir * slideWidth(), behavior: 'smooth' });
+    }
+    if (prev) prev.addEventListener('click', function (e) { go(-1, e); });
+    if (next) next.addEventListener('click', function (e) { go(1, e); });
+    var ticking = false;
+    track.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(function () { ticking = false; update(); }); }
+    }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+
   /* ---- Announcement bar ---- */
   var announce = document.querySelector('[data-announce]');
   var announceClose = document.querySelector('[data-announce-close]');
