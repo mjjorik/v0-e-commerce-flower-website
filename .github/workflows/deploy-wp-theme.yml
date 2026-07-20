@@ -1,0 +1,71 @@
+name: Deploy WP Theme to Client (FTP)
+
+# Deploys ONLY the Wildflower theme to the live client site (boston-wildflower.com)
+# via FTP, into wp-content/themes/wildflower/. It never touches wp-content/uploads,
+# the database, WordPress core, or anything outside the theme folder.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/website-redesign-bugs-doj090
+    paths:
+      - 'wp-theme/wildflower/**'
+      - '.github/workflows/deploy-wp-theme.yml'
+
+concurrency:
+  group: wp-theme-ftp-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Inspect remote themes and back up the current theme
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          USER: ${{ secrets.FTP_USERNAME }}
+          PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          echo "== Themes currently on the server =="
+          lftp -u "$USER","$PASS" -e "set ftp:ssl-allow no; cls -l wp-content/themes/; bye" "ftp://$SERVER" || echo "(could not list themes)"
+          echo "== Backing up the current wildflower theme =="
+          mkdir -p theme-backup
+          lftp -u "$USER","$PASS" -e "set ftp:ssl-allow no; mirror --verbose=0 wp-content/themes/wildflower ./theme-backup/wildflower; bye" "ftp://$SERVER" \
+            && tar -czf theme-backup.tgz -C theme-backup wildflower \
+            && echo "Backup created ($(du -h theme-backup.tgz | cut -f1))" \
+            || echo "No existing theme found to back up (first deploy?)"
+
+      - name: Upload theme backup artifact (rollback copy)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wildflower-theme-backup
+          path: theme-backup.tgz
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Deploy theme via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          local-dir: ./wp-theme/wildflower/
+          server-dir: wp-content/themes/wildflower/
+          # Keep the deployed theme lean and never expose repo-only material.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.DS_Store
+            docs/**
+            scripts/**
