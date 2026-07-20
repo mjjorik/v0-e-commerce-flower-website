@@ -56,24 +56,38 @@ remove_action( 'woocommerce_before_shop_loop_item', 'woocommerce_template_loop_p
 remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close', 5 );
 remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
 
-// Open the media wrapper (no enclosing <a>, so the add button can live inside).
+// Open the media wrapper. It is a <div> (not an <a>) because it holds the
+// photo slider's arrow <button>s, and an <a> may not contain buttons. The
+// data-href lets JS open the product on a tap/click (main.js), while the
+// product title below is a real <a> for keyboard, SEO and no-JS access.
 add_action(
 	'woocommerce_before_shop_loop_item',
 	function () {
-		echo '<div class="product__media">';
+		echo '<div class="product__media" data-href="' . esc_url( get_permalink() ) . '">';
 	},
 	10
 );
 
-// After thumbnail + sale flash: full-cover hover link, then close media and
-// open the text body (title + price on the left).
+// After thumbnail + sale flash: a visual "View bouquet" hover label (not a
+// link — navigation is handled by the media tap and the title link), then
+// close media and open the text body (title + price on the left).
 add_action(
 	'woocommerce_before_shop_loop_item_title',
 	function () {
-		echo '<a class="product__view" href="' . esc_url( get_permalink() ) . '"><span>' . esc_html__( 'View bouquet', 'wildflower' ) . '</span></a>';
+		echo '<span class="product__view" aria-hidden="true"><span>' . esc_html__( 'View bouquet', 'wildflower' ) . '</span></span>';
 		echo '</div><div class="product__body"><div class="product__info">';
 	},
 	20
+);
+
+// Make the loop title a real link to the product (accessible + crawlable).
+remove_action( 'woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title', 10 );
+add_action(
+	'woocommerce_shop_loop_item_title',
+	function () {
+		echo '<h2 class="woocommerce-loop-product__title"><a href="' . esc_url( get_permalink() ) . '">' . esc_html( get_the_title() ) . '</a></h2>';
+	},
+	10
 );
 
 // Close the info, then the circular add button sits to the RIGHT of name/price.

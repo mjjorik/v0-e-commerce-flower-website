@@ -78,8 +78,8 @@
         i = (i + 1) % words.length;
         words[i].classList.remove('is-out');
         words[i].classList.add('is-active');
-        setTimeout(function () { words[prev].classList.remove('is-out'); }, 650);
-      }, 2600);
+        setTimeout(function () { words[prev].classList.remove('is-out'); }, 550);
+      }, 1500);
     });
   }
 
@@ -322,6 +322,25 @@
     }, { passive: true });
     window.addEventListener('resize', function () { update(); settle(); });
     update();
+  });
+
+  /* ---- Product card: tap/click the image opens the product page ----
+     The media isn't a wrapping <a> (it holds the slider's arrow buttons, and
+     <a> can't contain buttons), so navigate in JS. A drag/swipe never counts
+     as a tap, and clicks on the arrows / add button are ignored. */
+  document.querySelectorAll('.product__media[data-href]').forEach(function (media) {
+    var href = media.getAttribute('data-href');
+    if (!href) return;
+    var sx = 0, sy = 0, moved = false;
+    media.addEventListener('pointerdown', function (e) { sx = e.clientX; sy = e.clientY; moved = false; }, { passive: true });
+    media.addEventListener('pointermove', function (e) {
+      if (Math.abs(e.clientX - sx) > 8 || Math.abs(e.clientY - sy) > 8) { moved = true; }
+    }, { passive: true });
+    media.addEventListener('click', function (e) {
+      if (moved) return;
+      if (e.target.closest('button, a, [data-card-prev], [data-card-next], .card-slider__dots')) return;
+      window.location.href = href;
+    });
   });
 
   /* ---- Custom order request form → pre-filled email (no plugin needed) ---- */

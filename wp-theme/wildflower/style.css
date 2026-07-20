@@ -481,8 +481,8 @@ body.admin-bar .site-header { top: 32px; }
 .ig-strip .media { aspect-ratio: 1; }
 .site-footer__main { padding-block: 4rem; }
 .site-footer__statement { max-width: 48rem; font-size: clamp(2rem,5vw,3.75rem); line-height: 1.05; }
-.footer-cols { display: grid; gap: 2.5rem; margin-top: 3.5rem; }
-@media (min-width: 560px){ .footer-cols { grid-template-columns: repeat(2,1fr); } }
+/* Two columns on phones (never one tall stretched column), scaling up wider. */
+.footer-cols { display: grid; gap: 2rem 1.5rem; margin-top: 3.5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 900px){ .footer-cols { grid-template-columns: repeat(3,1fr); gap: 2rem 2.25rem; } }
 @media (min-width: 1200px){ .footer-cols { grid-template-columns: repeat(5,minmax(0,1fr)); } }
 .footer-cols h3 { font-family: var(--font-sans); font-size: .75rem; text-transform: uppercase; letter-spacing: .2em; color: var(--muted-foreground); }
@@ -805,10 +805,12 @@ textarea { resize: vertical; }
 .product:hover .product__media img,
 .product:hover .product__media .media-fallback { transform: scale(1.05); }
 
-/* Hover overlay (desktop): gradient + "View bouquet". Mobile relies on the +. */
+/* Hover label (desktop): gradient + "View bouquet". Visual only — it never
+   captures pointer events, so the card's tap-to-open and the slider swipe work
+   underneath it. Navigation comes from the media tap (JS) and the title link. */
 .product__view {
   position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 1rem 1.1rem; z-index: 1;
-  color: #fff; font-weight: 600; font-size: .95rem;
+  color: #fff; font-weight: 600; font-size: .95rem; pointer-events: none;
   background: linear-gradient(to top, rgba(0,0,0,.5), rgba(0,0,0,0) 58%);
   opacity: 0; transition: opacity .45s var(--ease-luxe);
 }
@@ -816,6 +818,9 @@ textarea { resize: vertical; }
 .product:hover .product__view { opacity: 1; }
 .product:hover .product__view span { transform: none; }
 @media (hover: none) { .product__view { display: none; } }
+/* Product card title as a link — inherit the card's ink, no underline. */
+.product__info .woocommerce-loop-product__title a { color: inherit; text-decoration: none; }
+.product__media[data-href] { cursor: pointer; }
 
 /* Per-card photo slider (featured + gallery). Native swipe on touch, arrows on
    desktop hover, dots track the position. Sits inside .product__media. */
@@ -826,25 +831,22 @@ textarea { resize: vertical; }
 .card-slider__slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease-luxe); }
 .card-slider__arrow {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 4;
-  width: 2.2rem; height: 2.2rem; display: none; align-items: center; justify-content: center;
-  border: none; border-radius: 999px; cursor: pointer; padding: 0;
+  width: 1.9rem; height: 1.9rem; display: inline-flex; align-items: center; justify-content: center;
+  border: none; border-radius: 999px; cursor: pointer; padding: 0; opacity: .92;
   background: color-mix(in oklab, #ffffff 92%, transparent); color: var(--foreground);
   box-shadow: 0 3px 12px rgba(0,0,0,.28); transition: opacity .25s var(--ease-luxe), background-color .25s;
 }
-.card-slider__arrow--prev { left: .6rem; }
-.card-slider__arrow--next { right: .6rem; }
+.card-slider__arrow--prev { left: .5rem; }
+.card-slider__arrow--next { right: .5rem; }
 .card-slider__arrow:disabled { opacity: 0; pointer-events: none; }
 .card-slider__arrow:hover:not(:disabled) { background: #fff; }
 .card-slider__dots { position: absolute; left: 0; right: 0; bottom: .55rem; z-index: 3; display: flex; gap: .3rem; justify-content: center; pointer-events: none; }
 .card-slider__dot { width: 5px; height: 5px; border-radius: 999px; background: color-mix(in oklab, #ffffff 55%, transparent); box-shadow: 0 1px 2px rgba(0,0,0,.35); transition: background-color .25s, width .25s var(--ease-luxe); }
 .card-slider__dot.is-active { background: #fff; width: 13px; }
-/* Wide screens: always show the left/right arrows so it's obvious the photos
-   flip (brighter on hover). Phones & tablets rely on native finger-swipe. This
-   is width-based, not hover-based, so touch monitors still get the arrows. */
-@media (min-width: 1000px) {
-  .card-slider__arrow { display: inline-flex; opacity: .82; }
-  .product:hover .card-slider__arrow:not(:disabled) { opacity: 1; }
-}
+/* Arrows show on every device so it's obvious the photos flip; phones can also
+   swipe. On desktop they brighten on card hover. */
+.product:hover .card-slider__arrow:not(:disabled) { opacity: 1; }
+@media (min-width: 768px) { .card-slider__arrow { width: 2.2rem; height: 2.2rem; } }
 
 .product__media .badge--accent { position: absolute; top: .7rem; left: .7rem; z-index: 2; }
 
@@ -973,6 +975,19 @@ textarea { resize: vertical; }
 .addons .btn--accent .btn-arrow,
 .cta .btn--accent .btn-arrow,
 .how .btn--accent .btn-arrow { color: var(--primary-3); }
+
+/* Phones: the "Browse add-ons" button (no scroller arrows here) sits centered
+   and reads as an outline, not a filled block. */
+@media (max-width: 767px) {
+  .addons__foot { justify-content: center; }
+  .addons__foot .btn--accent {
+    background: transparent; background-image: none;
+    border: 1px solid color-mix(in oklab, var(--primary-foreground) 55%, transparent);
+    color: var(--primary-foreground); box-shadow: none;
+  }
+  .addons__foot .btn--accent .btn-arrow { color: var(--primary-foreground); }
+  .addons__foot .btn--accent:hover { background: color-mix(in oklab, var(--primary-foreground) 12%, transparent); }
+}
 
 /* 10 · Our story */
 .story { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
@@ -1354,15 +1369,33 @@ textarea { resize: vertical; }
 .occasions__cap { position: absolute; left: 1.25rem; bottom: 1.1rem; z-index: 1; color: #fff; font-family: var(--font-serif); font-size: 1.6rem; text-shadow: 0 2px 14px rgba(0,0,0,.4); }
 .occasions__thumb { display: none; }
 
-/* Mobile: drop the big stage, show a thumbnail per row */
+/* Mobile: drop the big stage and lay the occasions out as a compact horizontal
+   card scroller (image on top, name below) instead of a tall vertical list that
+   eats the whole screen. Swipe sideways; ~2 cards visible with the next peeking. */
 @media (max-width: 899px) {
+  .occasions { display: block; }
   .occasions__stage { display: none; }
   .occasions__index { display: none; }
-  .occasions__thumb { display: block; position: relative; width: 4rem; height: 4rem; border-radius: var(--radius-md); overflow: hidden; }
+  .occasions__list {
+    display: flex; flex-direction: row; gap: .9rem; margin-top: 2rem; max-height: none;
+    overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 0 .5rem;
+  }
+  .occasions__list::-webkit-scrollbar { display: none; }
+  .occasions__item {
+    flex: 0 0 45%; display: flex; flex-direction: column; align-items: stretch; gap: .55rem;
+    padding: 0; border: 0; scroll-snap-align: start; transition: none;
+  }
+  .occasions__item:last-child { border: 0; }
+  .occasions__item.is-active { padding-left: 0; }
+  .occasions__thumb { display: block; position: relative; width: 100%; height: auto; aspect-ratio: 4/5; border-radius: var(--radius-lg); overflow: hidden; }
   .occasions__thumb .media-fallback { position: absolute; inset: 0; }
   .occasions__thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .occasions__arrow { opacity: 1; transform: none; }
-  .occasions__name { font-size: 1.35rem; }
+  .occasions__text { min-width: 0; }
+  .occasions__name { font-size: 1.05rem; line-height: 1.15; }
+  .occasions__item.is-active .occasions__name { color: var(--foreground); }
+  .occasions__desc { display: none; }
+  .occasions__arrow { display: none; }
 }
 
 /* ============================================================

@@ -348,7 +348,7 @@ if ( '' === $markup ) {
 				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Fresh flowers, every week', 'wildflower' ) ); // phpcs:ignore ?></h2>
 				<p style="margin-top:1.25rem;max-width:28rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.6;"><?php esc_html_e( 'A standing order of seasonal blooms, chosen by our studio and delivered like clockwork. Pause, skip or cancel anytime — no strings, just stems.', 'wildflower' ); ?></p>
-				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$55</span> <span style="font-size:1rem;color:var(--muted-foreground);">/ delivery</span></p>
+				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$75</span> <span style="font-size:1rem;color:var(--muted-foreground);">/ delivery</span></p>
 				<a class="btn--primary" style="margin-top:1.75rem;" href="<?php echo esc_url( home_url( '/subscriptions/' ) ); ?>"><?php esc_html_e( 'Explore subscriptions', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 			</div>
 		</div>
@@ -368,7 +368,7 @@ if ( '' === $markup ) {
 		<?php
 		$reviews = array(
 			array( 'review_maya', 'The nicest flowers I’ve sent, and somehow the cheapest. My sister cried.', 'Maya R.', 'Back Bay' ),
-			array( 'review_daniel', 'Subscription is the best $55 I spend each week. The studio has taste.', 'Daniel K.', 'Cambridge' ),
+			array( 'review_daniel', 'Subscription is the best $75 I spend each week. The studio has taste.', 'Daniel K.', 'Cambridge' ),
 			array( 'review_priya', 'Ordered at noon, delivered by 4. The bouquet looked exactly like the photo.', 'Priya S.', 'Somerville' ),
 		);
 		?>
