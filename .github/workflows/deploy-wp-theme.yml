@@ -37,14 +37,18 @@ jobs:
           LFTP_OPTS="set ftp:ssl-allow no; set ftp:passive-mode on; set net:timeout 15; set net:max-retries 2; set net:reconnect-interval-base 5;"
           echo "== Themes currently on the server =="
           timeout 60 lftp -u "$USER","$PASS" -e "$LFTP_OPTS cls -l wp-content/themes/; bye" "ftp://$SERVER" || echo "(could not list themes)"
-          echo "== Backing up the current wildflower theme (max ~150s) =="
+          echo "== Backing up the current wildflower theme (single connection, max ~150s) =="
           mkdir -p theme-backup
-          timeout 150 lftp -u "$USER","$PASS" -e "$LFTP_OPTS set mirror:parallel-transfer-count 3; mirror --verbose=0 wp-content/themes/wildflower ./theme-backup/wildflower; bye" "ftp://$SERVER"
+          timeout 150 lftp -u "$USER","$PASS" -e "$LFTP_OPTS mirror --verbose=0 wp-content/themes/wildflower ./theme-backup/wildflower; bye" "ftp://$SERVER"
           if [ -d theme-backup/wildflower ] && [ -n "$(ls -A theme-backup/wildflower 2>/dev/null)" ]; then
             tar -czf theme-backup.tgz -C theme-backup wildflower && echo "Backup created ($(du -h theme-backup.tgz | cut -f1))"
           else
             echo "Backup skipped or timed out — proceeding. Note: the first FTP deploy overwrites files but does NOT delete unknown remote files."
           fi
+          # Cool-down so the shared-host FTP connection slots free up before the
+          # deploy step connects (avoids 'Timeout (control socket)').
+          echo "Cooling down 20s before deploy..."
+          sleep 20
           exit 0
 
       - name: Upload theme backup artifact (rollback copy)
@@ -64,6 +68,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           protocol: ftp
+          timeout: 90000
           local-dir: ./wp-theme/wildflower/
           server-dir: wp-content/themes/wildflower/
           # Keep the deployed theme lean and never expose repo-only material.
