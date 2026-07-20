@@ -481,6 +481,12 @@ body.admin-bar .site-header { top: 32px; }
 .ig-strip .media { aspect-ratio: 1; }
 .site-footer__main { padding-block: 4rem; }
 .site-footer__statement { max-width: 48rem; font-size: clamp(2rem,5vw,3.75rem); line-height: 1.05; }
+/* Delivery-area links row (internal links to the city landing pages). */
+.footer-areas { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem 1rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid color-mix(in oklab, var(--primary-foreground) 15%, transparent); font-size: .85rem; }
+.footer-areas__label { color: color-mix(in oklab, var(--primary-foreground) 55%, transparent); text-transform: uppercase; letter-spacing: .1em; font-size: .72rem; }
+.site-footer .footer-areas a { color: color-mix(in oklab, var(--primary-foreground) 80%, transparent); }
+.site-footer .footer-areas a:hover { color: var(--primary-foreground); }
+
 /* Two columns on phones (never one tall stretched column), scaling up wider. */
 .footer-cols { display: grid; gap: 2rem 1.5rem; margin-top: 3.5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 900px){ .footer-cols { grid-template-columns: repeat(3,1fr); gap: 2rem 2.25rem; } }
@@ -1492,6 +1498,7 @@ textarea { resize: vertical; }
 @media (min-width: 620px) { .corder-types { gap: 1.25rem; } }
 @media (min-width: 960px) { .corder-types { grid-template-columns: repeat(3, 1fr); } }
 .corder-type { padding: 1.05rem; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--cream); transition: transform .3s var(--ease-luxe), border-color .3s var(--ease-luxe); }
+a.corder-type { color: inherit; text-decoration: none; display: block; }
 @media (min-width: 620px) { .corder-type { padding: 1.6rem; } }
 .corder-type:hover { transform: translateY(-3px); border-color: color-mix(in oklab, var(--accent) 55%, transparent); }
 .corder-type__ic { display: inline-flex; width: 2.2rem; height: 2.2rem; align-items: center; justify-content: center; border-radius: 999px; background: color-mix(in oklab, var(--accent) 12%, transparent); color: var(--accent); margin-bottom: .7rem; }

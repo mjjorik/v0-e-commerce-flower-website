@@ -134,6 +134,25 @@ $faqs = array(
 	</div>
 </section>
 
+<!-- DELIVERY AREAS BY CITY (internal links to the city landing pages) -->
+<?php $wf_cities = function_exists( 'wildflower_delivery_cities' ) ? wildflower_delivery_cities() : array(); ?>
+<?php if ( $wf_cities ) : ?>
+<section class="section section--alt">
+	<div class="container">
+		<div class="section-head"><div style="max-width:40rem;"><p class="eyebrow reveal"><?php esc_html_e( 'Delivery areas', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Same-day delivery, city by city', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
+		<p class="price-zones__note muted" style="margin-bottom:1.75rem;"><?php esc_html_e( 'We deliver across all of Greater Boston and beyond. Here are the cities we cover most — each with its own neighborhoods, ZIP codes and cut-off details.', 'wildflower' ); ?></p>
+		<div class="corder-types">
+			<?php foreach ( $wf_cities as $wf_slug => $wf_c ) : ?>
+				<a class="corder-type reveal" href="<?php echo esc_url( home_url( '/' . $wf_slug . '/' ) ); ?>" style="text-decoration:none;">
+					<h3><?php echo esc_html( $wf_c['name'] ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></h3>
+					<p><?php echo esc_html( implode( ' · ', array_slice( $wf_c['areas'], 0, 4 ) ) ); ?> &amp; more</p>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</section>
+<?php endif; ?>
+
 <!-- HOW IT WORKS -->
 <section class="section section--alt">
 	<div class="container">

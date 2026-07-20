@@ -110,6 +110,18 @@ $brand = wildflower_brand();
 			</div>
 		</div>
 
+		<?php
+		$wf_footer_cities = function_exists( 'wildflower_delivery_cities' ) ? wildflower_delivery_cities() : array();
+		if ( $wf_footer_cities ) :
+			?>
+			<nav class="footer-areas" aria-label="<?php esc_attr_e( 'Delivery areas', 'wildflower' ); ?>">
+				<span class="footer-areas__label"><?php esc_html_e( 'Same-day delivery:', 'wildflower' ); ?></span>
+				<?php foreach ( $wf_footer_cities as $wf_fslug => $wf_fc ) : ?>
+					<a href="<?php echo esc_url( home_url( '/' . $wf_fslug . '/' ) ); ?>"><?php echo esc_html( $wf_fc['name'] ); ?></a>
+				<?php endforeach; ?>
+			</nav>
+		<?php endif; ?>
+
 		<div class="footer-bottom">
 			<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php echo esc_html( $brand['name'] ); ?>. <?php printf( esc_html__( 'Made in %s.', 'wildflower' ), esc_html( $brand['city'] ) ); ?></p>
 			<nav class="footer-legal" aria-label="<?php esc_attr_e( 'Legal', 'wildflower' ); ?>">

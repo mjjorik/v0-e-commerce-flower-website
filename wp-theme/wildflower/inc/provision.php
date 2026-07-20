@@ -22,7 +22,7 @@ add_action( 'after_switch_theme', 'wildflower_provision_pages' );
  * Create the theme's required pages if they do not already exist.
  */
 function wildflower_provision_pages() {
-	if ( 'v1' === get_option( 'wildflower_provisioned' ) ) {
+	if ( 'v2' === get_option( 'wildflower_provisioned' ) ) {
 		return;
 	}
 	if ( ! current_user_can( 'manage_options' ) && ! ( defined( 'DOING_CRON' ) && DOING_CRON ) && ! did_action( 'after_switch_theme' ) ) {
@@ -48,26 +48,48 @@ function wildflower_provision_pages() {
 		),
 	);
 
+	// City delivery landing pages (unique per-city content lives in
+	// inc/delivery-cities.php; the City Delivery Page template renders them).
+	if ( function_exists( 'wildflower_delivery_cities' ) ) {
+		foreach ( wildflower_delivery_cities() as $city_slug => $city ) {
+			$pages[ $city_slug ] = array(
+				'title'    => sprintf( __( 'Flower Delivery in %s', 'wildflower' ), $city['name'] ),
+				'content'  => '',
+				'excerpt'  => isset( $city['metadesc'] ) ? $city['metadesc'] : '',
+				'template' => 'template-city-delivery.php',
+			);
+		}
+	}
+
 	$ids = array();
 	foreach ( $pages as $slug => $data ) {
 		$existing = get_page_by_path( $slug, OBJECT, 'page' );
 		if ( $existing instanceof WP_Post ) {
 			$ids[ $slug ] = (int) $existing->ID;
+			// Ensure an existing page still gets its template (idempotent upgrade).
+			if ( ! empty( $data['template'] ) && get_page_template_slug( $existing->ID ) !== $data['template'] ) {
+				update_post_meta( $existing->ID, '_wp_page_template', $data['template'] );
+			}
 			continue;
 		}
 		$new_id = wp_insert_post(
 			array(
-				'post_type'    => 'page',
-				'post_status'  => 'publish',
-				'post_name'    => $slug,
-				'post_title'   => $data['title'],
-				'post_content' => $data['content'],
+				'post_type'      => 'page',
+				'post_status'    => 'publish',
+				'post_name'      => $slug,
+				'post_title'     => $data['title'],
+				'post_content'   => $data['content'],
+				'post_excerpt'   => isset( $data['excerpt'] ) ? $data['excerpt'] : '',
 				'comment_status' => 'closed',
 				'ping_status'    => 'closed',
+				'page_template'  => isset( $data['template'] ) ? $data['template'] : '',
 			)
 		);
 		if ( $new_id && ! is_wp_error( $new_id ) ) {
 			$ids[ $slug ] = (int) $new_id;
+			if ( ! empty( $data['template'] ) ) {
+				update_post_meta( $new_id, '_wp_page_template', $data['template'] );
+			}
 		}
 	}
 
@@ -76,7 +98,7 @@ function wildflower_provision_pages() {
 		update_option( 'wp_page_for_privacy_policy', $ids['privacy-policy'] );
 	}
 
-	update_option( 'wildflower_provisioned', 'v1' );
+	update_option( 'wildflower_provisioned', 'v2' );
 }
 
 /**

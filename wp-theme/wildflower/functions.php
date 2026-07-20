@@ -655,7 +655,10 @@ if ( class_exists( 'WooCommerce' ) ) {
 	require get_template_directory() . '/inc/shop-filters.php';
 }
 
-// Auto-create required pages (custom-order, faq, terms, privacy-policy).
+// Local delivery city landing-page data (used by the template + provisioning).
+require get_template_directory() . '/inc/delivery-cities.php';
+
+// Auto-create required pages (custom-order, faq, terms, privacy-policy, cities).
 require get_template_directory() . '/inc/provision.php';
 
 /**
