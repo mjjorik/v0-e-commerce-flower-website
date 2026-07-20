@@ -146,6 +146,7 @@ function wildflower_brand() {
 		'phone'   => '(617) 555-0142',
 		'handle'  => '@wildflower.boston',
 		'instagram' => 'https://instagram.com/wildflower.boston',
+		'facebook'  => 'https://facebook.com/wildflower.boston',
 	);
 }
 

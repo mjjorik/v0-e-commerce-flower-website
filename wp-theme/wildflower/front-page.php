@@ -252,10 +252,6 @@ if ( '' === $markup ) {
 			<p class="eyebrow"><?php esc_html_e( 'The little extras', 'wildflower' ); ?></p>
 			<h2 class="kinetic" style="margin-top:.5rem;color:var(--primary-foreground);"><?php echo wildflower_kinetic( __( 'Complete the gift', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			<p class="addons__lead"><?php esc_html_e( 'Make it unforgettable — add a little something at checkout.', 'wildflower' ); ?></p>
-			<div class="scroller__nav addons__nav">
-				<button class="scroller__arrow" data-scroll-prev aria-label="<?php esc_attr_e( 'Previous', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-				<button class="scroller__arrow" data-scroll-next aria-label="<?php esc_attr_e( 'Next', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-			</div>
 		</div>
 		<div class="addons__grid" data-scroller-track>
 			<?php
@@ -277,7 +273,13 @@ if ( '' === $markup ) {
 				</div>
 			<?php endforeach; ?>
 		</div>
-		<a class="btn--accent" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Browse add-ons', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+		<div class="addons__foot">
+			<a class="btn--accent" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Browse add-ons', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			<div class="scroller__nav addons__nav" aria-label="<?php esc_attr_e( 'Scroll add-ons', 'wildflower' ); ?>">
+				<button class="scroller__arrow" data-scroll-prev aria-label="<?php esc_attr_e( 'Previous', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+				<button class="scroller__arrow" data-scroll-next aria-label="<?php esc_attr_e( 'Next', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+			</div>
+		</div>
 	</div>
 </section>
 
@@ -409,6 +411,9 @@ if ( '' === $markup ) {
 			// 10 tiles, tuned to tile flush with no gaps on the 2-col mobile grid.
 			wildflower_gallery( 1, array( 'w2', 'h2', '', '', 'w2', '', 'h2', '', 'w2', 'w2' ), isset( $home_media['gallery'] ) && is_array( $home_media['gallery'] ) ? $home_media['gallery'] : array() );
 			?>
+		</div>
+		<div class="gallery-cta reveal">
+			<a class="btn--primary btn--lg" href="<?php echo esc_url( home_url( '/gallery/' ) ); ?>"><?php esc_html_e( 'View the gallery', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 		</div>
 	</div>
 </section>
