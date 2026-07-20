@@ -132,7 +132,33 @@ if ( '' === $markup ) {
 	</div>
 </section>
 
-<!-- 5 · SHOP BY OCCASION — interactive picker (hover swaps the image) -->
+<?php if ( $markup ) : ?>
+<!-- 5 · BESTSELLERS — 3 shown, 6 total, horizontal scroll (placed above Shop by occasion) -->
+<section class="section section--alt scroller" data-scroller>
+	<div class="container">
+		<div class="section-head">
+			<div style="max-width:36rem;">
+				<p class="eyebrow reveal"><?php esc_html_e( 'The line-up', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Bestsellers', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			</div>
+			<div class="scroller__nav">
+				<button class="scroller__arrow" data-scroll-prev aria-label="<?php esc_attr_e( 'Previous', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+				<button class="scroller__arrow" data-scroll-next aria-label="<?php esc_attr_e( 'Next', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+				<a class="link-underline reveal" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'View all', 'wildflower' ); ?></a>
+			</div>
+		</div>
+	</div>
+	<div class="scroller__viewport">
+		<div class="container products--scroll" data-scroller-track>
+			<?php echo $markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+		<span class="scroller__fade" aria-hidden="true"></span>
+		<span class="scroller__hint" aria-hidden="true"><?php esc_html_e( 'Swipe for more', 'wildflower' ); ?> →</span>
+	</div>
+</section>
+<?php endif; ?>
+
+<!-- 6 · SHOP BY OCCASION — interactive picker (hover swaps the image) -->
 <section class="section">
 	<div class="container">
 		<div class="section-head">
@@ -202,32 +228,6 @@ if ( '' === $markup ) {
 		</div>
 	</div>
 </section>
-
-<?php if ( $markup ) : ?>
-<!-- 6 · BESTSELLERS — 3 shown, 6 total, horizontal scroll -->
-<section class="section section--alt scroller" data-scroller>
-	<div class="container">
-		<div class="section-head">
-			<div style="max-width:36rem;">
-				<p class="eyebrow reveal"><?php esc_html_e( 'The line-up', 'wildflower' ); ?></p>
-				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Bestsellers', 'wildflower' ) ); // phpcs:ignore ?></h2>
-			</div>
-			<div class="scroller__nav">
-				<button class="scroller__arrow" data-scroll-prev aria-label="<?php esc_attr_e( 'Previous', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-				<button class="scroller__arrow" data-scroll-next aria-label="<?php esc_attr_e( 'Next', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-				<a class="link-underline reveal" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'View all', 'wildflower' ); ?></a>
-			</div>
-		</div>
-	</div>
-	<div class="scroller__viewport">
-		<div class="container products--scroll" data-scroller-track>
-			<?php echo $markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		</div>
-		<span class="scroller__fade" aria-hidden="true"></span>
-		<span class="scroller__hint" aria-hidden="true"><?php esc_html_e( 'Swipe for more', 'wildflower' ); ?> →</span>
-	</div>
-</section>
-<?php endif; ?>
 
 <!-- 6.5 · SCROLL-STORY VIDEO (cinematic zoom) -->
 <section class="vstory" data-vstory>
