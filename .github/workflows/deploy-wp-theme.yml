@@ -27,20 +27,25 @@ jobs:
       - name: Install lftp
         run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Inspect remote themes and back up the current theme
+      - name: Inspect remote themes and back up the current theme (best-effort, bounded)
         env:
           SERVER: ${{ secrets.FTP_SERVER }}
           USER: ${{ secrets.FTP_USERNAME }}
           PASS: ${{ secrets.FTP_PASSWORD }}
         run: |
+          set +e
+          LFTP_OPTS="set ftp:ssl-allow no; set ftp:passive-mode on; set net:timeout 15; set net:max-retries 2; set net:reconnect-interval-base 5;"
           echo "== Themes currently on the server =="
-          lftp -u "$USER","$PASS" -e "set ftp:ssl-allow no; cls -l wp-content/themes/; bye" "ftp://$SERVER" || echo "(could not list themes)"
-          echo "== Backing up the current wildflower theme =="
+          timeout 60 lftp -u "$USER","$PASS" -e "$LFTP_OPTS cls -l wp-content/themes/; bye" "ftp://$SERVER" || echo "(could not list themes)"
+          echo "== Backing up the current wildflower theme (max ~150s) =="
           mkdir -p theme-backup
-          lftp -u "$USER","$PASS" -e "set ftp:ssl-allow no; mirror --verbose=0 wp-content/themes/wildflower ./theme-backup/wildflower; bye" "ftp://$SERVER" \
-            && tar -czf theme-backup.tgz -C theme-backup wildflower \
-            && echo "Backup created ($(du -h theme-backup.tgz | cut -f1))" \
-            || echo "No existing theme found to back up (first deploy?)"
+          timeout 150 lftp -u "$USER","$PASS" -e "$LFTP_OPTS set mirror:parallel-transfer-count 3; mirror --verbose=0 wp-content/themes/wildflower ./theme-backup/wildflower; bye" "ftp://$SERVER"
+          if [ -d theme-backup/wildflower ] && [ -n "$(ls -A theme-backup/wildflower 2>/dev/null)" ]; then
+            tar -czf theme-backup.tgz -C theme-backup wildflower && echo "Backup created ($(du -h theme-backup.tgz | cut -f1))"
+          else
+            echo "Backup skipped or timed out — proceeding. Note: the first FTP deploy overwrites files but does NOT delete unknown remote files."
+          fi
+          exit 0
 
       - name: Upload theme backup artifact (rollback copy)
         if: always()
