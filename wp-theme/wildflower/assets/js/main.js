@@ -296,15 +296,31 @@
     function go(dir, e) {
       // Don't let the arrow click bubble to the card's "View bouquet" link.
       if (e) { e.preventDefault(); e.stopPropagation(); }
-      track.scrollBy({ left: dir * slideWidth(), behavior: 'smooth' });
+      var w = slideWidth() || 1;
+      var idx = Math.round(track.scrollLeft / w) + dir;
+      idx = Math.max(0, Math.min(idx, track.querySelectorAll('.card-slider__slide').length - 1));
+      track.scrollTo({ left: idx * w, behavior: 'smooth' });
     }
     if (prev) prev.addEventListener('click', function (e) { go(-1, e); });
     if (next) next.addEventListener('click', function (e) { go(1, e); });
+    // Settle: after a swipe/scroll stops, snap to the exact nearest slide so a
+    // photo never rests half-shown (no sliver of the next image peeking).
+    var settleTimer = null;
+    function settle() {
+      var w = slideWidth() || 1;
+      var idx = Math.round(track.scrollLeft / w);
+      var target = idx * w;
+      if (Math.abs(track.scrollLeft - target) > 1) {
+        track.scrollTo({ left: target, behavior: 'smooth' });
+      }
+    }
     var ticking = false;
     track.addEventListener('scroll', function () {
       if (!ticking) { ticking = true; window.requestAnimationFrame(function () { ticking = false; update(); }); }
+      if (settleTimer) { window.clearTimeout(settleTimer); }
+      settleTimer = window.setTimeout(settle, 140);
     }, { passive: true });
-    window.addEventListener('resize', update);
+    window.addEventListener('resize', function () { update(); settle(); });
     update();
   });
 
