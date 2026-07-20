@@ -1369,22 +1369,20 @@ textarea { resize: vertical; }
 .occasions__cap { position: absolute; left: 1.25rem; bottom: 1.1rem; z-index: 1; color: #fff; font-family: var(--font-serif); font-size: 1.6rem; text-shadow: 0 2px 14px rgba(0,0,0,.4); }
 .occasions__thumb { display: none; }
 
-/* Mobile: drop the big stage and lay the occasions out as a compact horizontal
-   card scroller (image on top, name below) instead of a tall vertical list that
-   eats the whole screen. Swipe sideways; ~2 cards visible with the next peeking. */
+/* Mobile: drop the big stage and lay the occasions out as a 2-column grid
+   (image on top, name below) instead of a tall vertical list — and not a
+   horizontal scroller, since Bestsellers right above already scrolls sideways. */
 @media (max-width: 899px) {
   .occasions { display: block; }
   .occasions__stage { display: none; }
   .occasions__index { display: none; }
   .occasions__list {
-    display: flex; flex-direction: row; gap: .9rem; margin-top: 2rem; max-height: none;
-    overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
-    -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 0 .5rem;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 1rem;
+    margin-top: 2rem; max-height: none; overflow: visible; padding: 0;
   }
-  .occasions__list::-webkit-scrollbar { display: none; }
   .occasions__item {
-    flex: 0 0 45%; display: flex; flex-direction: column; align-items: stretch; gap: .55rem;
-    padding: 0; border: 0; scroll-snap-align: start; transition: none;
+    display: flex; flex-direction: column; align-items: stretch; gap: .55rem;
+    padding: 0; border: 0; transition: none;
   }
   .occasions__item:last-child { border: 0; }
   .occasions__item.is-active { padding-left: 0; }
@@ -1392,7 +1390,7 @@ textarea { resize: vertical; }
   .occasions__thumb .media-fallback { position: absolute; inset: 0; }
   .occasions__thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .occasions__text { min-width: 0; }
-  .occasions__name { font-size: 1.05rem; line-height: 1.15; }
+  .occasions__name { font-size: 1.1rem; line-height: 1.15; }
   .occasions__item.is-active .occasions__name { color: var(--foreground); }
   .occasions__desc { display: none; }
   .occasions__arrow { display: none; }
