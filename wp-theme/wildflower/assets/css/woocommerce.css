@@ -105,9 +105,19 @@
 /* ---- Single product ---- */
 .woocommerce div.product { display: grid; gap: clamp(2rem, 5vw, 4rem); }
 @media (min-width: 1024px) { .woocommerce div.product { grid-template-columns: 1.05fr .95fr; align-items: start; } }
-.woocommerce div.product .woocommerce-product-gallery { margin: 0; }
-.woocommerce div.product .woocommerce-product-gallery img { border-radius: var(--radius-2xl); }
+/* Gallery must FILL its grid column (WooCommerce defaults it to 48% + float,
+   which left the image small with whitespace beside it). */
+.woocommerce div.product .woocommerce-product-gallery { margin: 0; width: 100% !important; float: none !important; }
+.woocommerce div.product .woocommerce-product-gallery img { border-radius: var(--radius-2xl); width: 100%; }
+.woocommerce div.product .woocommerce-product-gallery .flex-viewport { border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-card); }
 .woocommerce div.product .woocommerce-product-gallery__wrapper { border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-card); }
+@media (min-width: 1024px) { .woocommerce div.product .woocommerce-product-gallery { position: sticky; top: 6rem; } }
+/* Gallery thumbnails row below the main image. */
+.woocommerce div.product .flex-control-thumbs { display: flex; gap: .6rem; margin: .8rem 0 0; padding: 0; list-style: none; }
+.woocommerce div.product .flex-control-thumbs li { width: 4.5rem; margin: 0; }
+.woocommerce div.product .flex-control-thumbs img { border-radius: var(--radius-md); opacity: .6; transition: opacity .2s; cursor: pointer; }
+.woocommerce div.product .flex-control-thumbs img.flex-active,
+.woocommerce div.product .flex-control-thumbs img:hover { opacity: 1; }
 .woocommerce div.product .product_title {
   font-family: var(--font-serif); font-size: clamp(2.25rem, 4vw, 3.25rem); line-height: 1.02; margin: 0 0 .75rem;
 }
@@ -137,15 +147,71 @@
 }
 .woocommerce div.product .single_add_to_cart_button { flex: 1; min-width: 12rem; }
 
-/* Tabs / description */
-.woocommerce div.product .woocommerce-tabs { grid-column: 1 / -1; margin-top: 1rem; }
-.woocommerce .woocommerce-tabs ul.tabs { padding: 0; }
-.woocommerce .woocommerce-tabs ul.tabs li { background: transparent; border: none; border-radius: 0; }
-.woocommerce .woocommerce-tabs ul.tabs li a { font-family: var(--font-sans); font-weight: 500; color: var(--muted-foreground); }
-.woocommerce .woocommerce-tabs ul.tabs li.active a { color: var(--foreground); }
-.woocommerce .woocommerce-tabs ul.tabs li.active a::after { background: var(--accent); }
-.woocommerce .woocommerce-tabs ul.tabs::before { border-color: var(--border); }
-.woocommerce .woocommerce-Tabs-panel h2 { font-family: var(--font-serif); }
+/* Tabs / description — strip WooCommerce's default gray "folder tab" chrome
+   (its selectors include div.product, so we must match that specificity) and
+   rebuild as clean editorial text tabs with an accent underline. */
+.woocommerce div.product .woocommerce-tabs { grid-column: 1 / -1; margin-top: clamp(2.5rem, 5vw, 4rem); }
+.woocommerce div.product .woocommerce-tabs ul.tabs {
+  display: flex; flex-wrap: wrap; gap: 2rem; margin: 0 0 2rem; padding: 0 0 .9rem;
+  border-bottom: 1px solid var(--border); list-style: none;
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li { list-style: none; }
+.woocommerce div.product .woocommerce-tabs ul.tabs::before,
+.woocommerce div.product .woocommerce-tabs ul.tabs::after { display: none; content: none; }
+.woocommerce div.product .woocommerce-tabs ul.tabs li {
+  margin: 0; padding: 0; background: transparent; border: 0; border-radius: 0;
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li::before,
+.woocommerce div.product .woocommerce-tabs ul.tabs li::after { display: none; content: none; border: 0; }
+.woocommerce div.product .woocommerce-tabs ul.tabs li a {
+  position: relative; display: inline-block; padding: 0 0 .1rem; font-family: var(--font-sans);
+  font-weight: 600; font-size: .82rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted-foreground); transition: color .2s;
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li a::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -.95rem; height: 2px; background: var(--accent);
+  transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease-luxe);
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover { color: var(--foreground); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a { color: var(--foreground); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a::after { transform: scaleX(1); }
+.woocommerce div.product .woocommerce-Tabs-panel {
+  font-size: 1rem; line-height: 1.75; color: color-mix(in oklab, var(--foreground) 82%, transparent); max-width: 48rem;
+}
+.woocommerce div.product .woocommerce-Tabs-panel > h2 {
+  font-family: var(--font-serif); font-size: clamp(1.5rem, 3vw, 2rem); color: var(--foreground); margin: 0 0 1rem;
+}
+.woocommerce div.product .woocommerce-Tabs-panel p { margin: 0 0 1rem; }
+.woocommerce div.product .woocommerce-Tabs-panel ul,
+.woocommerce div.product .woocommerce-Tabs-panel ol { margin: 0 0 1rem 1.25rem; }
+.woocommerce div.product .woocommerce-Tabs-panel li { margin-bottom: .4rem; }
+/* Additional-info attribute table */
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes th { background: var(--muted); font-weight: 600; }
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes td { font-style: normal; }
+
+/* Reviews tab */
+.woocommerce div.product #reviews .comment-reply-title { font-family: var(--font-serif); font-size: 1.3rem; display: block; margin-bottom: .5rem; }
+.woocommerce div.product #reviews ol.commentlist { margin: 0 0 2rem; padding: 0; list-style: none; }
+.woocommerce div.product #reviews ol.commentlist li.review {
+  border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1rem; background: var(--cream);
+}
+.woocommerce div.product #reviews .comment-text { margin: 0; }
+.woocommerce div.product #reviews .woocommerce-review__author { font-family: var(--font-serif); font-size: 1.05rem; font-style: normal; }
+.woocommerce div.product #reviews .woocommerce-review__dash { display: none; }
+.woocommerce div.product #reviews .woocommerce-review__published-date { color: var(--muted-foreground); font-size: .82rem; }
+.woocommerce div.product #reviews .description { margin-top: .5rem; line-height: 1.6; color: color-mix(in oklab, var(--foreground) 82%, transparent); }
+.woocommerce div.product #reviews .woocommerce-noreviews { color: var(--muted-foreground); }
+.woocommerce div.product #review_form_wrapper { max-width: 40rem; }
+.woocommerce div.product #review_form .comment-form-rating label { display: block; margin-bottom: .35rem; }
+.woocommerce div.product #review_form p.comment-form-comment textarea,
+.woocommerce div.product #review_form .comment-form-author input,
+.woocommerce div.product #review_form .comment-form-email input {
+  width: 100%; border: 1px solid var(--border) !important; border-radius: var(--radius-btn) !important; padding: .8rem 1rem !important; background: var(--cream);
+}
+.woocommerce div.product #review_form label { font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-foreground); }
+.woocommerce div.product .star-rating span::before,
+.woocommerce div.product p.stars a { color: var(--accent); }
 
 /* ---- Upsells ("Complete the gift") + Related ("You may also like") ---- */
 .woocommerce .upsells.products,
@@ -324,12 +390,23 @@
 .woocommerce .cart_totals .order-total .amount { color: var(--accent); font-family: var(--font-serif); }
 .woocommerce .wc-proceed-to-checkout a.checkout-button { width: 100%; margin-top: .5rem; }
 .woocommerce form.woocommerce-cart-form .actions .coupon { display: flex; gap: .5rem; }
-.woocommerce .cart-collaterals { margin-top: 1rem; }
+.woocommerce .cart-collaterals { margin-top: 1.5rem; }
+.woocommerce .cart-collaterals .cross-sells { margin-top: 0; border: 0; padding: 0; }
+/* Desktop: cart table + totals side by side using GRID, not floats. The old
+   float layout wasn't cleared, so the container collapsed and the footer rode
+   up over the cart. Grid can't collapse. */
 @media (min-width: 1024px) {
-  .woocommerce-cart .woocommerce-cart-form { width: 60%; float: left; }
-  .woocommerce-cart .cart-collaterals { width: 36%; float: right; margin-top: 0; }
-  .woocommerce-cart .cart-collaterals .cart_totals { width: 100%; }
+  .woocommerce-cart .woocommerce {
+    display: grid; grid-template-columns: minmax(0, 1fr) 22rem; gap: 2.5rem 3rem; align-items: start;
+  }
+  .woocommerce-cart .woocommerce > .woocommerce-notices-wrapper { grid-column: 1 / -1; }
+  .woocommerce-cart .woocommerce-cart-form { width: auto; float: none; margin: 0; }
+  .woocommerce-cart .cart-collaterals { width: auto; float: none; margin: 0; }
+  .woocommerce-cart .cart-collaterals .cart_totals { width: 100%; float: none; position: sticky; top: 6rem; }
 }
+/* Belt-and-suspenders: clear floats at every width so the page can never
+   collapse behind the footer. */
+.woocommerce-cart .woocommerce::after { content: ''; display: block; clear: both; }
 
 /* ============================================================
    Checkout
