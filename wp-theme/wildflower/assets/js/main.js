@@ -252,7 +252,7 @@
     if (!track) return;
 
     function step() {
-      var card = track.querySelector('.product, li');
+      var card = track.querySelector('.product, .addon, li');
       return card ? card.getBoundingClientRect().width + 24 : track.clientWidth * 0.8;
     }
     function update() {

@@ -860,13 +860,22 @@ textarea { resize: vertical; }
 .addon__image { width: clamp(4.25rem, 13vw, 6rem); height: clamp(4.25rem, 13vw, 6rem); object-fit: contain; border-radius: .7rem; margin-bottom: auto; }
 .addon__name { font-family: var(--font-serif); font-size: 1.1rem; margin-top: .25rem; }
 .addon__price { font-size: .85rem; color: color-mix(in oklab, var(--primary-foreground) 70%, transparent); }
-/* Mobile: keep a 2x2 grid (image on top, name + price below — stacked, so a
-   two-line name can never overlap the image). */
+/* Mobile: keep a 2x2 grid. Inside each card, name + price sit in their own
+   grid column on the LEFT and the image in its own column on the RIGHT — because
+   they are separate tracks, the text can never touch or overlap the image, and
+   the name is sized (and allowed to break as a last resort) so it always fits. */
 @media (max-width: 767px) {
   .addons__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
-  .addon { min-height: 0; padding: 1.1rem; }
-  .addon__image { width: clamp(3.25rem, 16vw, 4.5rem); height: clamp(3.25rem, 16vw, 4.5rem); }
-  .addon__name { font-size: 1.05rem; }
+  .addon {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'name image' 'price image';
+    align-items: center; column-gap: .7rem; row-gap: .1rem;
+    min-height: 0; padding: 1rem 1.05rem;
+  }
+  .addon__name  { grid-area: name; align-self: end; margin-top: 0; font-size: clamp(.9rem, 3.4vw, 1.05rem); line-height: 1.15; overflow-wrap: break-word; hyphens: auto; }
+  .addon__price { grid-area: price; align-self: start; }
+  .addon__image { grid-area: image; margin: 0; align-self: center; width: clamp(2.25rem, 10vw, 3rem); height: clamp(2.25rem, 10vw, 3rem); }
 }
 /* PC / tablet: a horizontal scroller of add-on cards (head above, CTA below). */
 @media (min-width: 768px) {
@@ -884,6 +893,13 @@ textarea { resize: vertical; }
   .addon__image { width: clamp(5rem, 7vw, 7rem); height: clamp(5rem, 7vw, 7rem); }
   .addon__name { font-size: 1.3rem; }
 }
+/* Add-ons scroller arrows (same control as Bestsellers, restyled for the dark
+   section). Hidden on phones, where the layout is a 2x2 grid, not a scroller. */
+.addons__nav { margin-top: 1.5rem; }
+.addons .scroller__arrow { display: none; border-color: color-mix(in oklab, var(--primary-foreground) 40%, transparent); color: var(--primary-foreground); }
+.addons .scroller__arrow:hover { background: var(--accent); color: var(--accent-foreground); border-color: var(--accent); }
+.addons .scroller__arrow:disabled:hover { background: none; color: var(--primary-foreground); border-color: color-mix(in oklab, var(--primary-foreground) 40%, transparent); }
+@media (min-width: 768px) { .addons .scroller__arrow { display: inline-flex; } }
 
 /* 10 · Our story */
 .story { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }

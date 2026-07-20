@@ -247,13 +247,17 @@ if ( '' === $markup ) {
 
 <!-- 7 · COMPLETE THE GIFT — ADD-ONS (dark) -->
 <section class="section addons">
-	<div class="container addons__inner">
+	<div class="container addons__inner" data-scroller>
 		<div class="addons__head reveal">
 			<p class="eyebrow"><?php esc_html_e( 'The little extras', 'wildflower' ); ?></p>
 			<h2 class="kinetic" style="margin-top:.5rem;color:var(--primary-foreground);"><?php echo wildflower_kinetic( __( 'Complete the gift', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			<p class="addons__lead"><?php esc_html_e( 'Make it unforgettable — add a little something at checkout.', 'wildflower' ); ?></p>
+			<div class="scroller__nav addons__nav">
+				<button class="scroller__arrow" data-scroll-prev aria-label="<?php esc_attr_e( 'Previous', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+				<button class="scroller__arrow" data-scroll-next aria-label="<?php esc_attr_e( 'Next', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+			</div>
 		</div>
-		<div class="addons__grid">
+		<div class="addons__grid" data-scroller-track>
 			<?php
 			$addons = array(
 				array( 'addon_vase', 'Glass vase', '+ $18' ),
