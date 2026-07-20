@@ -848,8 +848,6 @@ textarea { resize: vertical; }
 .addons__inner { display: grid; gap: 2rem; justify-items: start; }
 .addons__lead { margin-top: 1rem; max-width: 30rem; color: color-mix(in oklab, var(--primary-foreground) 78%, transparent); line-height: 1.6; }
 .addons__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; width: 100%; }
-/* Narrow phones: a single column so the cards can never crowd or overlap. */
-@media (max-width: 460px) { .addons__grid { grid-template-columns: 1fr; } .addon { min-height: 0; } }
 .addon {
   min-width: 0;
   display: flex; flex-direction: column; gap: .5rem; min-height: 12rem; padding: 1.25rem;
@@ -857,12 +855,30 @@ textarea { resize: vertical; }
   border-radius: var(--radius-xl); background: color-mix(in oklab, var(--primary-foreground) 6%, transparent);
   transition: transform .3s var(--ease-luxe), background-color .3s var(--ease-luxe), border-color .3s var(--ease-luxe);
 }
-.addon__name { overflow-wrap: anywhere; }
 .addon:hover { transform: translateY(-3px); background: color-mix(in oklab, var(--primary-foreground) 11%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent); }
 .addon svg { color: var(--accent); }
 .addon__image { width: clamp(4.25rem, 13vw, 6rem); height: clamp(4.25rem, 13vw, 6rem); object-fit: contain; border-radius: .7rem; margin-bottom: auto; }
 .addon__name { font-family: var(--font-serif); font-size: 1.1rem; margin-top: .25rem; }
 .addon__price { font-size: .85rem; color: color-mix(in oklab, var(--primary-foreground) 70%, transparent); }
+/* Phones: one card per row so each card is full-width — name + price on the
+   left, image in its OWN grid column on the right. Because the text and image
+   live in separate tracks, a two-line name (e.g. "Handwritten card") can never
+   overlap the image the way it did in the old single-flow layout, and there is
+   plenty of width so names wrap on whole words. Placed after the base .addon*
+   rules so these win on small screens. */
+@media (max-width: 767px) {
+  .addons__grid { grid-template-columns: 1fr; }
+  .addon {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'name image' 'price image';
+    align-items: center; column-gap: .9rem; row-gap: .15rem;
+    min-height: 0; padding: 1.1rem 1.15rem;
+  }
+  .addon__name  { grid-area: name; align-self: end; margin-top: 0; }
+  .addon__price { grid-area: price; align-self: start; }
+  .addon__image { grid-area: image; margin: 0; align-self: center; width: clamp(3.5rem, 15vw, 5rem); height: clamp(3.5rem, 15vw, 5rem); }
+}
 @media (min-width: 960px) {
   .addons__inner {
     grid-template-columns: minmax(16rem, .78fr) minmax(0, 1.22fr);
