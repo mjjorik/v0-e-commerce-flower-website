@@ -247,6 +247,49 @@ function wildflower_product_jsonld() {
 add_action( 'wp_footer', 'wildflower_product_jsonld' );
 
 /**
+ * Article JSON-LD on single blog posts (E-E-A-T: author, dates, publisher).
+ */
+function wildflower_article_jsonld() {
+	if ( ! is_singular( 'post' ) ) {
+		return;
+	}
+	$post  = get_post();
+	$brand = wildflower_brand();
+	$image = wildflower_brand_image();
+	if ( has_post_thumbnail( $post ) ) {
+		$img = wp_get_attachment_image_src( get_post_thumbnail_id( $post ), 'large' );
+		if ( $img ) {
+			$image = $img[0];
+		}
+	}
+	$home = home_url( '/' );
+
+	$data = array(
+		'@context'         => 'https://schema.org',
+		'@type'            => 'Article',
+		'headline'         => get_the_title( $post ),
+		'description'      => wp_strip_all_tags( get_the_excerpt( $post ) ),
+		'datePublished'    => get_the_date( 'c', $post ),
+		'dateModified'     => get_the_modified_date( 'c', $post ),
+		'author'           => array( '@type' => 'Person', 'name' => get_the_author_meta( 'display_name', $post->post_author ) ),
+		'publisher'        => array( '@id' => $home . '#business' ),
+		'mainEntityOfPage' => get_permalink( $post ),
+	);
+	if ( $image ) {
+		$data['image'] = $image;
+	}
+	$crumbs = array(
+		array( '@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => $home ),
+		array( '@type' => 'ListItem', 'position' => 2, 'name' => 'Journal', 'item' => home_url( '/journal/' ) ),
+		array( '@type' => 'ListItem', 'position' => 3, 'name' => get_the_title( $post ), 'item' => get_permalink( $post ) ),
+	);
+	wildflower_print_jsonld(
+		array( $data, array( '@context' => 'https://schema.org', '@type' => 'BreadcrumbList', 'itemListElement' => $crumbs ) )
+	);
+}
+add_action( 'wp_footer', 'wildflower_article_jsonld' );
+
+/**
  * BreadcrumbList on product category / shop archives: Home › Category.
  */
 function wildflower_archive_breadcrumb_jsonld() {
