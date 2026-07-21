@@ -231,6 +231,9 @@ function wildflower_brand() {
 		'handle'  => '@wildflower.boston',
 		'instagram' => 'https://instagram.com/wildflower.boston',
 		'facebook'  => 'https://facebook.com/wildflower.boston',
+		// WhatsApp number in international format, digits only (e.g. 16175550142).
+		// Defaults to the phone digits — set the real WhatsApp line here.
+		'whatsapp'  => '',
 		/*
 		 * Real address / geo for LocalBusiness schema + local SEO. Leave blank
 		 * until you have the exact studio details — never publish an invented

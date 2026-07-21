@@ -186,6 +186,19 @@ add_filter(
 	}
 );
 
+/* Remove product reviews entirely — no Reviews tab, no star rating. */
+add_filter(
+	'woocommerce_product_tabs',
+	function ( $tabs ) {
+		unset( $tabs['reviews'] );
+		return $tabs;
+	},
+	98
+);
+add_filter( 'woocommerce_product_review_comment_form_args', '__return_empty_array' );
+add_filter( 'woocommerce_product_get_rating_html', '__return_empty_string' );
+remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
+
 /* Move the sale flash a touch and rename it. */
 add_filter(
 	'woocommerce_sale_flash',

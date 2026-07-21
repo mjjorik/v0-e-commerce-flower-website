@@ -102,9 +102,23 @@
   font-size: .875rem; color: var(--foreground);
 }
 
+/* WooCommerce utility pages (cart, checkout, account) render inside the
+   theme's narrow .prose column — that squeezed the cart so the totals overlapped
+   the table. Give these pages the full container width. */
+.woocommerce-cart .prose,
+.woocommerce-checkout .prose,
+.woocommerce-account .prose { max-width: none; margin-inline: 0; font-size: 1rem; }
+
 /* ---- Single product ---- */
 .woocommerce div.product { display: grid; gap: clamp(2rem, 5vw, 4rem); }
-@media (min-width: 1024px) { .woocommerce div.product { grid-template-columns: 1.05fr .95fr; align-items: start; } }
+/* Below tablet: single column, both halves full width (no squished summary). */
+@media (max-width: 767px) {
+  .woocommerce div.product { display: block; }
+  .woocommerce div.product .woocommerce-product-gallery,
+  .woocommerce div.product .summary.entry-summary { width: 100% !important; float: none !important; margin-left: 0 !important; }
+  .woocommerce div.product .summary.entry-summary { margin-top: 2rem; }
+}
+@media (min-width: 768px) { .woocommerce div.product { grid-template-columns: 1.05fr .95fr; align-items: start; } }
 /* Gallery must FILL its grid column (WooCommerce defaults it to 48% + float,
    which left the image small with whitespace beside it). */
 .woocommerce div.product .woocommerce-product-gallery { margin: 0; width: 100% !important; float: none !important; }
@@ -113,7 +127,7 @@
 .woocommerce div.product .woocommerce-product-gallery__wrapper { border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-card); }
 @media (min-width: 1024px) { .woocommerce div.product .woocommerce-product-gallery { position: sticky; top: 6rem; } }
 /* Gallery thumbnails row below the main image. */
-.woocommerce div.product .flex-control-thumbs { display: flex; gap: .6rem; margin: .8rem 0 0; padding: 0; list-style: none; }
+.woocommerce div.product .flex-control-thumbs { display: flex; gap: .7rem; margin: 1.1rem 0 0; padding: 0; list-style: none; }
 .woocommerce div.product .flex-control-thumbs li { width: 4.5rem; margin: 0; }
 .woocommerce div.product .flex-control-thumbs img { border-radius: var(--radius-md); opacity: .6; transition: opacity .2s; cursor: pointer; }
 .woocommerce div.product .flex-control-thumbs img.flex-active,
@@ -150,7 +164,23 @@
 /* Tabs / description — strip WooCommerce's default gray "folder tab" chrome
    (its selectors include div.product, so we must match that specificity) and
    rebuild as clean editorial text tabs with an accent underline. */
-.woocommerce div.product .woocommerce-tabs { grid-column: 1 / -1; margin-top: clamp(2.5rem, 5vw, 4rem); }
+/* Description / info tabs live in a designed matcha panel (not a bland white
+   canvas): green background, light text, gold accent on the active tab. */
+.woocommerce div.product .woocommerce-tabs {
+  grid-column: 1 / -1; margin-top: clamp(2.5rem, 5vw, 4rem);
+  background-color: var(--surface-soft); background-image: var(--grain);
+  color: var(--surface-soft-foreground);
+  border-radius: var(--radius-2xl); padding: clamp(1.75rem, 4vw, 3rem);
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs { border-bottom-color: color-mix(in oklab, var(--surface-soft-foreground) 22%, transparent); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li a { color: color-mix(in oklab, var(--surface-soft-foreground) 72%, transparent); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover,
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a { color: var(--surface-soft-foreground); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li a::after { background: var(--accent-on-dark); }
+.woocommerce div.product .woocommerce-Tabs-panel { color: color-mix(in oklab, var(--surface-soft-foreground) 88%, transparent); }
+.woocommerce div.product .woocommerce-Tabs-panel > h2 { color: var(--surface-soft-foreground); }
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes { border-color: color-mix(in oklab, var(--surface-soft-foreground) 20%, transparent); }
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes th { background: color-mix(in oklab, var(--surface-soft-foreground) 10%, transparent); color: var(--surface-soft-foreground); }
 .woocommerce div.product .woocommerce-tabs ul.tabs {
   display: flex; flex-wrap: wrap; gap: 2rem; margin: 0 0 2rem; padding: 0 0 .9rem;
   border-bottom: 1px solid var(--border); list-style: none;
@@ -166,20 +196,20 @@
 .woocommerce div.product .woocommerce-tabs ul.tabs li a {
   position: relative; display: inline-block; padding: 0 0 .1rem; font-family: var(--font-sans);
   font-weight: 600; font-size: .82rem; text-transform: uppercase; letter-spacing: .1em;
-  color: var(--muted-foreground); transition: color .2s;
+  color: color-mix(in oklab, var(--surface-soft-foreground) 68%, transparent); transition: color .2s;
 }
 .woocommerce div.product .woocommerce-tabs ul.tabs li a::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: -.95rem; height: 2px; background: var(--accent);
+  content: ''; position: absolute; left: 0; right: 0; bottom: -.95rem; height: 2px; background: var(--accent-on-dark);
   transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease-luxe);
 }
-.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover { color: var(--foreground); }
-.woocommerce div.product .woocommerce-tabs ul.tabs li.active a { color: var(--foreground); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover { color: var(--surface-soft-foreground); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a { color: var(--surface-soft-foreground); }
 .woocommerce div.product .woocommerce-tabs ul.tabs li.active a::after { transform: scaleX(1); }
 .woocommerce div.product .woocommerce-Tabs-panel {
-  font-size: 1rem; line-height: 1.75; color: color-mix(in oklab, var(--foreground) 82%, transparent); max-width: 48rem;
+  font-size: 1rem; line-height: 1.75; color: color-mix(in oklab, var(--surface-soft-foreground) 88%, transparent); max-width: 48rem;
 }
 .woocommerce div.product .woocommerce-Tabs-panel > h2 {
-  font-family: var(--font-serif); font-size: clamp(1.5rem, 3vw, 2rem); color: var(--foreground); margin: 0 0 1rem;
+  font-family: var(--font-serif); font-size: clamp(1.5rem, 3vw, 2rem); color: var(--surface-soft-foreground); margin: 0 0 1rem;
 }
 .woocommerce div.product .woocommerce-Tabs-panel p { margin: 0 0 1rem; }
 .woocommerce div.product .woocommerce-Tabs-panel ul,
@@ -365,6 +395,21 @@
 .wf-shop-toolbar .woocommerce-result-count { margin: 0; order: 2; }
 .wf-shop-toolbar .wf-filters-toggle { order: 1; }
 .wf-shop-toolbar .woocommerce-ordering { margin: 0 0 0 auto; order: 3; }
+
+/* Catalog pagination — restyled from WooCommerce's default numbered links. */
+.woocommerce nav.woocommerce-pagination { margin-top: clamp(2.5rem, 5vw, 4rem); text-align: center; }
+.woocommerce nav.woocommerce-pagination ul { display: inline-flex; align-items: center; gap: .4rem; border: 0; margin: 0; padding: 0; }
+.woocommerce nav.woocommerce-pagination ul li { border: 0; margin: 0; overflow: visible; }
+.woocommerce nav.woocommerce-pagination ul li a.page-numbers,
+.woocommerce nav.woocommerce-pagination ul li span.page-numbers {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 2.6rem; height: 2.6rem; padding: 0 .6rem;
+  border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground);
+  font-size: .9rem; font-weight: 500; transition: background-color .2s var(--ease-luxe), color .2s, border-color .2s;
+}
+.woocommerce nav.woocommerce-pagination ul li a.page-numbers:hover { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.woocommerce nav.woocommerce-pagination ul li span.current { background: var(--accent); background-image: var(--accent-grad); color: var(--accent-foreground); border-color: var(--accent); }
+.woocommerce nav.woocommerce-pagination ul li .page-numbers.dots { border: 0; min-width: 1.5rem; color: var(--muted-foreground); }
+.woocommerce nav.woocommerce-pagination ul li a.next, .woocommerce nav.woocommerce-pagination ul li a.prev { font-weight: 600; }
 
 /* ============================================================
    Cart

@@ -126,7 +126,7 @@ $faqs = array(
 <section class="section">
 	<div class="container">
 		<div class="section-head"><div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'The process', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'From idea to doorstep', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
-		<div class="how__grid how__grid--light">
+		<div class="how__grid how__grid--light how__grid--quad">
 			<?php foreach ( $steps as $si => $s ) : ?>
 				<div class="reveal" data-delay="<?php echo esc_attr( $si * 110 ); ?>">
 					<p class="how__num"><?php echo esc_html( $s[0] ); ?></p>
@@ -257,7 +257,7 @@ $faqs = array(
 </section>
 
 <!-- FINAL CTA -->
-<section class="section" style="padding-top:0;">
+<section class="section">
 	<div class="container">
 		<div class="cta">
 			<p class="eyebrow" style="position:relative;margin-bottom:1.25rem;"><?php esc_html_e( 'Let’s make something', 'wildflower' ); ?></p>
