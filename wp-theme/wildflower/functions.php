@@ -234,6 +234,9 @@ function wildflower_brand() {
 		// WhatsApp number in international format, digits only (e.g. 16175550142).
 		// Defaults to the phone digits — set the real WhatsApp line here.
 		'whatsapp'  => '',
+		// Extra socials — icons show now; drop the real URLs in when ready.
+		'pinterest' => '',
+		'tiktok'    => '',
 		/*
 		 * Real studio address / geo — used by the LocalBusiness schema, the
 		 * footer/contact blocks and the map. Keep in sync with Google Business

@@ -96,6 +96,16 @@ $occasions = array(
 	</div>
 </section>
 
+<!-- LIGHT BAND — separates the dark section above from the dark footer below -->
+<section class="section section--alt">
+	<div class="container" style="text-align:center;">
+		<p class="eyebrow reveal"><?php esc_html_e( 'Every day, not just occasions', 'wildflower' ); ?></p>
+		<h2 class="kinetic" style="margin:.5rem auto 0;max-width:30rem;"><?php echo wildflower_kinetic( __( 'Send flowers for any reason at all', 'wildflower' ) ); // phpcs:ignore ?></h2>
+		<p class="reveal" style="margin:1.1rem auto 1.75rem;max-width:34rem;color:color-mix(in oklab,var(--foreground) 72%,transparent);line-height:1.6;"><?php printf( esc_html__( 'Hand-tied fresh and hand-delivered same-day across Greater Boston. Order by %s ET.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>
+		<a class="btn--primary btn--lg" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop all bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+	</div>
+</section>
+
 <?php
 $home  = home_url( '/' );
 $items = array();

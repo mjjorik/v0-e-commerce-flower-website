@@ -93,6 +93,12 @@ $brand = wildflower_brand();
 							<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H17V3.6c-.29-.04-1.28-.13-2.43-.13-2.4 0-4.05 1.47-4.05 4.16v2.32H7.8V13h2.72v8h2.98z"/></svg>
 						</a>
 					<?php endif; ?>
+					<a href="<?php echo esc_url( ! empty( $brand['pinterest'] ) ? $brand['pinterest'] : '#' ); ?>" rel="noopener" target="_blank" aria-label="Pinterest">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.6 19.3c-.08-.8-.15-2 .03-2.9.17-.77 1.1-4.9 1.1-4.9s-.28-.56-.28-1.4c0-1.3.76-2.28 1.7-2.28.8 0 1.19.6 1.19 1.32 0 .8-.51 2-.78 3.12-.22.93.47 1.7 1.38 1.7 1.66 0 2.94-1.75 2.94-4.28 0-2.24-1.6-3.8-3.9-3.8-2.65 0-4.2 1.98-4.2 4.03 0 .8.3 1.66.7 2.13.08.09.09.17.06.27l-.25 1c-.04.16-.13.2-.3.12-1.13-.53-1.84-2.18-1.84-3.5 0-2.85 2.07-5.47 5.97-5.47 3.13 0 5.57 2.23 5.57 5.22 0 3.11-1.96 5.62-4.68 5.62-.91 0-1.77-.48-2.06-1.03l-.56 2.13c-.2.78-.75 1.76-1.12 2.36A10 10 0 1 0 12 2z"/></svg>
+					</a>
+					<a href="<?php echo esc_url( ! empty( $brand['tiktok'] ) ? $brand['tiktok'] : '#' ); ?>" rel="noopener" target="_blank" aria-label="TikTok">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.3 2.1 1.5 3.5 3.5 3.7v2.4c-1.2.1-2.4-.3-3.5-.9v6.1c0 3.2-2.4 5.7-5.5 5.7A5.3 5.3 0 0 1 5.5 14c0-3.1 2.7-5.4 5.9-5v2.6c-.3-.1-.7-.2-1-.2-1.4 0-2.5 1.2-2.4 2.6a2.4 2.4 0 0 0 4.8-.2V3h3.7z"/></svg>
+					</a>
 				</div>
 				<p style="margin-top:.7rem;">
 					<a class="link-underline" href="<?php echo esc_url( $brand['instagram'] ); ?>" rel="noopener" target="_blank"><?php echo esc_html( $brand['handle'] ); ?></a>

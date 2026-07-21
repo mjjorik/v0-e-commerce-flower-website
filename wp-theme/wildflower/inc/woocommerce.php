@@ -186,6 +186,60 @@ add_filter(
 	}
 );
 
+/* Checkout: a gift-card message field (in addition to order notes). */
+add_action(
+	'woocommerce_after_order_notes',
+	function ( $checkout ) {
+		echo '<div class="wf-card-message">';
+		woocommerce_form_field(
+			'wildflower_card_message',
+			array(
+				'type'        => 'textarea',
+				'class'       => array( 'form-row-wide' ),
+				'label'       => __( 'Message on the gift card', 'wildflower' ),
+				'placeholder' => __( 'What should we handwrite on the card? (optional)', 'wildflower' ),
+				'required'    => false,
+			),
+			$checkout->get_value( 'wildflower_card_message' )
+		);
+		echo '</div>';
+	}
+);
+add_action(
+	'woocommerce_checkout_create_order',
+	function ( $order ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies the checkout nonce.
+		if ( ! empty( $_POST['wildflower_card_message'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$order->update_meta_data( '_wildflower_card_message', sanitize_textarea_field( wp_unslash( $_POST['wildflower_card_message'] ) ) );
+		}
+	}
+);
+add_action(
+	'woocommerce_admin_order_data_after_billing_address',
+	function ( $order ) {
+		$msg = $order->get_meta( '_wildflower_card_message' );
+		if ( $msg ) {
+			echo '<p><strong>' . esc_html__( 'Gift card message:', 'wildflower' ) . '</strong><br>' . nl2br( esc_html( $msg ) ) . '</p>';
+		}
+	}
+);
+add_filter(
+	'woocommerce_email_order_meta_fields',
+	function ( $fields, $sent_to_admin, $order ) {
+		$msg = $order->get_meta( '_wildflower_card_message' );
+		if ( $msg ) {
+			$fields['wildflower_card_message'] = array(
+				'label' => __( 'Gift card message', 'wildflower' ),
+				'value' => $msg,
+			);
+		}
+		return $fields;
+	},
+	10,
+	3
+);
+
 /* Remove product reviews entirely — no Reviews tab, no star rating. */
 add_filter(
 	'woocommerce_product_tabs',
