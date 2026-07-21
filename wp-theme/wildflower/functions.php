@@ -662,6 +662,9 @@ if ( class_exists( 'WooCommerce' ) ) {
 // Local delivery city landing-page data (used by the template + provisioning).
 require get_template_directory() . '/inc/delivery-cities.php';
 
+// Journal article content, auto-provisioned as posts.
+require get_template_directory() . '/inc/journal-articles.php';
+
 // Auto-create required pages (custom-order, faq, terms, privacy-policy, cities).
 require get_template_directory() . '/inc/provision.php';
 

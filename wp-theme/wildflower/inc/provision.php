@@ -15,19 +15,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_action( 'admin_init', 'wildflower_provision_pages' );
+add_action( 'init', 'wildflower_provision_pages', 20 );
 add_action( 'after_switch_theme', 'wildflower_provision_pages' );
 
 /**
- * Create the theme's required pages if they do not already exist.
+ * Create the theme's required pages + journal posts if they don't exist.
+ *
+ * Runs on a normal front-end request (not just wp-admin), so a repo deploy
+ * self-provisions with no manual import and no dashboard visit. Version-flagged
+ * so it runs once per version, with a short lock to avoid concurrent double-runs.
  */
 function wildflower_provision_pages() {
-	if ( 'v3' === get_option( 'wildflower_provisioned' ) ) {
+	if ( 'v4' === get_option( 'wildflower_provisioned' ) ) {
 		return;
 	}
-	if ( ! current_user_can( 'manage_options' ) && ! ( defined( 'DOING_CRON' ) && DOING_CRON ) && ! did_action( 'after_switch_theme' ) ) {
-		return; // Only a capable admin (or theme activation) provisions.
+	if ( get_transient( 'wildflower_provisioning' ) ) {
+		return; // Another request is already provisioning.
 	}
+	set_transient( 'wildflower_provisioning', 1, 2 * MINUTE_IN_SECONDS );
 
 	$pages = array(
 		'custom-order'   => array(
@@ -98,7 +103,50 @@ function wildflower_provision_pages() {
 		update_option( 'wp_page_for_privacy_policy', $ids['privacy-policy'] );
 	}
 
-	update_option( 'wildflower_provisioned', 'v3' );
+	// Journal posts — created from code so they appear with the deploy, no
+	// manual import. Also trash the default "Hello World" post so the grid
+	// stays a clean feature + 6.
+	if ( function_exists( 'wildflower_journal_articles' ) ) {
+		$admins    = get_users( array( 'role' => 'administrator', 'number' => 1, 'fields' => 'ID' ) );
+		$author_id = ! empty( $admins ) ? (int) $admins[0] : 1;
+		foreach ( wildflower_journal_articles() as $art ) {
+			if ( get_page_by_path( $art['slug'], OBJECT, 'post' ) instanceof WP_Post ) {
+				continue;
+			}
+			$post_id = wp_insert_post(
+				array(
+					'post_type'      => 'post',
+					'post_status'    => 'publish',
+					'post_author'    => $author_id,
+					'post_name'      => $art['slug'],
+					'post_title'     => $art['title'],
+					'post_content'   => $art['content'],
+					'post_excerpt'   => $art['excerpt'],
+					'post_date'      => $art['date'],
+					'comment_status' => 'closed',
+					'ping_status'    => 'closed',
+				)
+			);
+			if ( $post_id && ! is_wp_error( $post_id ) && ! empty( $art['category'] ) ) {
+				$term = term_exists( $art['category'], 'category' );
+				if ( ! $term ) {
+					$term = wp_insert_term( $art['category'], 'category' );
+				}
+				if ( ! is_wp_error( $term ) && ! empty( $term['term_id'] ) ) {
+					wp_set_post_terms( $post_id, array( (int) $term['term_id'] ), 'category' );
+				}
+			}
+		}
+	}
+
+	// Remove the default "Hello World" starter post if it is still around.
+	$hello = get_page_by_path( 'hello-world', OBJECT, 'post' );
+	if ( $hello instanceof WP_Post && 'trash' !== $hello->post_status ) {
+		wp_trash_post( $hello->ID );
+	}
+
+	update_option( 'wildflower_provisioned', 'v4' );
+	delete_transient( 'wildflower_provisioning' );
 }
 
 /**
