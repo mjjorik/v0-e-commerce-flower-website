@@ -51,6 +51,12 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 			<aside class="contact__aside reveal">
 				<div class="contact__card">
 					<ul class="contact__details">
+						<?php if ( ! empty( $brand['address'] ) ) : ?>
+							<li>
+								<span class="contact__label"><?php esc_html_e( 'Studio', 'wildflower' ); ?></span>
+								<a class="link-underline" href="<?php echo esc_url( $brand['maps'] ); ?>" rel="noopener" target="_blank"><?php echo esc_html( $brand['address'] ); ?></a>
+							</li>
+						<?php endif; ?>
 						<li>
 							<span class="contact__label"><?php esc_html_e( 'Email', 'wildflower' ); ?></span>
 							<a href="mailto:<?php echo esc_attr( $brand['email'] ); ?>"><?php echo esc_html( $brand['email'] ); ?></a>
@@ -76,6 +82,8 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 				<div class="contact__map media">
 					<?php if ( $contact_map_id ) : ?>
 						<?php echo wp_get_attachment_image( $contact_map_id, 'large', false, array( 'alt' => esc_attr__( 'Greater Boston flower delivery area map', 'wildflower' ), 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<?php elseif ( ! empty( $brand['address'] ) ) : ?>
+						<iframe title="<?php esc_attr_e( 'Wildflower studio map', 'wildflower' ); ?>" src="https://maps.google.com/maps?q=<?php echo rawurlencode( $brand['address'] ); ?>&output=embed" style="width:100%;height:100%;border:0;display:block;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 					<?php else : ?>
 						<span class="delivery__pin"></span>
 						<span class="media-fallback__label"><?php echo esc_html( $brand['city'] ); ?></span>

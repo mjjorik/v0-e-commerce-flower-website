@@ -20,19 +20,19 @@ $media = wildflower_page_media( 'subscriptions' );
 
 /* Plans: name, price, cadence, featured, perks[] */
 $plans = array(
-	array( 'Weekly', 45, __( 'every week', 'wildflower' ), false, array(
+	array( 'Weekly', 70, __( 'every week', 'wildflower' ), false, array(
 		__( 'A fresh seasonal bouquet weekly', 'wildflower' ),
 		__( 'Free delivery, always', 'wildflower' ),
 		__( 'Skip or pause anytime', 'wildflower' ),
 		__( 'Best value per stem', 'wildflower' ),
 	) ),
-	array( 'Bi-weekly', 49, __( 'every two weeks', 'wildflower' ), true, array(
+	array( 'Bi-weekly', 95, __( 'every two weeks', 'wildflower' ), true, array(
 		__( 'Everything in Weekly', 'wildflower' ),
 		__( 'A vase free on your first box', 'wildflower' ),
 		__( '10% off all add-ons', 'wildflower' ),
 		__( 'Our most-loved rhythm', 'wildflower' ),
 	) ),
-	array( 'Monthly', 55, __( 'once a month', 'wildflower' ), false, array(
+	array( 'Monthly', 130, __( 'once a month', 'wildflower' ), false, array(
 		__( 'Designer’s choice each month', 'wildflower' ),
 		__( 'Free delivery, always', 'wildflower' ),
 		__( 'Skip or pause anytime', 'wildflower' ),
@@ -91,7 +91,7 @@ $faqs = array(
 						<a class="btn--outline btn--lg" href="#how"><?php esc_html_e( 'How it works', 'wildflower' ); ?></a>
 					</div>
 					<div class="hero__trust">
-						<span class="hero__trust-item"><strong><?php esc_html_e( 'From $45', 'wildflower' ); ?></strong> <?php esc_html_e( 'per delivery', 'wildflower' ); ?></span>
+						<span class="hero__trust-item"><strong><?php esc_html_e( 'From $70', 'wildflower' ); ?></strong> <?php esc_html_e( 'per delivery', 'wildflower' ); ?></span>
 						<span class="hero__trust-item"><?php esc_html_e( 'Free delivery', 'wildflower' ); ?></span>
 						<span class="hero__trust-item"><?php esc_html_e( 'Cancel anytime', 'wildflower' ); ?></span>
 					</div>
@@ -105,7 +105,7 @@ $faqs = array(
 				<div class="hero__float">
 					<span class="hero__float-text">
 						<span class="hero__float-name"><?php esc_html_e( 'Bi-weekly plan', 'wildflower' ); ?></span>
-						<span class="hero__float-price">$49 <span style="font-family:var(--font-sans);font-size:.7rem;color:var(--muted-foreground);">/ delivery</span></span>
+						<span class="hero__float-price">$70 <span style="font-family:var(--font-sans);font-size:.7rem;color:var(--muted-foreground);">/ delivery</span></span>
 					</span>
 					<span class="hero__float-plus" aria-hidden="true">
 						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -150,7 +150,7 @@ $faqs = array(
 				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Never the same bouquet twice', 'wildflower' ) ); // phpcs:ignore ?></h2>
 				<p style="margin-top:1.25rem;max-width:30rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.65;"><?php esc_html_e( 'Each delivery is a designer’s-choice arrangement built from the freshest stems of the week — peonies in June, ranunculus in spring, branches in autumn. A small, living change of season on your table, every time.', 'wildflower' ); ?></p>
-				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$45</span> <span style="font-size:1rem;color:var(--muted-foreground);"><?php esc_html_e( '/ delivery', 'wildflower' ); ?></span></p>
+				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$70</span> <span style="font-size:1rem;color:var(--muted-foreground);"><?php esc_html_e( '/ delivery', 'wildflower' ); ?></span></p>
 				<a class="btn--primary" style="margin-top:1.5rem;" href="#plans"><?php esc_html_e( 'See plans', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 			</div>
 		</div>

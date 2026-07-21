@@ -78,6 +78,9 @@ $brand = wildflower_brand();
 			<div>
 				<h3><?php esc_html_e( 'Studio', 'wildflower' ); ?></h3>
 				<p class="footer-contact" style="margin-top:1rem;font-size:.9rem;">
+					<?php if ( ! empty( $brand['address'] ) ) : ?>
+						<a class="link-underline" href="<?php echo esc_url( $brand['maps'] ); ?>" rel="noopener" target="_blank"><?php echo esc_html( $brand['address'] ); ?></a><br>
+					<?php endif; ?>
 					<?php echo esc_html( $brand['email'] ); ?><br>
 					<?php echo esc_html( $brand['phone'] ); ?>
 				</p>

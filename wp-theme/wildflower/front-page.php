@@ -81,15 +81,38 @@ if ( '' === $markup ) {
 					<?php wildflower_hero_visual(); ?>
 				</div>
 				<span class="hero__chip"><span class="hero__chip-star">★</span> 4.9 · <?php esc_html_e( 'Same-day', 'wildflower' ); ?></span>
-				<div class="hero__float">
+				<?php
+				/* Hero badge = the bouquet featured in the hero video (Blush Cloud
+				   Bouquet), with its live catalog price. Falls back if the product
+				   isn't found. */
+				$hero_bq_name  = 'Blush Cloud Bouquet';
+				$hero_bq_price = '$125';
+				$hero_bq_url   = $shop;
+				if ( class_exists( 'WooCommerce' ) ) {
+					$bq_post = get_page_by_path( 'blush-cloud-bouquet', OBJECT, 'product' );
+					if ( ! $bq_post ) {
+						$bq_found = get_posts( array( 'post_type' => 'product', 'post_status' => 'publish', 'numberposts' => 1, 'title' => 'Blush Cloud Bouquet' ) );
+						$bq_post  = $bq_found ? $bq_found[0] : null;
+					}
+					if ( $bq_post ) {
+						$bq_prod = wc_get_product( $bq_post->ID );
+						if ( $bq_prod ) {
+							$hero_bq_name  = $bq_prod->get_name();
+							$hero_bq_price = wp_strip_all_tags( $bq_prod->get_price_html() );
+							$hero_bq_url   = get_permalink( $bq_prod->get_id() );
+						}
+					}
+				}
+				?>
+				<a class="hero__float" href="<?php echo esc_url( $hero_bq_url ); ?>">
 					<span class="hero__float-text">
-						<span class="hero__float-name"><?php esc_html_e( 'Pink Peony Dream', 'wildflower' ); ?></span>
-						<span class="hero__float-price">$49</span>
+						<span class="hero__float-name"><?php echo esc_html( $hero_bq_name ); ?></span>
+						<span class="hero__float-price"><?php echo esc_html( $hero_bq_price ); ?></span>
 					</span>
 					<span class="hero__float-plus" aria-hidden="true">
 						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
 					</span>
-				</div>
+				</a>
 			</div>
 		</div>
 	</div>
@@ -348,7 +371,7 @@ if ( '' === $markup ) {
 				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Fresh flowers, every week', 'wildflower' ) ); // phpcs:ignore ?></h2>
 				<p style="margin-top:1.25rem;max-width:28rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.6;"><?php esc_html_e( 'A standing order of seasonal blooms, chosen by our studio and delivered like clockwork. Pause, skip or cancel anytime — no strings, just stems.', 'wildflower' ); ?></p>
-				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$75</span> <span style="font-size:1rem;color:var(--muted-foreground);">/ delivery</span></p>
+				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$70</span> <span style="font-size:1rem;color:var(--muted-foreground);">/ delivery</span></p>
 				<a class="btn--primary" style="margin-top:1.75rem;" href="<?php echo esc_url( home_url( '/subscriptions/' ) ); ?>"><?php esc_html_e( 'Explore subscriptions', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 			</div>
 		</div>
@@ -368,7 +391,7 @@ if ( '' === $markup ) {
 		<?php
 		$reviews = array(
 			array( 'review_maya', 'The nicest flowers I’ve sent, and somehow the cheapest. My sister cried.', 'Maya R.', 'Back Bay' ),
-			array( 'review_daniel', 'Subscription is the best $75 I spend each week. The studio has taste.', 'Daniel K.', 'Cambridge' ),
+			array( 'review_daniel', 'Subscription is the best $70 I spend each week. The studio has taste.', 'Daniel K.', 'Cambridge' ),
 			array( 'review_priya', 'Ordered at noon, delivered by 4. The bouquet looked exactly like the photo.', 'Priya S.', 'Somerville' ),
 		);
 		?>

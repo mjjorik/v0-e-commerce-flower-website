@@ -235,16 +235,17 @@ function wildflower_brand() {
 		// Defaults to the phone digits — set the real WhatsApp line here.
 		'whatsapp'  => '',
 		/*
-		 * Real address / geo for LocalBusiness schema + local SEO. Leave blank
-		 * until you have the exact studio details — never publish an invented
-		 * address, it hurts local ranking. Fill these to match Google Business
-		 * Profile byte-for-byte (street, ZIP, coordinates, Google Maps URL).
+		 * Real studio address / geo — used by the LocalBusiness schema, the
+		 * footer/contact blocks and the map. Keep in sync with Google Business
+		 * Profile byte-for-byte.
 		 */
-		'street'  => '',
-		'postal'  => '',
-		'lat'     => '',
-		'lng'     => '',
-		'maps'    => '',
+		'street'   => '267 N Beacon St',
+		'locality' => 'Brighton',
+		'postal'   => '02135',
+		'address'  => '267 N Beacon St, Brighton, MA 02135',
+		'lat'      => '42.3577',
+		'lng'      => '-71.1426',
+		'maps'     => 'https://www.google.com/maps/search/?api=1&query=267+N+Beacon+St+Brighton+MA+02135',
 	);
 }
 
