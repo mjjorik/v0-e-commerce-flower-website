@@ -1593,9 +1593,15 @@ a.corder-type { color: inherit; text-decoration: none; display: block; }
 .journal-feature__title { font-family: var(--font-serif); font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.05; margin: .5rem 0 .75rem; }
 .journal-feature__title a:hover { color: var(--accent); }
 
-.journal-grid { display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); grid-template-columns: 1fr; }
-@media (min-width: 640px) { .journal-grid { grid-template-columns: repeat(2, 1fr); } }
+/* Two columns on phones (no single-column stack, no gaps with a 6-article set),
+   three across on desktop. */
+.journal-grid { display: grid; gap: 1.25rem 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 640px) { .journal-grid { gap: clamp(1.5rem, 3vw, 2.5rem); } }
 @media (min-width: 1024px) { .journal-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 639px) {
+  .journal-grid .post-card__title { font-size: 1.05rem; line-height: 1.2; }
+  .journal-grid .post-card__excerpt { font-size: .85rem; }
+}
 .post-card__media { position: relative; display: block; aspect-ratio: 4/3; border-radius: var(--radius-lg); overflow: hidden; background: var(--card); box-shadow: var(--shadow-card); }
 .post-card__media img, .post-card__media .media-fallback { position: absolute; inset: -11% 0 auto 0; width: 100%; height: 122%; object-fit: cover; transition: transform .7s var(--ease-luxe); will-change: transform; }
 .post-card:hover .post-card__media img, .post-card:hover .post-card__media .media-fallback { transform: scale(1.05); }
