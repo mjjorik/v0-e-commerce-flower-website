@@ -456,6 +456,9 @@
   .wf-shop-sections__track { padding-inline: var(--container-pad, 1.5rem); }
   .wf-shop-sections__link { min-height: 3.5rem; padding-block: 1rem; }
 }
+@media (max-width: 1024px) {
+  .wf-shop-sections__link::after { bottom: 0; }
+}
 @media (min-width: 1025px) {
   .wf-shop-sections__hint { display: none; }
   .wf-shop-sections__viewport {
