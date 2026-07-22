@@ -126,9 +126,11 @@
 .woocommerce div.product .woocommerce-product-gallery .flex-viewport { border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-card); }
 .woocommerce div.product .woocommerce-product-gallery__wrapper { border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-card); }
 @media (min-width: 1024px) { .woocommerce div.product .woocommerce-product-gallery { position: sticky; top: 6rem; } }
-/* Gallery thumbnails row below the main image. */
-.woocommerce div.product .flex-control-thumbs { display: flex; gap: .7rem; margin: 1.1rem 0 0; padding: 0; list-style: none; }
-.woocommerce div.product .flex-control-thumbs li { width: 4.5rem; margin: 0; }
+/* Gallery thumbnails row below the main image. The margin-top is forced so
+   WooCommerce core's own gallery stylesheet (equal specificity, may load after
+   ours) can't collapse the gap — the thumbs must never stick to the main photo. */
+.woocommerce div.product .flex-control-thumbs { display: flex; flex-wrap: wrap; gap: .7rem; margin: 1.5rem 0 0 !important; padding: 0; list-style: none; clear: both; }
+.woocommerce div.product .flex-control-thumbs li { width: 4.5rem; margin: 0 !important; padding: 0; }
 .woocommerce div.product .flex-control-thumbs img { border-radius: var(--radius-md); opacity: .6; transition: opacity .2s; cursor: pointer; }
 .woocommerce div.product .flex-control-thumbs img.flex-active,
 .woocommerce div.product .flex-control-thumbs img:hover { opacity: 1; }
@@ -164,23 +166,17 @@
 /* Tabs / description — strip WooCommerce's default gray "folder tab" chrome
    (its selectors include div.product, so we must match that specificity) and
    rebuild as clean editorial text tabs with an accent underline. */
-/* Description / info tabs live in a designed matcha panel (not a bland white
-   canvas): green background, light text, gold accent on the active tab. */
+/* Description / info tabs: a clean light editorial panel with DARK text on a
+   cream card. Deliberately NOT a dark/green panel — light-on-light was the
+   "white on white" bug, so text here is always the dark foreground colour and
+   can never wash out, regardless of which single rule wins on the live site. */
 .woocommerce div.product .woocommerce-tabs {
   grid-column: 1 / -1; margin-top: clamp(2.5rem, 5vw, 4rem);
-  background-color: var(--surface-soft); background-image: var(--grain);
-  color: var(--surface-soft-foreground);
+  background-color: var(--cream); background-image: var(--grain);
+  color: var(--foreground);
+  border: 1px solid var(--border); box-shadow: var(--shadow-card);
   border-radius: var(--radius-2xl); padding: clamp(1.75rem, 4vw, 3rem);
 }
-.woocommerce div.product .woocommerce-tabs ul.tabs { border-bottom-color: color-mix(in oklab, var(--surface-soft-foreground) 22%, transparent); }
-.woocommerce div.product .woocommerce-tabs ul.tabs li a { color: color-mix(in oklab, var(--surface-soft-foreground) 72%, transparent); }
-.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover,
-.woocommerce div.product .woocommerce-tabs ul.tabs li.active a { color: var(--surface-soft-foreground); }
-.woocommerce div.product .woocommerce-tabs ul.tabs li a::after { background: var(--accent-on-dark); }
-.woocommerce div.product .woocommerce-Tabs-panel { color: color-mix(in oklab, var(--surface-soft-foreground) 88%, transparent); }
-.woocommerce div.product .woocommerce-Tabs-panel > h2 { color: var(--surface-soft-foreground); }
-.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes { border-color: color-mix(in oklab, var(--surface-soft-foreground) 20%, transparent); }
-.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes th { background: color-mix(in oklab, var(--surface-soft-foreground) 10%, transparent); color: var(--surface-soft-foreground); }
 .woocommerce div.product .woocommerce-tabs ul.tabs {
   display: flex; flex-wrap: wrap; gap: 2rem; margin: 0 0 2rem; padding: 0 0 .9rem;
   border-bottom: 1px solid var(--border); list-style: none;
@@ -196,29 +192,29 @@
 .woocommerce div.product .woocommerce-tabs ul.tabs li a {
   position: relative; display: inline-block; padding: 0 0 .1rem; font-family: var(--font-sans);
   font-weight: 600; font-size: .82rem; text-transform: uppercase; letter-spacing: .1em;
-  color: color-mix(in oklab, var(--surface-soft-foreground) 68%, transparent); transition: color .2s;
+  color: var(--muted-foreground); transition: color .2s;
 }
 .woocommerce div.product .woocommerce-tabs ul.tabs li a::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: -.95rem; height: 2px; background: var(--accent-on-dark);
+  content: ''; position: absolute; left: 0; right: 0; bottom: -.95rem; height: 2px; background: var(--accent);
   transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease-luxe);
 }
-.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover { color: var(--surface-soft-foreground); }
-.woocommerce div.product .woocommerce-tabs ul.tabs li.active a { color: var(--surface-soft-foreground); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover { color: var(--foreground); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a { color: var(--foreground); }
 .woocommerce div.product .woocommerce-tabs ul.tabs li.active a::after { transform: scaleX(1); }
 .woocommerce div.product .woocommerce-Tabs-panel {
-  font-size: 1rem; line-height: 1.75; color: color-mix(in oklab, var(--surface-soft-foreground) 88%, transparent); max-width: 48rem;
+  font-size: 1rem; line-height: 1.75; color: color-mix(in oklab, var(--foreground) 88%, transparent); max-width: 48rem;
 }
 .woocommerce div.product .woocommerce-Tabs-panel > h2 {
-  font-family: var(--font-serif); font-size: clamp(1.5rem, 3vw, 2rem); color: var(--surface-soft-foreground); margin: 0 0 1rem;
+  font-family: var(--font-serif); font-size: clamp(1.5rem, 3vw, 2rem); color: var(--foreground); margin: 0 0 1rem;
 }
-.woocommerce div.product .woocommerce-Tabs-panel p { margin: 0 0 1rem; }
+.woocommerce div.product .woocommerce-Tabs-panel p { margin: 0 0 1rem; color: color-mix(in oklab, var(--foreground) 88%, transparent); }
 .woocommerce div.product .woocommerce-Tabs-panel ul,
 .woocommerce div.product .woocommerce-Tabs-panel ol { margin: 0 0 1rem 1.25rem; }
 .woocommerce div.product .woocommerce-Tabs-panel li { margin-bottom: .4rem; }
-/* Additional-info attribute table */
-.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes th { background: var(--muted); font-weight: 600; }
-.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes td { font-style: normal; }
+/* Additional-info attribute table — dark text, light header cells. */
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; color: var(--foreground); }
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes th { background: var(--muted); font-weight: 600; color: var(--foreground); }
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes td { font-style: normal; color: color-mix(in oklab, var(--foreground) 88%, transparent); }
 
 /* Reviews tab */
 .woocommerce div.product #reviews .comment-reply-title { font-family: var(--font-serif); font-size: 1.3rem; display: block; margin-bottom: .5rem; }

@@ -347,6 +347,13 @@ body.admin-bar .site-header { top: 32px; }
    ============================================================ */
 .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 2.5rem; }
 .section-head h2 { font-size: clamp(1.875rem, 4vw, 3rem); }
+/* Phones: stack the head so the right-hand item (rating / "all stories" link)
+   drops cleanly under the heading, left-aligned, instead of being squeezed to
+   the far edge and clipping. */
+@media (max-width: 600px) {
+  .section-head { flex-direction: column; align-items: flex-start; gap: .6rem; }
+  .reviews__rating { align-self: flex-start; }
+}
 .link-underline { font-size: .9rem; text-decoration: underline; text-underline-offset: 4px; }
 .link-underline:hover { opacity: .7; }
 
@@ -801,12 +808,42 @@ textarea { resize: vertical; }
   flex: 0 0 min(80vw, 22rem) !important; width: min(80vw, 22rem) !important; max-width: none !important;
   margin: 0 !important; float: none; clear: none; scroll-snap-align: start;
 }
-@media (min-width: 700px) {
+/* Desktop/tablet (where the arrows appear): tile a whole number of cards into
+   the track so NO sliver of the next photo peeks on the right before you flip.
+   Track content width = min(100vw, container 80rem) − 3rem side padding; we then
+   subtract the inter-card gaps and divide, so cards land flush edge-to-edge.
+   The mobile peek (above) is kept — there swiping needs the next-card hint. */
+/* Pin the inter-card gap so the whole-card tiling maths below is exact
+   (the default gap is a clamp() that varies with viewport). */
+@media (min-width: 768px) {
+  .products--scroll,
+  .products--scroll ul.products { gap: 1.5rem !important; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
   .products--scroll li.product,
   .products--scroll > .product {
-    flex-basis: clamp(14rem, 28vw, 23rem) !important;
-    width: clamp(14rem, 28vw, 23rem) !important;
+    flex-basis: calc((min(100vw, 80rem) - 4.5rem) / 2) !important;
+    width: calc((min(100vw, 80rem) - 4.5rem) / 2) !important;
   }
+}
+@media (min-width: 1024px) {
+  /* Container padding is 3rem each side here (see .container @1024), so subtract
+     6rem padding + 2×1.5rem gaps = 9rem before dividing by 3. */
+  .products--scroll li.product,
+  .products--scroll > .product {
+    flex-basis: calc((min(100vw, 80rem) - 9rem) / 3) !important;
+    width: calc((min(100vw, 80rem) - 9rem) / 3) !important;
+  }
+}
+/* Whole-card tiling leaves at most a hair of the next card inside the track's
+   right padding: 0 on tablet (padding == gap), ~24px on desktop (3rem padding −
+   1.5rem gap). Hide the mask where the sliver is zero; on desktop keep a thin
+   fade the exact width of the right padding so it covers the sliver without ever
+   touching the last full card (which ends at the content edge). Phones keep the
+   default wider fade for their swipe peek. */
+@media (min-width: 768px) { .scroller__fade { display: none; } }
+@media (min-width: 1024px) {
+  .scroller__fade { display: block; width: 3rem; background: linear-gradient(90deg, transparent, var(--card)); }
 }
 /* ── Editorial product card (used in the scroller AND the shop grid) ── */
 .product { position: relative; }
@@ -944,13 +981,13 @@ textarea { resize: vertical; }
   .addons__grid {
     grid-template-columns: none;
     display: flex; flex-wrap: nowrap; overflow-x: auto;
-    gap: 1.25rem; padding-bottom: .85rem; scroll-snap-type: x proximity;
+    gap: 1.25rem; padding-bottom: .85rem; scroll-snap-type: x mandatory;
     scrollbar-width: thin; scrollbar-color: color-mix(in oklab, var(--accent) 55%, transparent) transparent;
     scroll-padding-left: 0;
     /* Soft fade on the right so the clipped last card melts out instead of
        being hard-cut — hints there's more to scroll without a harsh edge. */
-    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 3.5rem), transparent 100%);
-    mask-image: linear-gradient(to right, #000 calc(100% - 3.5rem), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 5rem), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 5rem), transparent 100%);
   }
   .addon {
     flex: 0 0 clamp(16rem, 26vw, 20rem); scroll-snap-align: start;
@@ -1621,8 +1658,19 @@ body.admin-bar .read-progress { top: 32px; }
 
 /* Article */
 .article { padding-bottom: clamp(3.5rem, 7vw, 6rem); }
-.article__head { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); text-align: center; }
+/* Accent hero band — the article opens on a matcha-green field (not the pale
+   cream canvas), with light text and a gold eyebrow, then the cover photo sits
+   below on the cream. This is the "accent colour" hero the studio asked for. */
+.article__head {
+  background-color: var(--surface-soft); background-image: var(--grain);
+  color: var(--surface-soft-foreground); text-align: center;
+  padding-top: clamp(3rem, 7vw, 5.5rem); padding-bottom: clamp(2.75rem, 6vw, 4.5rem);
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
 .article__head-inner { max-width: 52rem; margin-inline: auto; }
+.article__head .eyebrow { color: var(--accent-on-dark); }
+.article__head .article__title { color: var(--surface-soft-foreground); }
+.article__head .article__meta { color: color-mix(in oklab, var(--surface-soft-foreground) 72%, transparent); }
 /* Wider reading measure for articles — the 44rem prose default felt cramped
    with a lot of empty space on tablets/desktops. */
 .prose.article__body { max-width: 54rem; margin-inline: auto; }
