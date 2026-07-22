@@ -464,7 +464,7 @@
   .wf-shop-sections__viewport::-webkit-scrollbar { display: none; }
   .wf-shop-sections__track { width: 100%; min-width: 0; }
   .wf-shop-sections__link {
-    flex: 1 1 0; justify-content: center; min-width: 0; padding-inline: clamp(.65rem, 1vw, 1rem);
+    flex: 1 1 0; justify-content: center; gap: .45rem; min-width: 0; padding-inline: clamp(.65rem, 1vw, 1rem);
   }
 }
 
