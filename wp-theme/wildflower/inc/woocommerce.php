@@ -23,6 +23,150 @@ function wildflower_wc_wrapper_end() {
 }
 add_action( 'woocommerce_after_main_content', 'wildflower_wc_wrapper_end', 10 );
 
+/**
+ * Whether the current request is a browsable WooCommerce catalog archive.
+ *
+ * @return bool
+ */
+function wildflower_is_catalog_archive() {
+	return function_exists( 'is_shop' ) && ( is_shop() || is_product_taxonomy() );
+}
+
+/**
+ * Build the archive navigation from the same curated list as the Shop menu.
+ *
+ * @return array<int,array{url:string,label:string,is_all:bool}>
+ */
+function wildflower_catalog_navigation_items() {
+	if ( ! function_exists( 'wc_get_page_permalink' ) ) {
+		return array();
+	}
+
+	$shop_url = wc_get_page_permalink( 'shop' );
+	if ( ! $shop_url ) {
+		return array();
+	}
+
+	$items = array(
+		array(
+			'url'    => $shop_url,
+			'label'  => __( 'All flowers', 'wildflower' ),
+			'is_all' => true,
+		),
+	);
+
+	if ( function_exists( 'wildflower_shop_menu' ) ) {
+		foreach ( wildflower_shop_menu() as $item ) {
+			if ( empty( $item[0] ) || empty( $item[1] ) ) {
+				continue;
+			}
+			$items[] = array(
+				'url'    => (string) $item[0],
+				'label'  => (string) $item[1],
+				'is_all' => false,
+			);
+		}
+	}
+
+	return $items;
+}
+
+/**
+ * Determine whether a catalog-navigation link represents the current view.
+ *
+ * @param string $target_url Navigation target.
+ * @param bool   $is_all     Whether this is the unfiltered Shop link.
+ * @return bool
+ */
+function wildflower_catalog_navigation_is_active( $target_url, $is_all ) {
+	$target_query = array();
+	$target_parts = wp_parse_url( $target_url );
+	if ( ! empty( $target_parts['query'] ) ) {
+		parse_str( $target_parts['query'], $target_query );
+	}
+
+	$current_orderby = isset( $_GET['orderby'] ) ? sanitize_key( wp_unslash( $_GET['orderby'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$current_cat     = isset( $_GET['product_cat'] ) ? sanitize_title( wp_unslash( $_GET['product_cat'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+	if ( ! empty( $target_query['orderby'] ) ) {
+		return is_shop() && sanitize_key( $target_query['orderby'] ) === $current_orderby;
+	}
+
+	if ( ! empty( $target_query['product_cat'] ) ) {
+		$target_cat = sanitize_title( $target_query['product_cat'] );
+		return ( function_exists( 'is_product_category' ) && is_product_category( $target_cat ) ) || $target_cat === $current_cat;
+	}
+
+	if ( is_product_taxonomy() ) {
+		$term = get_queried_object();
+		if ( $term instanceof WP_Term ) {
+			$current_url = get_term_link( $term );
+			if ( ! is_wp_error( $current_url ) ) {
+				$current_path = untrailingslashit( (string) wp_parse_url( $current_url, PHP_URL_PATH ) );
+				$target_path  = untrailingslashit( (string) wp_parse_url( $target_url, PHP_URL_PATH ) );
+				return '' !== $current_path && $current_path === $target_path;
+			}
+		}
+	}
+
+	if ( ! $is_all || ! is_shop() || '' !== $current_cat ) {
+		return false;
+	}
+
+	// Price/name sorting still belongs to All flowers. Only the two curated
+	// sort links take over its active state.
+	return ! in_array( $current_orderby, array( 'popularity', 'date' ), true );
+}
+
+/**
+ * Render the shared horizontal catalog navigation.
+ *
+ * @param string $position Either top or bottom.
+ */
+function wildflower_catalog_navigation( $position ) {
+	if ( ! wildflower_is_catalog_archive() ) {
+		return;
+	}
+
+	$items = wildflower_catalog_navigation_items();
+	if ( empty( $items ) ) {
+		return;
+	}
+
+	$is_bottom = 'bottom' === $position;
+	$title     = $is_bottom ? __( 'Continue browsing', 'wildflower' ) : __( 'Browse the shop', 'wildflower' );
+	$label     = $is_bottom ? __( 'Shop sections, repeated', 'wildflower' ) : __( 'Shop sections', 'wildflower' );
+	?>
+	<nav class="wf-shop-sections wf-shop-sections--<?php echo esc_attr( $position ); ?>" aria-label="<?php echo esc_attr( $label ); ?>">
+		<div class="wf-shop-sections__head">
+			<span class="wf-shop-sections__title"><?php echo esc_html( $title ); ?></span>
+			<span class="wf-shop-sections__hint"><?php esc_html_e( 'Swipe to explore', 'wildflower' ); ?></span>
+		</div>
+		<div class="wf-shop-sections__viewport">
+			<div class="wf-shop-sections__track">
+				<?php foreach ( $items as $index => $item ) : ?>
+					<?php $active = wildflower_catalog_navigation_is_active( $item['url'], $item['is_all'] ); ?>
+					<a class="wf-shop-sections__link<?php echo $active ? ' is-active' : ''; ?>" href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $active ? ' aria-current="page"' : ''; ?>>
+						<span class="wf-shop-sections__index" aria-hidden="true"><?php echo esc_html( sprintf( '%02d', $index + 1 ) ); ?></span>
+						<span><?php echo esc_html( $item['label'] ); ?></span>
+					</a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</nav>
+	<?php
+}
+
+function wildflower_catalog_navigation_top() {
+	wildflower_catalog_navigation( 'top' );
+}
+add_action( 'woocommerce_shop_loop_header', 'wildflower_catalog_navigation_top', 20 );
+
+function wildflower_catalog_navigation_bottom() {
+	wildflower_catalog_navigation( 'bottom' );
+}
+add_action( 'woocommerce_after_main_content', 'wildflower_catalog_navigation_bottom', 5 );
+
 /* Remove the default sidebar — design is full-width grid. */
 remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10 );
 

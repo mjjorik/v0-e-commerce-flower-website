@@ -314,6 +314,36 @@ function wildflower_archive_breadcrumb_jsonld() {
 add_action( 'wp_footer', 'wildflower_archive_breadcrumb_jsonld' );
 
 /**
+ * Give the main catalog and product-category archives concise search titles.
+ * WordPress appends the site name using the configured title separator.
+ *
+ * @param array $parts Document-title parts.
+ * @return array
+ */
+function wildflower_catalog_document_title( $parts ) {
+	if ( function_exists( 'is_shop' ) && is_shop() ) {
+		$parts['title'] = __( 'Flower Shop & Bouquet Delivery in Boston', 'wildflower' );
+		return $parts;
+	}
+
+	if ( function_exists( 'is_product_category' ) && is_product_category() ) {
+		$term = get_queried_object();
+		if ( $term instanceof WP_Term ) {
+			$parts['title'] = 'roses' === $term->slug
+				? __( 'Rose Bouquets & Delivery in Boston', 'wildflower' )
+				: sprintf(
+					/* translators: %s: product-category name. */
+					__( '%s — Flower Delivery in Boston', 'wildflower' ),
+					$term->name
+				);
+		}
+	}
+
+	return $parts;
+}
+add_filter( 'document_title_parts', 'wildflower_catalog_document_title' );
+
+/**
  * Meta description + Open Graph + Twitter Card tags.
  *
  * Only runs when no major SEO plugin is active (they output their own), and can
@@ -370,6 +400,34 @@ function wildflower_social_meta() {
 				}
 			}
 		}
+	} elseif ( function_exists( 'is_shop' ) && is_shop() ) {
+		$url  = wc_get_page_permalink( 'shop' );
+		$desc = __( 'Shop handcrafted bouquets, Ecuadorian roses and floral gifts with same-day delivery across Greater Boston.', 'wildflower' );
+	} elseif ( function_exists( 'is_product_taxonomy' ) && is_product_taxonomy() ) {
+		$term = get_queried_object();
+		if ( $term instanceof WP_Term ) {
+			$term_link = get_term_link( $term );
+			if ( ! is_wp_error( $term_link ) ) {
+				$url = $term_link;
+			}
+
+			$term_desc = wp_strip_all_tags( term_description( $term->term_id, $term->taxonomy ) );
+			$desc      = $term_desc ? $term_desc : sprintf(
+				/* translators: %s: product-category or product-attribute term name. */
+				__( 'Shop %s from Wildflower, handcrafted for delivery across Greater Boston.', 'wildflower' ),
+				$term->name
+			);
+
+			if ( 'product_cat' === $term->taxonomy ) {
+				$thumbnail_id = absint( get_term_meta( $term->term_id, 'thumbnail_id', true ) );
+				if ( $thumbnail_id ) {
+					$img_src = wp_get_attachment_image_src( $thumbnail_id, 'large' );
+					if ( $img_src ) {
+						$image = $img_src[0];
+					}
+				}
+			}
+		}
 	}
 
 	$desc = trim( (string) $desc );
@@ -381,6 +439,9 @@ function wildflower_social_meta() {
 	}
 
 	echo "\n";
+	if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_taxonomy() ) ) {
+		printf( '<link rel="canonical" href="%s">' . "\n", esc_url( $url ) );
+	}
 	printf( '<meta name="description" content="%s">' . "\n", esc_attr( $desc ) );
 	printf( '<meta property="og:type" content="%s">' . "\n", esc_attr( $type ) );
 	printf( '<meta property="og:title" content="%s">' . "\n", esc_attr( $title ) );

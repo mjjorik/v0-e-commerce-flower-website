@@ -392,6 +392,74 @@
 .wf-shop-toolbar .wf-filters-toggle { order: 1; }
 .wf-shop-toolbar .woocommerce-ordering { margin: 0 0 0 auto; order: 3; }
 
+/* ============================================================
+   Shared catalog navigation — same links above and below every
+   product archive, expressed in Wildflower's editorial language.
+   ============================================================ */
+.wf-shop-sections {
+  margin-block: clamp(1.5rem, 3vw, 2.25rem);
+  border-block: 1px solid var(--border);
+  background: color-mix(in oklab, var(--cream) 62%, var(--background));
+}
+.wf-shop-sections--bottom { margin-top: clamp(3rem, 7vw, 5rem); margin-bottom: 0; }
+.wf-shop-sections__head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding: .8rem 1rem .7rem; border-bottom: 1px solid var(--border);
+}
+.wf-shop-sections__title {
+  font-family: var(--font-serif); font-size: clamp(1rem, 2vw, 1.2rem); line-height: 1.1;
+}
+.wf-shop-sections__hint {
+  color: var(--muted-foreground); font-size: .66rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+}
+.wf-shop-sections__viewport {
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch; scrollbar-color: color-mix(in oklab, var(--accent) 50%, transparent) transparent;
+  scrollbar-width: thin;
+}
+.wf-shop-sections__track { display: flex; width: max-content; min-width: 100%; }
+.wf-shop-sections__link {
+  position: relative; display: grid; grid-template-columns: auto auto; align-items: baseline; gap: .55rem;
+  min-height: 3.75rem; padding: 1.15rem clamp(1rem, 2.2vw, 1.5rem);
+  border-right: 1px solid var(--border); color: color-mix(in oklab, var(--foreground) 76%, transparent);
+  font-size: .78rem; font-weight: 650; letter-spacing: .08em; line-height: 1.2; text-transform: uppercase;
+  white-space: nowrap; scroll-snap-align: start;
+  transition: color .2s ease, background-color .2s ease;
+}
+.wf-shop-sections__link:first-child { border-left: 1px solid var(--border); }
+.wf-shop-sections__link::after {
+  content: ''; position: absolute; left: 1rem; right: 1rem; bottom: -1px; height: 2px;
+  background: var(--accent); transform: scaleX(0); transform-origin: left;
+  transition: transform .25s var(--ease-luxe);
+}
+.wf-shop-sections__index {
+  color: color-mix(in oklab, var(--accent) 72%, var(--muted-foreground));
+  font-family: var(--font-serif); font-size: .72rem; font-weight: 400; letter-spacing: 0;
+}
+.wf-shop-sections__link:hover {
+  color: var(--foreground); background: color-mix(in oklab, var(--accent) 7%, transparent);
+}
+.wf-shop-sections__link:hover::after,
+.wf-shop-sections__link.is-active::after { transform: scaleX(1); }
+.wf-shop-sections__link.is-active {
+  color: var(--foreground); background: color-mix(in oklab, var(--accent) 11%, var(--background));
+}
+.wf-shop-sections__link:focus-visible {
+  z-index: 1; outline: 2px solid var(--ring); outline-offset: -3px; color: var(--foreground);
+}
+@media (max-width: 767px) {
+  .wf-shop-sections { margin-inline: calc(var(--container-pad, 1.5rem) * -1); }
+  .wf-shop-sections__head { padding-inline: var(--container-pad, 1.5rem); }
+  .wf-shop-sections__viewport { scrollbar-width: none; scroll-padding-inline: var(--container-pad, 1.5rem); }
+  .wf-shop-sections__viewport::-webkit-scrollbar { display: none; }
+  .wf-shop-sections__track { padding-inline: var(--container-pad, 1.5rem); }
+  .wf-shop-sections__link { min-height: 3.5rem; padding-block: 1rem; }
+}
+@media (min-width: 768px) {
+  .wf-shop-sections__hint { display: none; }
+}
+
 /* Catalog pagination — restyled from WooCommerce's default numbered links. */
 .woocommerce nav.woocommerce-pagination { margin-top: clamp(2.5rem, 5vw, 4rem); text-align: center; }
 .woocommerce nav.woocommerce-pagination ul { display: inline-flex; align-items: center; gap: .4rem; border: 0; margin: 0; padding: 0; }
