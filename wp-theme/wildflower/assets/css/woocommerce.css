@@ -254,8 +254,14 @@
 
 /* ---- Tables: cart ---- */
 .woocommerce table.shop_table {
-  border: 1px solid var(--border); border-radius: var(--radius-2xl); border-collapse: separate; overflow: hidden;
+  width: 100%; border: 1px solid var(--border); border-radius: var(--radius-2xl); border-collapse: separate; overflow: hidden;
 }
+/* The cart table must fill its grid column — otherwise it sizes to content and
+   leaves a big empty band inside the frame beside the totals box. The product
+   column takes the slack so Price/Qty/Subtotal sit at the right edge. */
+.woocommerce-cart table.cart { width: 100% !important; table-layout: auto; }
+.woocommerce-cart table.cart td.product-name,
+.woocommerce-cart table.cart th.product-name { width: 100%; }
 .woocommerce table.shop_table th { font-family: var(--font-sans); font-weight: 500; }
 .woocommerce-cart table.cart img { border-radius: var(--radius-md); width: 64px; }
 .woocommerce .cart_totals h2 { font-family: var(--font-serif); }

@@ -34,6 +34,7 @@ $occasions = array(
 <!-- OCCASIONS: HEADER -->
 <section class="section page-hero" style="padding-bottom:0;">
 	<div class="container">
+		<?php wildflower_breadcrumbs(); ?>
 		<p class="eyebrow reveal"><?php esc_html_e( 'Occasions', 'wildflower' ); ?></p>
 		<?php $occ_say = array( 'happy birthday.', 'thank you.', 'get well soon.', 'I’m sorry.', 'congrats.', 'just because.' ); ?>
 		<h1 class="page-hero__title kinetic"><?php echo wildflower_kinetic( __( 'Flowers that say', 'wildflower' ) ); ?><br>

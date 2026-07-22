@@ -70,6 +70,7 @@ $faqs = array(
 <!-- DELIVERY: HERO -->
 <section class="section page-hero">
 	<div class="container">
+		<?php wildflower_breadcrumbs(); ?>
 		<p class="eyebrow reveal"><?php esc_html_e( 'Delivery', 'wildflower' ); ?></p>
 		<h1 class="page-hero__title kinetic"><?php echo wildflower_kinetic( __( 'Same-day flower delivery across Greater Boston', 'wildflower' ) ); // phpcs:ignore ?></h1>
 		<p class="page-hero__lead reveal"><?php printf( esc_html__( 'Hand-delivered by local couriers who keep your flowers upright and fresh. Order before %s and it lands today.', 'wildflower' ), esc_html( $cutoff ) ); ?></p>

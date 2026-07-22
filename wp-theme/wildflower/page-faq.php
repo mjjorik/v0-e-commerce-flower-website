@@ -57,6 +57,7 @@ $groups = array(
 <!-- HERO -->
 <section class="section corder-hero">
 	<div class="container">
+		<?php wildflower_breadcrumbs(); ?>
 		<p class="eyebrow reveal"><?php esc_html_e( 'Help & answers', 'wildflower' ); ?></p>
 		<h1 class="kinetic corder-hero__title"><?php echo wildflower_kinetic( __( 'Frequently asked questions', 'wildflower' ) ); // phpcs:ignore ?></h1>
 		<p class="corder-hero__lead reveal"><?php printf( esc_html__( 'Everything about ordering, delivery, custom work and caring for your flowers from Wildflower, a Boston flower studio serving %s. Can’t find your answer? We’re a quick message away.', 'wildflower' ), esc_html( $city ) ); ?></p>

@@ -33,7 +33,7 @@ if ( ! $wf_city ) {
 		the_post();
 		?>
 		<article <?php post_class(); ?>>
-			<header class="page-header container"><p class="eyebrow"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></p><h1 class="kinetic"><?php echo wildflower_kinetic( get_the_title() ); ?></h1></header>
+			<header class="page-header container"><?php wildflower_breadcrumbs(); ?><p class="eyebrow"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></p><h1 class="kinetic"><?php echo wildflower_kinetic( get_the_title() ); ?></h1></header>
 			<div class="container prose" style="padding-bottom:5rem;"><?php the_content(); ?></div>
 		</article>
 		<?php

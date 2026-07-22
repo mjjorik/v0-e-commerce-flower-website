@@ -11,6 +11,7 @@ get_header();
 	<?php if ( have_posts() ) : ?>
 		<?php if ( is_home() && ! is_front_page() ) : ?>
 			<header class="page-header">
+				<?php wildflower_breadcrumbs(); ?>
 				<h1 class="kinetic"><?php echo wildflower_kinetic( get_the_title( get_option( 'page_for_posts' ) ) ? get_the_title( get_option( 'page_for_posts' ) ) : __( 'Journal', 'wildflower' ) ); ?></h1>
 			</header>
 		<?php endif; ?>

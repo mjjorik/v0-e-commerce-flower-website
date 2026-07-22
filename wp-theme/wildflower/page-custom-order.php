@@ -75,6 +75,7 @@ $faqs = array(
 <!-- HERO -->
 <section class="section corder-hero">
 	<div class="container">
+		<?php wildflower_breadcrumbs(); ?>
 		<p class="eyebrow reveal"><?php printf( esc_html__( 'Custom florals · %s', 'wildflower' ), esc_html( $city ) ); ?></p>
 		<h1 class="kinetic corder-hero__title"><?php echo wildflower_kinetic( __( 'Custom flower orders in Boston', 'wildflower' ) ); // phpcs:ignore ?></h1>
 		<p class="corder-hero__lead reveal"><?php printf( esc_html__( 'Wildflower is a Boston flower studio designing bespoke bouquets and arrangements to order — your colors, your flowers, your occasion, hand-tied fresh and delivered across %s. Tell us what you have in mind and we’ll design it, quote it, and bring it to life.', 'wildflower' ), esc_html( $city ) ); ?></p>

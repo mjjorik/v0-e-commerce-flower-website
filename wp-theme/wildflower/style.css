@@ -1267,6 +1267,32 @@ textarea { resize: vertical; }
 .page-hero__facts strong { display: block; font-family: var(--font-serif); font-size: 1.9rem; color: var(--accent); line-height: 1; }
 .page-hero__facts span { font-size: .8rem; color: var(--muted-foreground); }
 
+/* Breadcrumbs (used in hero bands, on the cream hero pages and above products) */
+.breadcrumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; list-style: none; margin: 0; padding: 0; font-size: .78rem; letter-spacing: .02em; }
+.breadcrumbs li { display: inline-flex; align-items: center; gap: .55rem; color: var(--muted-foreground); }
+.breadcrumbs li:not(:first-child)::before { content: '/'; opacity: .5; }
+.breadcrumbs a { color: var(--muted-foreground); text-decoration: none; transition: color .2s; }
+.breadcrumbs a:hover { color: var(--accent); }
+.breadcrumbs li[aria-current] span { color: var(--foreground); font-weight: 600; }
+.breadcrumbs-strip { padding-top: clamp(1.25rem, 3vw, 2rem); }
+.page-header .breadcrumbs,
+.page-hero .breadcrumbs { margin-bottom: 1.1rem; }
+
+/* Accent hero band — the green title banner for cart, checkout, account, the
+   shop archive and any plain page, so none of them open on a blank white screen. */
+.page-hero--band {
+  background-color: var(--surface-soft); background-image: var(--grain);
+  color: var(--surface-soft-foreground);
+  padding-top: clamp(1.75rem, 4vw, 3rem); padding-bottom: clamp(2rem, 4.5vw, 3.25rem);
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+.page-hero--band .page-hero__title { color: var(--surface-soft-foreground); margin-top: .5rem; }
+.page-hero--band .eyebrow { color: var(--accent-on-dark); margin-top: 1rem; }
+.page-hero--band .breadcrumbs li { color: color-mix(in oklab, var(--surface-soft-foreground) 66%, transparent); }
+.page-hero--band .breadcrumbs a { color: color-mix(in oklab, var(--surface-soft-foreground) 72%, transparent); }
+.page-hero--band .breadcrumbs a:hover { color: var(--surface-soft-foreground); }
+.page-hero--band .breadcrumbs li[aria-current] span { color: var(--surface-soft-foreground); }
+
 .deliv-rule__inner { display: grid; gap: 1.5rem; align-items: center; }
 @media (min-width: 860px) { .deliv-rule__inner { grid-template-columns: 1fr 1fr; gap: 3rem; } }
 .deliv-rule__title { color: var(--primary-foreground); font-size: clamp(2rem, 4vw, 3rem); line-height: 1.02; margin-top: .5rem; }
@@ -1671,6 +1697,12 @@ body.admin-bar .read-progress { top: 32px; }
 .article__head .eyebrow { color: var(--accent-on-dark); }
 .article__head .article__title { color: var(--surface-soft-foreground); }
 .article__head .article__meta { color: color-mix(in oklab, var(--surface-soft-foreground) 72%, transparent); }
+.article__head .breadcrumbs { margin-bottom: 1.25rem; }
+.article__head .breadcrumbs ol { justify-content: center; }
+.article__head .breadcrumbs li { color: color-mix(in oklab, var(--surface-soft-foreground) 66%, transparent); }
+.article__head .breadcrumbs a { color: color-mix(in oklab, var(--surface-soft-foreground) 72%, transparent); }
+.article__head .breadcrumbs a:hover { color: var(--surface-soft-foreground); }
+.article__head .breadcrumbs li[aria-current] span { color: var(--surface-soft-foreground); }
 /* Wider reading measure for articles — the 44rem prose default felt cramped
    with a lot of empty space on tablets/desktops. */
 .prose.article__body { max-width: 54rem; margin-inline: auto; }

@@ -11,6 +11,7 @@ get_header();
 $gallery_media = wildflower_page_media( 'gallery' );
 ?>
 <header class="page-header container">
+	<?php wildflower_breadcrumbs(); ?>
 	<p class="eyebrow"><?php esc_html_e( 'The gallery', 'wildflower' ); ?></p>
 	<h1 class="kinetic">
 		<?php

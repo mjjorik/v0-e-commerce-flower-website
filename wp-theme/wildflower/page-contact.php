@@ -19,6 +19,7 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 <!-- CONTACT: HEADER -->
 <section class="section page-hero" style="padding-bottom:0;">
 	<div class="container">
+		<?php wildflower_breadcrumbs(); ?>
 		<p class="eyebrow reveal"><?php esc_html_e( 'Contact', 'wildflower' ); ?></p>
 		<h1 class="page-hero__title kinetic"><?php echo wildflower_kinetic( __( 'Say hello', 'wildflower' ) ); // phpcs:ignore ?></h1>
 		<p class="page-hero__lead reveal"><?php esc_html_e( 'Questions about an order, a custom arrangement, weddings or corporate gifting? We’re a real studio with real people — reach out and we’ll get back same day.', 'wildflower' ); ?></p>

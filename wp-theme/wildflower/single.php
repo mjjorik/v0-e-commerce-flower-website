@@ -20,6 +20,7 @@ while ( have_posts() ) :
 	<article <?php post_class( 'article' ); ?>>
 		<header class="section article__head">
 			<div class="container article__head-inner">
+				<?php wildflower_breadcrumbs(); ?>
 				<p class="eyebrow reveal"><?php echo esc_html( $cname ); ?></p>
 				<h1 class="article__title kinetic"><?php echo wildflower_kinetic( get_the_title() ); ?></h1>
 				<p class="article__meta reveal">

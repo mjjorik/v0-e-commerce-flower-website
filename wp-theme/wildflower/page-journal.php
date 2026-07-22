@@ -27,6 +27,7 @@ $journal = new WP_Query(
 <!-- JOURNAL: HEADER -->
 <section class="section page-hero" style="padding-bottom:0;">
 	<div class="container">
+		<?php wildflower_breadcrumbs(); ?>
 		<p class="eyebrow reveal"><?php esc_html_e( 'Journal', 'wildflower' ); ?></p>
 		<h1 class="page-hero__title kinetic"><?php echo wildflower_kinetic( __( 'Notes from the studio', 'wildflower' ) ); // phpcs:ignore ?></h1>
 		<p class="page-hero__lead reveal"><?php esc_html_e( 'Care guides, seasonal stems and stories from behind the studio door.', 'wildflower' ); ?></p>

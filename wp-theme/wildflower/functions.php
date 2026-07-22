@@ -567,6 +567,82 @@ function wildflower_post_author() {
 }
 
 /**
+ * Breadcrumb trail. Echoes a <nav class="breadcrumbs"> with Home › … › current.
+ * Handles WooCommerce (shop / category / product), journal posts, and pages
+ * (with ancestors). Safe to call on any template.
+ */
+function wildflower_breadcrumbs() {
+	$crumbs = array( array( __( 'Home', 'wildflower' ), home_url( '/' ) ) );
+
+	if ( function_exists( 'is_woocommerce' ) && ( is_shop() || is_product_category() || is_product_tag() || is_product() || is_cart() || is_checkout() || is_account_page() ) ) {
+		$shop_id = wc_get_page_id( 'shop' );
+		if ( $shop_id > 0 && ! is_shop() ) {
+			$crumbs[] = array( get_the_title( $shop_id ), get_permalink( $shop_id ) );
+		}
+		if ( is_shop() ) {
+			$crumbs[] = array( get_the_title( $shop_id ), '' );
+		} elseif ( is_product_category() || is_product_tag() ) {
+			$crumbs[] = array( single_term_title( '', false ), '' );
+		} elseif ( is_product() ) {
+			$terms = get_the_terms( get_the_ID(), 'product_cat' );
+			if ( $terms && ! is_wp_error( $terms ) ) {
+				$term     = array_shift( $terms );
+				$link     = get_term_link( $term );
+				$crumbs[] = array( $term->name, is_wp_error( $link ) ? '' : $link );
+			}
+			$crumbs[] = array( get_the_title(), '' );
+		} else {
+			$crumbs[] = array( get_the_title(), '' ); // cart / checkout / account.
+		}
+	} elseif ( is_singular( 'post' ) ) {
+		$crumbs[] = array( __( 'Journal', 'wildflower' ), home_url( '/journal/' ) );
+		$crumbs[] = array( get_the_title(), '' );
+	} elseif ( is_page() ) {
+		foreach ( array_reverse( get_post_ancestors( get_the_ID() ) ) as $ancestor_id ) {
+			$crumbs[] = array( get_the_title( $ancestor_id ), get_permalink( $ancestor_id ) );
+		}
+		$crumbs[] = array( get_the_title(), '' );
+	} elseif ( is_category() || is_tag() || is_tax() ) {
+		$crumbs[] = array( single_term_title( '', false ), '' );
+	} elseif ( is_search() ) {
+		$crumbs[] = array( __( 'Search', 'wildflower' ), '' );
+	} else {
+		return; // Home, 404, etc. — no trail worth showing.
+	}
+
+	$last = count( $crumbs ) - 1;
+	echo '<nav class="breadcrumbs" aria-label="' . esc_attr__( 'Breadcrumb', 'wildflower' ) . '"><ol>';
+	foreach ( $crumbs as $i => $crumb ) {
+		list( $label, $url ) = $crumb;
+		if ( $i < $last && $url ) {
+			echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a></li>';
+		} else {
+			echo '<li aria-current="page"><span>' . esc_html( $label ) . '</span></li>';
+		}
+	}
+	echo '</ol></nav>';
+}
+
+/**
+ * Accent hero band for a page title — the green banner with breadcrumbs, a gold
+ * eyebrow and a large title. Used by page.php and the WooCommerce archives so a
+ * plain page never opens on an empty white screen.
+ *
+ * @param string $eyebrow Small label above the title.
+ * @param string $title   Page title.
+ */
+function wildflower_render_page_hero( $eyebrow, $title ) {
+	echo '<section class="page-hero page-hero--band">';
+	echo '<div class="container">';
+	wildflower_breadcrumbs();
+	if ( $eyebrow ) {
+		echo '<p class="eyebrow reveal">' . esc_html( $eyebrow ) . '</p>';
+	}
+	echo '<h1 class="page-hero__title kinetic">' . wildflower_kinetic( $title ) . '</h1>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo '</div></section>';
+}
+
+/**
  * Small inline arrow icon for buttons.
  *
  * @return string

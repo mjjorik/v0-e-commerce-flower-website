@@ -18,6 +18,34 @@ function wildflower_wc_wrapper_start() {
 }
 add_action( 'woocommerce_before_main_content', 'wildflower_wc_wrapper_start', 10 );
 
+/* Don't print WooCommerce's own plain page title — our accent hero band below
+   provides it (and avoids a duplicate <h1> on the shop archive). */
+add_filter( 'woocommerce_show_page_title', '__return_false' );
+
+/**
+ * Accent hero band / breadcrumbs for WooCommerce archives and products. Runs
+ * before the content wrapper opens (priority 5) so the band is full-bleed.
+ * Shop / category / tag get the full title band; a single product gets just a
+ * slim breadcrumb strip (its own title lives in the product summary).
+ */
+function wildflower_wc_page_header() {
+	if ( is_product() ) {
+		echo '<div class="container breadcrumbs-strip">';
+		wildflower_breadcrumbs();
+		echo '</div>';
+		return;
+	}
+	if ( is_shop() ) {
+		$title = get_the_title( wc_get_page_id( 'shop' ) );
+	} elseif ( is_product_category() || is_product_tag() ) {
+		$title = single_term_title( '', false );
+	} else {
+		$title = get_the_archive_title();
+	}
+	wildflower_render_page_hero( __( 'The shop', 'wildflower' ), $title );
+}
+add_action( 'woocommerce_before_main_content', 'wildflower_wc_page_header', 5 );
+
 function wildflower_wc_wrapper_end() {
 	echo '</div>';
 }
