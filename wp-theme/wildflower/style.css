@@ -1634,6 +1634,23 @@ body.admin-bar .read-progress { top: 32px; }
 .article__avatar img { width: 3.5rem; height: 3.5rem; border-radius: 999px; }
 .article__author strong { font-family: var(--font-serif); font-size: 1.1rem; }
 .article__author p { color: var(--muted-foreground); font-size: .9rem; margin-top: .25rem; line-height: 1.55; }
+/* Placeholder cover + avatar (posts with no featured image). */
+.article__cover .media-fallback { position: absolute; inset: 0; width: 100%; height: 100%; }
+.article__avatar { position: relative; flex: 0 0 auto; width: 3.5rem; height: 3.5rem; border-radius: 999px; overflow: hidden; }
+.article__avatar .media-fallback { position: absolute; inset: 0; }
+
+/* Prose tables (article comparison tables) — clean, on-brand, scrollable. */
+.prose table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: .95rem; display: block; overflow-x: auto; }
+.prose thead th { background: var(--muted); text-align: left; font-family: var(--font-sans); font-weight: 600; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-foreground); }
+.prose th, .prose td { border: 1px solid var(--border); padding: .8rem 1rem; text-align: left; vertical-align: top; line-height: 1.5; }
+.prose tbody td:first-child { font-weight: 600; color: var(--foreground); white-space: nowrap; }
+.prose table a { text-decoration: none; }
+
+/* FAQ accordions inside an article. */
+.faq--article { margin-top: 1.5rem; }
+.prose .faq__q { font-family: var(--font-serif); }
+.prose details.faq__item > summary { list-style: none; }
+.prose .faq__a p:first-child { margin-top: 0; }
 
 /* Prose typography */
 .prose { max-width: 44rem; margin-inline: auto; font-size: 1.075rem; line-height: 1.75; color: color-mix(in oklab, var(--foreground) 88%, transparent); }

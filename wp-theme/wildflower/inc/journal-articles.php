@@ -15,6 +15,45 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Turn the trailing "FAQ" section of a post into styled accordions.
+ *
+ * Our articles end with an <h2>FAQ</h2> followed by <h3>question</h3><p>answer</p>
+ * pairs. On single posts we convert those pairs into the theme's <details>
+ * accordion, so the FAQ reads like the rest of the site instead of flat text.
+ *
+ * @param string $content Post content.
+ * @return string
+ */
+function wildflower_faq_accordions( $content ) {
+	if ( ! is_singular( 'post' ) || false === stripos( $content, 'FAQ' ) ) {
+		return $content;
+	}
+	if ( ! preg_match( '#<h2[^>]*>\s*FAQ\s*</h2>#i', $content, $m, PREG_OFFSET_CAPTURE ) ) {
+		return $content;
+	}
+	$pos     = (int) $m[0][1];
+	$before  = substr( $content, 0, $pos );
+	$heading = $m[0][0];
+	$after   = substr( $content, $pos + strlen( $heading ) );
+
+	$count = 0;
+	$faq   = preg_replace_callback(
+		'#<h3[^>]*>(.*?)</h3>\s*<p>(.*?)</p>#is',
+		function ( $mm ) use ( &$count ) {
+			$count++;
+			return '<details class="faq__item"><summary class="faq__q">' . $mm[1] . '<span class="faq__icon" aria-hidden="true"></span></summary><div class="faq__a"><p>' . $mm[2] . '</p></div></details>';
+		},
+		$after
+	);
+
+	if ( 0 === $count ) {
+		return $content;
+	}
+	return $before . $heading . '<div class="faq faq--article">' . $faq . '</div>';
+}
+add_filter( 'the_content', 'wildflower_faq_accordions', 20 );
+
+/**
  * The journal articles, newest first (the newest becomes the featured story).
  *
  * @return array<int, array<string, string>>

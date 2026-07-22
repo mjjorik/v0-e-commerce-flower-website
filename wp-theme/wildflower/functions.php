@@ -552,6 +552,21 @@ function wildflower_read_time( $post_id = null ) {
 }
 
 /**
+ * A clean author byline for posts. The WP account behind auto-provisioned
+ * articles is often the admin whose display name is an email address — never
+ * show that. Falls back to the studio's named designer.
+ *
+ * @return string
+ */
+function wildflower_post_author() {
+	$name = trim( (string) get_the_author() );
+	if ( '' === $name || false !== strpos( $name, '@' ) ) {
+		$name = 'Marco Reyes';
+	}
+	return apply_filters( 'wildflower_post_author', $name );
+}
+
+/**
  * Small inline arrow icon for buttons.
  *
  * @return string

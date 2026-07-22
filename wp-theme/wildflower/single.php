@@ -27,7 +27,7 @@ while ( have_posts() ) :
 					printf(
 						/* translators: 1: author, 2: date, 3: read time. */
 						esc_html__( 'By %1$s · %2$s · %3$s', 'wildflower' ),
-						esc_html( get_the_author() ),
+						esc_html( wildflower_post_author() ),
 						esc_html( get_the_date() ),
 						esc_html( wildflower_read_time() )
 					);
@@ -36,11 +36,17 @@ while ( have_posts() ) :
 			</div>
 		</header>
 
-		<?php if ( has_post_thumbnail() ) : ?>
-			<div class="container article__cover-wrap">
-				<div class="article__cover media"><?php the_post_thumbnail( 'large' ); ?></div>
+		<div class="container article__cover-wrap">
+			<div class="article__cover media">
+				<?php
+				if ( has_post_thumbnail() ) {
+					the_post_thumbnail( 'large' );
+				} else {
+					echo '<span class="media-fallback media-fallback--' . esc_attr( ( get_the_ID() % 5 ) + 1 ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+				}
+				?>
 			</div>
-		<?php endif; ?>
+		</div>
 
 		<div class="container">
 			<div class="prose article__body">
@@ -55,10 +61,10 @@ while ( have_posts() ) :
 			<?php endif; ?>
 
 			<div class="article__author">
-				<span class="article__avatar"><?php echo get_avatar( get_the_author_meta( 'ID' ), 96 ); ?></span>
+				<span class="article__avatar media-fallback media-fallback--2" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span>
 				<div>
-					<strong><?php echo esc_html( get_the_author() ); ?></strong>
-					<p><?php echo esc_html( get_the_author_meta( 'description' ) ? get_the_author_meta( 'description' ) : __( 'Wildflower Studio — farm-fresh flowers, hand-tied and delivered same-day across Greater Boston.', 'wildflower' ) ); ?></p>
+					<strong><?php echo esc_html( wildflower_post_author() ); ?></strong>
+					<p><?php esc_html_e( 'Lead florist at Wildflower — farm-fresh flowers, hand-tied and delivered same-day across Greater Boston since 2015.', 'wildflower' ); ?></p>
 				</div>
 			</div>
 		</div>
@@ -107,7 +113,7 @@ while ( have_posts() ) :
 			'headline'      => get_the_title(),
 			'datePublished' => get_the_date( 'c' ),
 			'dateModified'  => get_the_modified_date( 'c' ),
-			'author'        => array( '@type' => 'Person', 'name' => get_the_author() ),
+			'author'        => array( '@type' => 'Person', 'name' => wildflower_post_author() ),
 			'publisher'     => array( '@id' => home_url( '/' ) . '#business' ),
 			'image'         => $img ? array( $img ) : array(),
 			'mainEntityOfPage' => get_permalink(),

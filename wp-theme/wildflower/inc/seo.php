@@ -271,7 +271,10 @@ function wildflower_article_jsonld() {
 		'description'      => wp_strip_all_tags( get_the_excerpt( $post ) ),
 		'datePublished'    => get_the_date( 'c', $post ),
 		'dateModified'     => get_the_modified_date( 'c', $post ),
-		'author'           => array( '@type' => 'Person', 'name' => get_the_author_meta( 'display_name', $post->post_author ) ),
+		'author'           => array( '@type' => 'Person', 'name' => ( function () use ( $post ) {
+			$n = trim( (string) get_the_author_meta( 'display_name', $post->post_author ) );
+			return ( '' === $n || false !== strpos( $n, '@' ) ) ? 'Marco Reyes' : $n;
+		} )() ),
 		'publisher'        => array( '@id' => $home . '#business' ),
 		'mainEntityOfPage' => get_permalink( $post ),
 	);
