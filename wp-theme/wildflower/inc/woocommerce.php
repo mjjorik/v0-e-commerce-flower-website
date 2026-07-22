@@ -33,6 +33,45 @@ function wildflower_is_catalog_archive() {
 }
 
 /**
+ * Hide unresolved product-category fallbacks from every Shop menu surface.
+ * A missing term otherwise turns WooCommerce's product_cat query into a 404.
+ * The item automatically returns as soon as its real category exists.
+ *
+ * @param array $items Curated Shop-menu items.
+ * @return array
+ */
+function wildflower_available_shop_menu_items( $items ) {
+	if ( ! taxonomy_exists( 'product_cat' ) ) {
+		return $items;
+	}
+
+	$available = array();
+	foreach ( (array) $items as $item ) {
+		if ( empty( $item[0] ) ) {
+			continue;
+		}
+
+		$query = array();
+		$parts = wp_parse_url( $item[0] );
+		if ( ! empty( $parts['query'] ) ) {
+			parse_str( $parts['query'], $query );
+		}
+
+		if ( ! empty( $query['product_cat'] ) ) {
+			$term = get_term_by( 'slug', sanitize_title( $query['product_cat'] ), 'product_cat' );
+			if ( ! ( $term instanceof WP_Term ) ) {
+				continue;
+			}
+		}
+
+		$available[] = $item;
+	}
+
+	return $available;
+}
+add_filter( 'wildflower_shop_menu', 'wildflower_available_shop_menu_items' );
+
+/**
  * Build the archive navigation from the same curated list as the Shop menu.
  *
  * @return array<int,array{url:string,label:string,is_all:bool}>
