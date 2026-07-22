@@ -71,40 +71,56 @@ while ( have_posts() ) :
 	</article>
 
 	<?php
-	// Related posts (same category).
-	$related_ids = array();
-	if ( ! empty( $cat ) ) {
-		$related = new WP_Query(
-			array(
-				'post_type'           => 'post',
-				'posts_per_page'      => 3,
-				'post__not_in'        => array( get_the_ID() ),
-				'category__in'        => wp_list_pluck( $cat, 'term_id' ),
-				'ignore_sticky_posts' => true,
-				'no_found_rows'       => true,
-			)
-		);
-		if ( $related->have_posts() ) :
+	// Related posts — same category first, then topped up with recent posts
+		// so the row always shows 3 (no empty column when a category is small).
+		$current_id    = get_the_ID();
+		$related_posts = array();
+		if ( ! empty( $cat ) ) {
+			$related_posts = get_posts(
+				array(
+					'post_type'           => 'post',
+					'numberposts'         => 3,
+					'post__not_in'        => array( $current_id ),
+					'category__in'        => wp_list_pluck( $cat, 'term_id' ),
+					'ignore_sticky_posts' => true,
+				)
+			);
+		}
+		if ( count( $related_posts ) < 3 ) {
+			$exclude       = array_merge( array( $current_id ), wp_list_pluck( $related_posts, 'ID' ) );
+			$related_posts = array_merge(
+				$related_posts,
+				get_posts(
+					array(
+						'post_type'           => 'post',
+						'numberposts'         => 3 - count( $related_posts ),
+						'post__not_in'        => $exclude,
+						'ignore_sticky_posts' => true,
+					)
+				)
+			);
+		}
+		if ( ! empty( $related_posts ) ) :
 			?>
 			<section class="section section--alt">
 				<div class="container">
 					<div class="section-head"><div style="max-width:36rem;"><p class="eyebrow"><?php esc_html_e( 'Keep reading', 'wildflower' ); ?></p><h2 style="margin-top:.5rem;"><?php esc_html_e( 'More from the journal', 'wildflower' ); ?></h2></div><a class="link-underline" href="<?php echo esc_url( home_url( '/journal/' ) ); ?>"><?php esc_html_e( 'All stories', 'wildflower' ); ?></a></div>
 					<div class="journal-grid">
 						<?php
-						while ( $related->have_posts() ) :
-							$related->the_post();
+						foreach ( $related_posts as $related_post ) :
+							$GLOBALS['post'] = $related_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+							setup_postdata( $related_post );
 							wildflower_post_card( false );
-						endwhile;
+						endforeach;
+						wp_reset_postdata();
 						?>
 					</div>
 				</div>
 			</section>
 			<?php
-			wp_reset_postdata();
 		endif;
-	}
 
-	// JSON-LD: BlogPosting.
+		// JSON-LD: BlogPosting.
 	$img = get_the_post_thumbnail_url( get_the_ID(), 'large' );
 	wildflower_print_jsonld(
 		array(

@@ -1622,7 +1622,11 @@ body.admin-bar .read-progress { top: 32px; }
 /* Article */
 .article { padding-bottom: clamp(3.5rem, 7vw, 6rem); }
 .article__head { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); text-align: center; }
-.article__head-inner { max-width: 46rem; margin-inline: auto; }
+.article__head-inner { max-width: 52rem; margin-inline: auto; }
+/* Wider reading measure for articles — the 44rem prose default felt cramped
+   with a lot of empty space on tablets/desktops. */
+.prose.article__body { max-width: 54rem; margin-inline: auto; }
+.article__body > table { max-width: 100%; }
 .article__title { font-size: clamp(2.25rem, 5vw, 3.75rem); line-height: 1.04; margin: .5rem 0 1rem; }
 .article__meta { color: var(--muted-foreground); font-size: .9rem; }
 .article__cover-wrap { margin-bottom: clamp(2rem, 4vw, 3rem); }
