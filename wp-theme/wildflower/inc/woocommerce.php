@@ -55,20 +55,40 @@ function wildflower_catalog_navigation_items() {
 		),
 	);
 
+	$category_items = array();
+	$sort_items     = array();
+	$other_items    = array();
+
 	if ( function_exists( 'wildflower_shop_menu' ) ) {
 		foreach ( wildflower_shop_menu() as $item ) {
 			if ( empty( $item[0] ) || empty( $item[1] ) ) {
 				continue;
 			}
-			$items[] = array(
+
+			$entry = array(
 				'url'    => (string) $item[0],
 				'label'  => (string) $item[1],
 				'is_all' => false,
 			);
+			$query = array();
+			$parts = wp_parse_url( $entry['url'] );
+			if ( ! empty( $parts['query'] ) ) {
+				parse_str( $parts['query'], $query );
+			}
+
+			if ( ! empty( $query['orderby'] ) ) {
+				$sort_items[] = $entry;
+			} elseif ( ! empty( $query['product_cat'] ) || false !== strpos( (string) ( $parts['path'] ?? '' ), '/product-category/' ) ) {
+				$category_items[] = $entry;
+			} else {
+				$other_items[] = $entry;
+			}
 		}
 	}
 
-	return $items;
+	// Archive navigation is category-first (matching how customers browse),
+	// while the desktop dropdown can keep its merchandising-first order.
+	return array_merge( $items, $category_items, $sort_items, $other_items );
 }
 
 /**
