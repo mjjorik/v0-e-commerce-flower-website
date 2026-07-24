@@ -26,7 +26,7 @@ add_action( 'after_switch_theme', 'wildflower_provision_pages' );
  * so it runs once per version, with a short lock to avoid concurrent double-runs.
  */
 function wildflower_provision_pages() {
-	if ( 'v4' === get_option( 'wildflower_provisioned' ) ) {
+	if ( 'v5' === get_option( 'wildflower_provisioned' ) ) {
 		return;
 	}
 	if ( get_transient( 'wildflower_provisioning' ) ) {
@@ -145,8 +145,85 @@ function wildflower_provision_pages() {
 		wp_trash_post( $hello->ID );
 	}
 
-	update_option( 'wildflower_provisioned', 'v4' );
+	// WooCommerce shop sections (Roses / Bouquets / …) + auto-file products.
+	wildflower_provision_product_categories();
+
+	update_option( 'wildflower_provisioned', 'v5' );
 	delete_transient( 'wildflower_provisioning' );
+}
+
+/**
+ * Create the curated WooCommerce shop categories and file existing products into
+ * them so the Shop menu links (and the Home → Shop → Roses breadcrumb) resolve to
+ * real category archives instead of falling back to the shop.
+ *
+ * Products are matched by name — "tin can" → Tin Can Bouquets, "rose" → Roses,
+ * "gift" → Gifts, everything else → Bouquets. Only products that are still
+ * uncategorised are touched, so any category picked by hand in WooCommerce wins.
+ */
+function wildflower_provision_product_categories() {
+	if ( ! class_exists( 'WooCommerce' ) || ! taxonomy_exists( 'product_cat' ) ) {
+		return;
+	}
+
+	$categories = array(
+		'roses'            => __( 'Roses', 'wildflower' ),
+		'bouquets'         => __( 'Bouquets', 'wildflower' ),
+		'tin-can-bouquets' => __( 'Tin Can Bouquets', 'wildflower' ),
+		'gifts'            => __( 'Gifts', 'wildflower' ),
+	);
+
+	$cat_ids = array();
+	foreach ( $categories as $slug => $name ) {
+		$existing = get_term_by( 'slug', $slug, 'product_cat' );
+		if ( $existing instanceof WP_Term ) {
+			$cat_ids[ $slug ] = (int) $existing->term_id;
+			continue;
+		}
+		$created = wp_insert_term( $name, 'product_cat', array( 'slug' => $slug ) );
+		if ( ! is_wp_error( $created ) && ! empty( $created['term_id'] ) ) {
+			$cat_ids[ $slug ] = (int) $created['term_id'];
+		}
+	}
+	if ( empty( $cat_ids ) ) {
+		return;
+	}
+
+	$default_cat = (int) get_option( 'default_product_cat' );
+	$products    = get_posts(
+		array(
+			'post_type'   => 'product',
+			'post_status' => 'publish',
+			'numberposts' => -1,
+			'fields'      => 'ids',
+		)
+	);
+	foreach ( $products as $product_id ) {
+		$current = wp_get_object_terms( $product_id, 'product_cat', array( 'fields' => 'ids' ) );
+		if ( is_wp_error( $current ) ) {
+			continue;
+		}
+		// Respect any real (non-default) category chosen in WooCommerce.
+		if ( array_diff( $current, array( $default_cat ) ) ) {
+			continue;
+		}
+
+		$title = strtolower( (string) get_the_title( $product_id ) );
+		if ( false !== strpos( $title, 'tin can' ) || false !== strpos( $title, 'tin-can' ) ) {
+			$slug = 'tin-can-bouquets';
+		} elseif ( false !== strpos( $title, 'rose' ) ) {
+			$slug = 'roses';
+		} elseif ( false !== strpos( $title, 'gift' ) ) {
+			$slug = 'gifts';
+		} else {
+			$slug = 'bouquets';
+		}
+
+		if ( ! empty( $cat_ids[ $slug ] ) ) {
+			// Replace (drops "Uncategorised") so the product leaves the default bucket.
+			wp_set_object_terms( $product_id, array( $cat_ids[ $slug ] ), 'product_cat', false );
+		}
+	}
 }
 
 /**
