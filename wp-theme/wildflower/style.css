@@ -1661,6 +1661,11 @@ a.corder-type { color: inherit; text-decoration: none; display: block; }
 .journal-grid { display: grid; gap: 1.25rem 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 640px) { .journal-grid { gap: clamp(1.5rem, 3vw, 2.5rem); } }
 @media (min-width: 1024px) { .journal-grid { grid-template-columns: repeat(3, 1fr); } }
+/* Two columns below desktop: a lone final card (odd count) fills the whole row
+   instead of leaving a gap, so the grid always reads as complete. */
+@media (max-width: 1023px) {
+  .journal-grid > .post-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
 @media (max-width: 639px) {
   .journal-grid .post-card__title { font-size: 1.05rem; line-height: 1.2; }
   .journal-grid .post-card__excerpt { font-size: .85rem; }

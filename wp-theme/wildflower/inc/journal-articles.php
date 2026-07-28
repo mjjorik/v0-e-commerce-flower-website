@@ -384,5 +384,259 @@ HTML
 HTML
 	);
 
+	$articles[] = array(
+		'slug'     => 'how-much-do-flowers-cost-boston',
+		'title'    => 'How Much Do Flowers Cost in Boston? A 2026 Price Guide',
+		'category' => 'Boston',
+		'date'     => '2026-07-28 09:00:00',
+		'excerpt'  => 'What flowers really cost in Boston in 2026: honest price ranges for bouquets, arrangements, weddings and subscriptions, what drives the price, and how to get more for your budget.',
+		'content'  => <<<'HTML'
+<p><strong>In Boston, a hand-tied bouquet delivered typically costs $65 to $150, with most everyday arrangements landing between $85 and $120. Weekly flower subscriptions start around $70, and wedding or event work is quoted per project.</strong> Prices move with the season and the flowers you choose — here is a transparent, florist's breakdown of what you pay for and how to get the most for your money.</p>
+
+<h2>Typical flower prices in Boston</h2>
+<p>These are real, current ranges from our studio and comparable Boston florists in 2026. They include design and local hand-delivery, not national wire-service markups.</p>
+<table>
+<thead><tr><th>What you're ordering</th><th>Typical Boston price</th></tr></thead>
+<tbody>
+<tr><td>Everyday hand-tied bouquet</td><td>$65 – $95</td></tr>
+<tr><td>Signature / designer arrangement</td><td>$95 – $150</td></tr>
+<tr><td>Statement or luxury piece</td><td>$150 – $350+</td></tr>
+<tr><td>Weekly flower subscription (per delivery)</td><td>$70 – $130</td></tr>
+<tr><td>Sympathy / funeral arrangement</td><td>$95 – $300</td></tr>
+<tr><td>Wedding flowers (total, small–midsize)</td><td>$2,500 – $8,000+</td></tr>
+</tbody>
+</table>
+
+<h2>What actually drives the price</h2>
+<p>Two bouquets at the same price can look very different, and two that look similar can cost very differently. Here is where the money goes:</p>
+<table>
+<thead><tr><th>Factor</th><th>Effect on price</th></tr></thead>
+<tbody>
+<tr><td>Flower type</td><td>Peonies, garden roses and orchids cost more than carnations or chrysanthemums</td></tr>
+<tr><td>Season</td><td>In-season stems are cheaper and fresher; off-season imports carry a premium</td></tr>
+<tr><td>Stem count &amp; size</td><td>A fuller, larger design simply uses more flowers</td></tr>
+<tr><td>Design time</td><td>Intricate, wired or structural work takes more skilled hands</td></tr>
+<tr><td>Delivery</td><td>Local courier delivery is added by ZIP; timed or rush delivery costs more</td></tr>
+</tbody>
+</table>
+
+<h2>Delivery fees in and around Boston</h2>
+<p>We price delivery by destination rather than baking a flat national fee into the flowers. Central neighborhoods — Back Bay, Beacon Hill, the South End, Cambridge and Somerville — sit at the lower end, while outer suburbs cost a little more for the courier's time. You will always see the exact fee at checkout before you pay.</p>
+
+<h2>How to get more flowers for your budget</h2>
+<ul>
+<li><strong>Choose designer's choice.</strong> Letting us use the freshest stems of the day almost always buys more beauty than a fixed recipe.</li>
+<li><strong>Pick a palette, not a flower.</strong> "Blush and white" lets us swap an expensive off-season bloom for a gorgeous in-season one at the same price.</li>
+<li><strong>Buy in season.</strong> A summer dahlia arrangement costs less than forcing peonies in November.</li>
+<li><strong>Subscribe.</strong> A weekly or biweekly plan lowers the per-delivery cost and keeps flowers in the house all month.</li>
+</ul>
+
+<h2>FAQ</h2>
+<h3>How much should I spend on a nice bouquet in Boston?</h3>
+<p>For a gift that looks generous, $85 to $120 hits the sweet spot at most Boston florists. Below about $65, delivered and designed, the arrangement is usually quite small.</p>
+<h3>Why are florist flowers more expensive than the supermarket?</h3>
+<p>You are paying for fresher, longer-lasting stems, a florist's design, and local hand-delivery — not a bucket of grab-and-go flowers cut weeks ago. The vase life difference alone is usually several days.</p>
+<h3>Is there a delivery fee on top of the flowers?</h3>
+<p>Yes, a local delivery fee is calculated by ZIP code and shown at checkout. Same-day orders in Greater Boston need to be placed by 1 PM.</p>
+<h3>Are flower subscriptions cheaper than one-off bouquets?</h3>
+<p>Per delivery, yes. Our plans run $70 to $130 a week depending on size, which is generally better value than ordering a comparable bouquet à la carte.</p>
+HTML
+	);
+
+	$articles[] = array(
+		'slug'     => 'anniversary-flowers-by-year-guide',
+		'title'    => 'Anniversary Flowers by Year: The Complete Guide',
+		'category' => 'Occasions',
+		'date'     => '2026-07-24 09:00:00',
+		'excerpt'  => 'A complete guide to anniversary flowers by year — the traditional bloom for every milestone from the 1st to the 50th, what each one means, and how to choose.',
+		'content'  => <<<'HTML'
+<p><strong>Each wedding anniversary has a traditional flower: carnations for the 1st, daisies for the 5th, roses for the 15th, and yellow roses and violets for the 50th.</strong> Choosing the year's bloom is a thoughtful, meaningful way to mark a milestone — here is the full year-by-year guide, plus how we help Boston couples make it personal.</p>
+
+<h2>Anniversary flowers year by year</h2>
+<table>
+<thead><tr><th>Anniversary</th><th>Traditional flower</th><th>What it signals</th></tr></thead>
+<tbody>
+<tr><td>1st</td><td>Carnation</td><td>Young, devoted love</td></tr>
+<tr><td>2nd</td><td>Lily of the valley</td><td>Renewed happiness</td></tr>
+<tr><td>3rd</td><td>Sunflower</td><td>Loyalty and warmth</td></tr>
+<tr><td>4th</td><td>Hydrangea</td><td>Heartfelt gratitude</td></tr>
+<tr><td>5th</td><td>Daisy</td><td>Loyal, cheerful love</td></tr>
+<tr><td>10th</td><td>Daffodil</td><td>Joy and new beginnings</td></tr>
+<tr><td>15th</td><td>Rose</td><td>Deep, enduring love</td></tr>
+<tr><td>20th</td><td>Aster</td><td>Patience and elegance</td></tr>
+<tr><td>25th</td><td>Iris</td><td>Faith and treasured years</td></tr>
+<tr><td>50th</td><td>Yellow rose &amp; violet</td><td>Golden, lasting devotion</td></tr>
+</tbody>
+</table>
+
+<h2>How to make it personal</h2>
+<p>The tradition is a lovely starting point, not a rule. In the studio we often blend the year's flower with the couple's own story — the palette from their wedding, a stem that grew in a grandmother's garden, or simply their favorite color. The tradition gives the gift meaning; the personal touch makes it theirs.</p>
+
+<h3>By color and milestone</h3>
+<ul>
+<li><strong>Early years:</strong> soft and romantic — blush roses, carnations, sweet pea.</li>
+<li><strong>Middle years:</strong> confident and full — garden roses, hydrangea, lisianthus.</li>
+<li><strong>Golden years:</strong> rich and celebratory — yellow and gold roses, iris, a touch of violet.</li>
+</ul>
+
+<h2>Roses by color for anniversaries</h2>
+<p>If you default to roses, the color still carries a message: red for enduring passion, pink for gratitude and admiration, white for a fresh start, and yellow for the joy and friendship at the heart of a long marriage.</p>
+
+<h2>FAQ</h2>
+<h3>What is the traditional flower for a 1st anniversary?</h3>
+<p>The carnation, which symbolizes young and devoted love. It is hardy and long-lasting, which makes it a fitting first-year bloom.</p>
+<h3>What flower represents 25 years of marriage?</h3>
+<p>The iris, a symbol of faith and cherished years — a natural fit for a silver anniversary. Many couples pair it with white or silver-toned accents.</p>
+<h3>Do I have to use the traditional flower?</h3>
+<p>Not at all. It is a meaningful anchor, but we regularly design around a couple's wedding palette or favorite flowers instead. Tell us the story and we will build around it.</p>
+<h3>Can you deliver an anniversary arrangement same-day in Boston?</h3>
+<p>Yes — order by 1 PM and we deliver same-day across Greater Boston, gift message included.</p>
+HTML
+	);
+
+	$articles[] = array(
+		'slug'     => 'what-flower-colors-mean',
+		'title'    => 'What Your Flower Colors Really Mean',
+		'category' => 'Guides',
+		'date'     => '2026-07-11 09:00:00',
+		'excerpt'  => 'A florist\'s guide to what flower colors mean — red, pink, white, yellow, orange, purple and blue — and how to pick a palette that says exactly what you intend.',
+		'content'  => <<<'HTML'
+<p><strong>Flower color carries as much meaning as the flower itself: red says love and passion, pink says gratitude and admiration, white says purity and sympathy, yellow says friendship and joy, orange says energy, and purple says admiration and grace.</strong> Getting the color right means your flowers say exactly what you intend — here is how we think about palette in the studio.</p>
+
+<h2>Flower color meanings at a glance</h2>
+<table>
+<thead><tr><th>Color</th><th>Meaning</th><th>Best for</th></tr></thead>
+<tbody>
+<tr><td>Red</td><td>Love, passion, respect</td><td>Romance, Valentine's, deep thanks</td></tr>
+<tr><td>Pink</td><td>Gratitude, admiration, sweetness</td><td>Thank you, new baby, friendship</td></tr>
+<tr><td>White</td><td>Purity, peace, sympathy</td><td>Weddings, sympathy, fresh starts</td></tr>
+<tr><td>Yellow</td><td>Friendship, joy, optimism</td><td>Get well, congratulations, cheer</td></tr>
+<tr><td>Orange</td><td>Energy, enthusiasm, confidence</td><td>Celebrations, bold gestures</td></tr>
+<tr><td>Purple</td><td>Admiration, dignity, grace</td><td>Accomplishments, elegant gifts</td></tr>
+<tr><td>Blue</td><td>Calm, trust, serenity</td><td>Reassurance, restful palettes</td></tr>
+</tbody>
+</table>
+
+<h2>How to choose a palette</h2>
+<p>You rarely need a single color. The most beautiful arrangements usually pair a lead color with one or two supporting tones. A few combinations we return to again and again:</p>
+<ul>
+<li><strong>Blush and ivory:</strong> soft, romantic and hard to get wrong — a studio favorite for weddings and thank-yous.</li>
+<li><strong>White and green:</strong> calm, modern and endlessly elegant; our default for sympathy.</li>
+<li><strong>Coral and peach:</strong> warm and joyful, perfect for birthdays and congratulations.</li>
+<li><strong>Jewel tones:</strong> plum, burgundy and deep gold for a rich, dramatic look, especially in fall and winter.</li>
+</ul>
+
+<h2>Reading the room</h2>
+<p>Context matters as much as the color wheel. Bright yellow is perfect for a get-well but can feel too casual for a formal sympathy arrangement, where soft white reads better. When you are unsure, tell us the occasion and the feeling you want, and we will translate it into a palette.</p>
+
+<h2>FAQ</h2>
+<h3>What color flowers mean love?</h3>
+<p>Red is the classic color of romantic love and passion. Deep pink also signals love mixed with gratitude and admiration, which many people prefer for a softer message.</p>
+<h3>What flower color is best for sympathy?</h3>
+<p>White and soft green are the most fitting — they read as peaceful and respectful. Gentle pastels are also appropriate; bright, high-energy colors are usually best avoided.</p>
+<h3>What do yellow flowers symbolize?</h3>
+<p>Friendship, joy and optimism. That makes them ideal for get-well wishes, congratulations and any time you want to lift someone's spirits.</p>
+<h3>Can I mix colors that mean different things?</h3>
+<p>Absolutely — most arrangements do. A skilled florist blends colors so the overall feeling lands right, rather than treating each stem as a separate message.</p>
+HTML
+	);
+
+	$articles[] = array(
+		'slug'     => 'birthday-flowers-how-to-choose',
+		'title'    => 'Birthday Flowers: How to Choose the Perfect Bouquet',
+		'category' => 'Occasions',
+		'date'     => '2026-07-03 09:00:00',
+		'excerpt'  => 'How to choose birthday flowers that feel personal — birth-month blooms, picking by personality and color, and same-day delivery tips for Boston.',
+		'content'  => <<<'HTML'
+<p><strong>The best birthday flowers match the person: bright and bold for someone outgoing, soft and pretty for a romantic, or their birth-month bloom for a personal touch.</strong> A birthday bouquet should feel like it was chosen for them, not pulled off a shelf — here is how we help you get it right.</p>
+
+<h2>Birth-month flowers</h2>
+<p>Like birthstones, every month has its own flower. Working one into the design is a small detail that makes a birthday gift feel considered.</p>
+<table>
+<thead><tr><th>Month</th><th>Birth flower</th></tr></thead>
+<tbody>
+<tr><td>January</td><td>Carnation</td></tr>
+<tr><td>February</td><td>Iris &amp; violet</td></tr>
+<tr><td>March</td><td>Daffodil</td></tr>
+<tr><td>April</td><td>Daisy &amp; sweet pea</td></tr>
+<tr><td>May</td><td>Lily of the valley</td></tr>
+<tr><td>June</td><td>Rose</td></tr>
+<tr><td>July</td><td>Larkspur &amp; delphinium</td></tr>
+<tr><td>August</td><td>Gladiolus &amp; poppy</td></tr>
+<tr><td>September</td><td>Aster</td></tr>
+<tr><td>October</td><td>Marigold &amp; cosmos</td></tr>
+<tr><td>November</td><td>Chrysanthemum</td></tr>
+<tr><td>December</td><td>Narcissus &amp; holly</td></tr>
+</tbody>
+</table>
+
+<h2>Choose by personality</h2>
+<ul>
+<li><strong>The bold one:</strong> vivid color and big blooms — sunflowers, dahlias, hot-pink garden roses.</li>
+<li><strong>The romantic:</strong> blush and ivory, soft textures, plenty of roses and ranunculus.</li>
+<li><strong>The minimalist:</strong> a single variety in one color, arranged simply and cleanly.</li>
+<li><strong>The plant lover:</strong> a garden-style mix full of texture, or a lasting potted bloom.</li>
+</ul>
+
+<h2>Add a little occasion</h2>
+<p>Birthdays are a chance to be generous with color. Where a sympathy arrangement calls for restraint, a birthday welcomes coral, gold and bright pink. If you are shipping the surprise to a home or office in Boston, we can time the delivery and tuck in a handwritten card so it lands at the right moment.</p>
+
+<h2>FAQ</h2>
+<h3>What are the most popular birthday flowers?</h3>
+<p>Roses, sunflowers, gerbera daisies and lilies are perennial favorites because they are cheerful, recognizable and long-lasting. A mixed seasonal bouquet is the safest crowd-pleaser.</p>
+<h3>What flowers should I send for a milestone birthday?</h3>
+<p>For a big birthday, go fuller and a little more luxe — garden roses, peonies in season, or a statement arrangement. Their birth-month flower is a lovely detail to include.</p>
+<h3>Can I get birthday flowers delivered same-day in Boston?</h3>
+<p>Yes. Order by 1 PM and we deliver same-day across Greater Boston, with your gift message included.</p>
+<h3>What if I don't know their favorite flower?</h3>
+<p>Tell us their vibe and a color they love, and choose designer's choice. It is often the freshest, most beautiful option and takes the guesswork off your plate.</p>
+HTML
+	);
+
+	$articles[] = array(
+		'slug'     => 'office-flowers-boston-guide',
+		'title'    => 'Fresh Flowers for the Office: A Boston Guide',
+		'category' => 'Guides',
+		'date'     => '2026-06-27 09:00:00',
+		'excerpt'  => 'Why fresh flowers belong in the workplace, how weekly office flower delivery works in Boston, what it costs, and how to choose arrangements that last the week.',
+		'content'  => <<<'HTML'
+<p><strong>Fresh office flowers make a workplace feel considered and welcoming, and a weekly or biweekly delivery keeps a lobby or reception looking its best with zero effort from your team.</strong> Here is how corporate flower delivery works in Boston, what it costs, and how we design arrangements built to last a full work week.</p>
+
+<h2>Why offices keep flowers on standing order</h2>
+<ul>
+<li><strong>First impressions.</strong> A fresh arrangement at reception signals care before anyone says a word.</li>
+<li><strong>A better space to work in.</strong> Greenery and blooms lift a room and the people in it.</li>
+<li><strong>Effortless upkeep.</strong> On a subscription, we handle the design, delivery and rotation — nothing for staff to manage.</li>
+</ul>
+
+<h2>How weekly office delivery works</h2>
+<table>
+<thead><tr><th>Step</th><th>What happens</th></tr></thead>
+<tbody>
+<tr><td>1. Choose a rhythm</td><td>Weekly or biweekly, on a set delivery day that suits your office</td></tr>
+<tr><td>2. Pick a size</td><td>From a tidy reception-desk arrangement to a statement lobby piece</td></tr>
+<tr><td>3. We design seasonally</td><td>Fresh, in-season stems chosen for a long vase life</td></tr>
+<tr><td>4. We deliver &amp; rotate</td><td>Delivered to your door across Greater Boston, swapped on schedule</td></tr>
+</tbody>
+</table>
+
+<h2>What it costs</h2>
+<p>Standing office arrangements typically start around $70 to $130 per delivery depending on size, with larger lobby installations quoted per project. Because it is a recurring order designed around seasonal stems, it is more cost-effective than ordering one-off arrangements each week.</p>
+
+<h2>Choosing flowers that last the week</h2>
+<p>Longevity is everything in a workplace, so we lean on hardy, long-lasting stems — chrysanthemums, alstroemeria, carnations and hardy greenery — arranged so they still look fresh on Friday. We also match the palette to your brand or interior, keeping it calm and professional rather than loud.</p>
+
+<h2>FAQ</h2>
+<h3>Do you deliver flowers to offices in Boston?</h3>
+<p>Yes — we deliver to offices, lobbies and coworking spaces across Greater Boston, on both one-off and recurring schedules.</p>
+<h3>How much do weekly office flowers cost?</h3>
+<p>Standing arrangements generally start around $70 to $130 per delivery by size, with larger installations quoted individually. A recurring plan is more cost-effective than weekly one-off orders.</p>
+<h3>Can we set up a recurring corporate account?</h3>
+<p>Yes. We can bill on a regular schedule and keep a consistent style and delivery day so it runs quietly in the background for your team.</p>
+<h3>Which flowers last longest in an office?</h3>
+<p>Chrysanthemums, alstroemeria, carnations and sturdy greenery hold up best in a warm, dry office — often a full week or more with fresh water.</p>
+HTML
+	);
+
 	return $articles;
 }

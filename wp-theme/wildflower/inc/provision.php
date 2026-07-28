@@ -26,7 +26,7 @@ add_action( 'after_switch_theme', 'wildflower_provision_pages' );
  * so it runs once per version, with a short lock to avoid concurrent double-runs.
  */
 function wildflower_provision_pages() {
-	if ( 'v5' === get_option( 'wildflower_provisioned' ) ) {
+	if ( 'v6' === get_option( 'wildflower_provisioned' ) ) {
 		return;
 	}
 	if ( get_transient( 'wildflower_provisioning' ) ) {
@@ -148,7 +148,7 @@ function wildflower_provision_pages() {
 	// WooCommerce shop sections (Roses / Bouquets / …) + auto-file products.
 	wildflower_provision_product_categories();
 
-	update_option( 'wildflower_provisioned', 'v5' );
+	update_option( 'wildflower_provisioned', 'v6' );
 	delete_transient( 'wildflower_provisioning' );
 }
 
