@@ -508,11 +508,19 @@ function wildflower_kinetic( $text ) {
  * @param bool $featured Render the large featured layout.
  */
 function wildflower_post_card( $featured = false ) {
+	static $card_i = 0;
 	$cat   = get_the_category();
 	$cname = ! empty( $cat ) ? $cat[0]->name : __( 'Journal', 'wildflower' );
 	$cls   = $featured ? 'journal-feature reveal' : 'post-card reveal';
+	// Stagger the reveal like the gallery tiles: a left-to-right cascade within
+	// each row. Modulo 6 lands cleanly on both the 3-col (desktop) and 2-col
+	// (mobile) grids so cards always ripple in ascending order across a row.
+	$delay = $featured ? 0 : ( $card_i % 6 ) * 55;
+	if ( ! $featured ) {
+		$card_i++;
+	}
 	?>
-	<article <?php post_class( $cls ); ?>>
+	<article <?php post_class( $cls ); ?> data-delay="<?php echo esc_attr( $delay ); ?>">
 		<a class="<?php echo $featured ? 'journal-feature__media' : 'post-card__media'; ?> media" href="<?php the_permalink(); ?>">
 			<?php
 			if ( has_post_thumbnail() ) {
