@@ -54,6 +54,45 @@ function wildflower_faq_accordions( $content ) {
 add_filter( 'the_content', 'wildflower_faq_accordions', 20 );
 
 /**
+ * Insert one accent (matcha-green) callout roughly in the middle of an article,
+ * before the central heading — so the reading column is broken up by a branded
+ * band instead of running as one long light column, and doubles as a soft CTA.
+ *
+ * @param string $content Post content.
+ * @return string
+ */
+function wildflower_article_midcta( $content ) {
+	if ( ! is_singular( 'post' ) || false !== stripos( $content, 'article-cta' ) ) {
+		return $content;
+	}
+	// Collect the offsets of section headings, ignoring the trailing FAQ heading.
+	if ( ! preg_match_all( '#<h2[^>]*>(.*?)</h2>#is', $content, $m, PREG_OFFSET_CAPTURE ) ) {
+		return $content;
+	}
+	$heads = array();
+	foreach ( $m[0] as $i => $match ) {
+		if ( 0 === strcasecmp( 'FAQ', trim( wp_strip_all_tags( $m[1][ $i ][0] ) ) ) ) {
+			continue;
+		}
+		$heads[] = (int) $match[1];
+	}
+	if ( count( $heads ) < 2 ) {
+		return $content; // Too short to need a mid-article break.
+	}
+	$pos      = $heads[ intdiv( count( $heads ), 2 ) ]; // Middle section heading.
+	$shop_url = function_exists( 'wc_get_page_permalink' ) && wc_get_page_permalink( 'shop' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' );
+
+	$cta  = '<aside class="article-cta reveal">';
+	$cta .= '<div class="article-cta__body"><p class="article-cta__eyebrow">' . esc_html__( 'From the studio', 'wildflower' ) . '</p>';
+	$cta .= '<p class="article-cta__title">' . esc_html__( 'Farm-fresh flowers, hand-tied and delivered same-day across Greater Boston.', 'wildflower' ) . '</p></div>';
+	$cta .= '<a class="btn--accent article-cta__btn" href="' . esc_url( $shop_url ) . '">' . esc_html__( 'Shop bouquets', 'wildflower' ) . '</a>';
+	$cta .= '</aside>';
+
+	return substr( $content, 0, $pos ) . $cta . substr( $content, $pos );
+}
+add_filter( 'the_content', 'wildflower_article_midcta', 15 );
+
+/**
  * The journal articles, newest first (the newest becomes the featured story).
  *
  * @return array<int, array<string, string>>

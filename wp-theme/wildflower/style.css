@@ -309,6 +309,12 @@ body.admin-bar .site-header { top: 32px; }
 .hero__title.kinetic .word { padding: .04em .08em .16em; margin: -.04em -.08em -.16em; }
 .hero__title-accent { color: var(--accent); }
 .hero h1 .italic { font-style: italic; color: var(--accent-2); }
+/* Italic display words (e.g. "around" on About) lean right and their ascenders
+   sit well above the tight line-height:.9 box, so the overflow-hidden reveal mask
+   clipped the top of the "d". Give italic kinetic words generous top/right mask
+   headroom (matched negative margins keep layout identical). */
+.kinetic .italic .word { padding: .34em .28em .18em .06em; margin: -.34em -.28em -.18em -.06em; }
+.hero h1 .italic .word { padding: .38em .3em .18em .06em; margin: -.38em -.3em -.18em -.06em; }
 .hero__lead { display: grid; justify-items: start; gap: 1.5rem; margin-top: clamp(1.75rem, 3vw, 2.5rem); }
 .hero__lead p { max-width: 29rem; font-size: clamp(1rem, 1.5vw, 1.125rem); font-weight: 500; line-height: 1.5; color: color-mix(in oklab, var(--foreground) 62%, transparent); }
 .hero__visual { min-width: 0; display: flex; justify-content: center; }
@@ -1622,13 +1628,27 @@ a.corder-type { color: inherit; text-decoration: none; display: block; }
 .corder__aside-contact { font-size: .92rem; line-height: 1.9; color: var(--muted-foreground); }
 .contact__form .btn--primary { align-self: flex-start; margin-top: .5rem; }
 .contact__note { font-size: .85rem; }
-.contact__card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-2xl); padding: 1.75rem; }
-.contact__details { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.1rem; }
-.contact__details li { display: flex; flex-direction: column; gap: .2rem; }
-.contact__label { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
-.contact__details a:hover { color: var(--accent); }
+/* Studio details sit on an accent matcha panel so the contact page carries the
+   brand colour instead of reading as a flat white form. */
+.contact__card {
+  background-color: var(--surface-soft); background-image: var(--grain);
+  color: var(--surface-soft-foreground);
+  border: 0; border-radius: var(--radius-2xl); padding: clamp(1.75rem, 3vw, 2.5rem); box-shadow: var(--shadow-soft);
+}
+.contact__details { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.25rem; }
+.contact__details li { display: flex; flex-direction: column; gap: .25rem; }
+.contact__details li + li { padding-top: 1.25rem; border-top: 1px solid color-mix(in oklab, var(--surface-soft-foreground) 16%, transparent); }
+.contact__label { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; color: var(--accent-on-dark); font-weight: 600; }
+.contact__card a, .contact__card span { color: var(--surface-soft-foreground); }
+.contact__card .contact__details li > span:not(.contact__label) { color: color-mix(in oklab, var(--surface-soft-foreground) 82%, transparent); }
+.contact__card a { text-decoration-color: color-mix(in oklab, var(--surface-soft-foreground) 45%, transparent); }
+.contact__details a:hover, .contact__card .link-underline:hover { color: var(--accent-on-dark); }
 .contact__map { position: relative; aspect-ratio: 4/3; border-radius: var(--radius-2xl); overflow: hidden; margin-top: 1.25rem; background-color: var(--card); background-image: radial-gradient(120% 100% at 30% 20%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 55%), radial-gradient(120% 100% at 80% 90%, color-mix(in oklab, var(--primary) 22%, transparent), transparent 55%), linear-gradient(140deg, var(--cream), var(--card)); box-shadow: var(--shadow-card); }
 .contact__map .media-fallback__label { position: absolute; bottom: 1rem; left: 1.25rem; }
+/* Full-width studio-map band below the form + details, so the page ends on a
+   confident edge-to-edge element instead of a lopsided empty column. */
+.contact__map--wide { aspect-ratio: 24 / 7; margin-top: 0; }
+@media (max-width: 700px) { .contact__map--wide { aspect-ratio: 3 / 2; } }
 
 /* ============================================================
    X14. Occasions landing grid
@@ -1793,3 +1813,17 @@ body.admin-bar .read-progress { top: 32px; }
 .article__body li strong { color: var(--foreground); }
 /* A touch more air between a paragraph and the list it introduces. */
 .article__body p + ul, .article__body p + ol { margin-top: 1rem; }
+/* Mid-article accent band — one matcha-green break in the reading column so the
+   article isn't one long light stretch; doubles as a soft shop CTA. */
+.article-cta {
+  margin: 2.75rem 0; padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem 1.75rem;
+  background-color: var(--surface-soft); background-image: var(--grain);
+  color: var(--surface-soft-foreground); border-radius: var(--radius-2xl); box-shadow: var(--shadow-soft);
+}
+.article-cta__body { min-width: 0; }
+.article-cta__eyebrow { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .14em; color: var(--accent-on-dark); margin: 0 0 .45rem; }
+.article-cta__title { font-family: var(--font-serif); font-size: clamp(1.2rem, 2.2vw, 1.55rem); line-height: 1.25; color: var(--surface-soft-foreground); margin: 0; max-width: 34ch; }
+.article-cta .btn--accent { flex: 0 0 auto; background-color: var(--accent-on-dark); background-image: none; color: var(--primary); }
+.article-cta .btn--accent:hover { background-color: color-mix(in oklab, var(--accent-on-dark) 88%, white); }
+@media (max-width: 560px) { .article-cta { flex-direction: column; align-items: flex-start; } .article-cta .btn--accent { width: 100%; } }

@@ -185,10 +185,10 @@ $faqs = array(
 <?php endif; ?>
 
 <!-- HOW IT WORKS -->
-<section class="section section--alt">
+<section class="section how">
 	<div class="container">
 		<div class="section-head"><div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'How it works', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'From order to doorstep', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
-		<div class="how__grid how__grid--light">
+		<div class="how__grid">
 			<?php
 			$steps = array(
 				array( '01', sprintf( __( 'Order before %s', 'wildflower' ), $cutoff ), __( 'Pick a bouquet, add a gift message and choose your delivery date at checkout.', 'wildflower' ) ),
@@ -244,7 +244,7 @@ $faqs = array(
 </section>
 
 <!-- CTA -->
-<section class="section" style="padding-top:0;">
+<section class="section">
 	<div class="container">
 		<div class="cta">
 			<span class="cta__glow" aria-hidden="true" data-parallax="-70"></span>

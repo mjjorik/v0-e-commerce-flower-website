@@ -93,7 +93,15 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 						</li>
 					</ul>
 				</div>
-				<div class="contact__map media">
+			</aside>
+		</div>
+	</div>
+</section>
+
+	<!-- STUDIO MAP (full-width band) -->
+	<section class="section" style="padding-top:0;">
+		<div class="container">
+			<div class="contact__map contact__map--wide media">
 					<?php if ( $contact_map_id ) : ?>
 						<?php echo wp_get_attachment_image( $contact_map_id, 'large', false, array( 'alt' => esc_attr__( 'Greater Boston flower delivery area map', 'wildflower' ), 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<?php elseif ( ! empty( $brand['address'] ) ) : ?>
@@ -103,10 +111,8 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 						<span class="media-fallback__label"><?php echo esc_html( $brand['city'] ); ?></span>
 					<?php endif; ?>
 				</div>
-			</aside>
 		</div>
-	</div>
-</section>
+	</section>
 
 <?php
 $home = home_url( '/' );
