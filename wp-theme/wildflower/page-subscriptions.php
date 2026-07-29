@@ -173,7 +173,7 @@ $faqs = array(
 							<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><?php echo esc_html( $feat ); ?></li>
 						<?php endforeach; ?>
 					</ul>
-					<a class="<?php echo $p[3] ? 'btn--accent' : 'btn--primary'; ?> plan__cta" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Choose plan', 'wildflower' ); ?></a>
+					<a class="<?php echo $p[3] ? 'btn--accent' : 'btn--primary'; ?> plan__cta" href="<?php echo esc_url( home_url( '/contact/?topic=subscription&plan=' . rawurlencode( $p[0] ) ) ); ?>"><?php esc_html_e( 'Choose plan', 'wildflower' ); ?></a>
 				</div>
 			<?php endforeach; ?>
 		</div>
@@ -212,7 +212,7 @@ $faqs = array(
 			<p class="eyebrow"><?php esc_html_e( 'Gifting', 'wildflower' ); ?></p>
 			<h2 class="deliv-rule__title kinetic"><?php echo wildflower_kinetic( __( 'Give flowers that keep arriving', 'wildflower' ) ); // phpcs:ignore ?></h2>
 			<p class="deliv-rule__text"><?php esc_html_e( 'A gift subscription is prepaid for 4, 8 or 12 deliveries and never auto-renews. They get a fresh bouquet on schedule with your note in every box — no account, no surprises.', 'wildflower' ); ?></p>
-			<a class="btn--accent" style="margin-top:1.5rem;" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Gift a subscription', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			<a class="btn--accent" style="margin-top:1.5rem;" href="<?php echo esc_url( home_url( '/contact/?topic=subscription&plan=' . rawurlencode( 'Gift subscription' ) ) ); ?>"><?php esc_html_e( 'Gift a subscription', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 		</div>
 		<ul class="gift-terms">
 			<li><strong>4</strong><span><?php esc_html_e( 'deliveries · a month of flowers', 'wildflower' ); ?></span></li>

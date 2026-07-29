@@ -29,6 +29,18 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 <section class="section">
 	<div class="container">
 		<div class="contact">
+			<?php
+			// A "Choose plan" click on the Subscriptions page lands here with the
+			// plan in the query, so the form opens pre-filled and in context
+			// instead of dumping the visitor into the catalog.
+			$wf_plan     = isset( $_GET['plan'] ) ? sanitize_text_field( wp_unslash( $_GET['plan'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$wf_is_sub   = ( isset( $_GET['topic'] ) && 'subscription' === $_GET['topic'] ) || '' !== $wf_plan; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$wf_prefill  = '';
+			if ( '' !== $wf_plan ) {
+				/* translators: %s: subscription plan name. */
+				$wf_prefill = sprintf( __( "Hi Wildflower — I'd like to start the %s. Please tell me the next steps.", 'wildflower' ), $wf_plan );
+			}
+			?>
 			<form class="contact__form reveal" method="post" action="#" novalidate>
 				<div class="field-row">
 					<label class="field"><span><?php esc_html_e( 'First name', 'wildflower' ); ?></span><input type="text" name="first_name" autocomplete="given-name"></label>
@@ -37,14 +49,15 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 				<label class="field"><span><?php esc_html_e( 'Email', 'wildflower' ); ?></span><input type="email" name="email" autocomplete="email"></label>
 				<label class="field"><span><?php esc_html_e( 'Topic', 'wildflower' ); ?></span>
 					<select name="topic">
-						<option><?php esc_html_e( 'An order', 'wildflower' ); ?></option>
+						<option<?php selected( ! $wf_is_sub ); ?>><?php esc_html_e( 'An order', 'wildflower' ); ?></option>
+						<option<?php selected( $wf_is_sub ); ?>><?php esc_html_e( 'Flower subscription', 'wildflower' ); ?></option>
 						<option><?php esc_html_e( 'Custom / bespoke arrangement', 'wildflower' ); ?></option>
 						<option><?php esc_html_e( 'Weddings & events', 'wildflower' ); ?></option>
 						<option><?php esc_html_e( 'Corporate gifting', 'wildflower' ); ?></option>
 						<option><?php esc_html_e( 'Something else', 'wildflower' ); ?></option>
 					</select>
 				</label>
-				<label class="field"><span><?php esc_html_e( 'Message', 'wildflower' ); ?></span><textarea name="message" rows="5"></textarea></label>
+				<label class="field"><span><?php esc_html_e( 'Message', 'wildflower' ); ?></span><textarea name="message" rows="5"><?php echo esc_textarea( $wf_prefill ); ?></textarea></label>
 				<button type="submit" class="btn--primary btn--lg"><?php esc_html_e( 'Send message', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></button>
 				<p class="contact__note muted"><?php esc_html_e( 'Prefer email? Write us directly — we reply within a few hours during studio hours.', 'wildflower' ); ?></p>
 			</form>
