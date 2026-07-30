@@ -18,7 +18,7 @@ function wildflower_wc_wrapper_start() {
 }
 add_action( 'woocommerce_before_main_content', 'wildflower_wc_wrapper_start', 10 );
 
-/* Don't print WooCommerce's own plain page title — our accent hero band below
+/* Don't print WooCommerce's own plain page title, our accent hero band below
    provides it (and avoids a duplicate <h1> on the shop archive). */
 add_filter( 'woocommerce_show_page_title', '__return_false' );
 
@@ -254,7 +254,7 @@ function wildflower_catalog_navigation_bottom() {
 }
 add_action( 'woocommerce_after_main_content', 'wildflower_catalog_navigation_bottom', 5 );
 
-/* Remove the default sidebar — design is full-width grid. */
+/* Remove the default sidebar, design is full-width grid. */
 remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10 );
 
 /* Loop: 3 columns, 12 per page. */
@@ -271,14 +271,14 @@ add_filter(
 	}
 );
 
-/* Cross-sell / upsell headings — framed as add-on selling. */
+/* Cross-sell / upsell headings, framed as add-on selling. */
 add_filter( 'woocommerce_product_upsells_products_heading', function () { return __( 'Complete the gift', 'wildflower' ); } );
 add_filter( 'woocommerce_product_related_products_heading', function () { return __( 'You may also like', 'wildflower' ); } );
 add_filter( 'woocommerce_cross_sells_columns', function () { return 3; } );
 add_filter( 'woocommerce_cross_sells_total', function () { return 3; } );
 
 /* ============================================================
-   Product card — rebuild the loop into an editorial card:
+   Product card, rebuild the loop into an editorial card:
    image with a circular "+" add button in the corner and a
    hover gradient revealing "View bouquet"; title + price below.
    Works on the shop archive and the homepage [products] scroller.
@@ -300,7 +300,7 @@ add_action(
 );
 
 // After thumbnail + sale flash: a visual "View bouquet" hover label (not a
-// link — navigation is handled by the media tap and the title link), then
+// link, navigation is handled by the media tap and the title link), then
 // close media and open the text body (title + price on the left).
 add_action(
 	'woocommerce_before_shop_loop_item_title',
@@ -471,7 +471,7 @@ add_filter(
 	3
 );
 
-/* Remove product reviews entirely — no Reviews tab, no star rating. */
+/* Remove product reviews entirely, no Reviews tab, no star rating. */
 add_filter(
 	'woocommerce_product_tabs',
 	function ( $tabs ) {

@@ -3,10 +3,10 @@
  * Custom Order landing page (auto-applies to the page with slug "custom-order").
  *
  * Built as a self-contained landing page: a visitor arriving cold from search
- * (not via the homepage) gets the full picture — who Wildflower is, what can be
+ * (not via the homepage) gets the full picture, who Wildflower is, what can be
  * ordered, how it works, what it costs, proof, and a working request form.
  *
- * The request form is functional with zero plugins — on submit it builds a
+ * The request form is functional with zero plugins, on submit it builds a
  * pre-filled email to the studio (see [data-custom-order-form] in main.js).
  *
  * SEO / GEO / AEO / E-E-A-T: location-rich copy, order-type coverage, process,
@@ -25,7 +25,7 @@ $shop  = class_exists( 'WooCommerce' ) ? wc_get_page_permalink( 'shop' ) : home_
 
 $svg = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">';
 
-/* What we create — order types (SEO intent coverage). */
+/* What we create, order types (SEO intent coverage). */
 $types = array(
 	array( $svg . '<path d="M12 21c0-5 3-8 7-9-4-1-7-4-7-9-0 5-3 8-7 9 4 1 7 4 7 9z"/></svg>', __( 'Bespoke bouquets', 'wildflower' ), __( 'A one-off hand-tied bouquet built around your palette, flowers and budget.', 'wildflower' ) ),
 	array( $svg . '<path d="M12 2v6"/><path d="M9 5h6"/><path d="M5 21c0-5 3-8 7-9 4 1 7 4 7 9"/></svg>', __( 'Weddings', 'wildflower' ), __( 'Bridal bouquets, ceremony and reception florals, plus on-site styling.', 'wildflower' ) ),
@@ -43,7 +43,7 @@ $steps = array(
 	array( '04', __( 'We create & deliver', 'wildflower' ), __( 'We hand-tie it fresh and hand-deliver across Greater Boston on your chosen date.', 'wildflower' ) ),
 );
 
-/* Pricing guidance — big number + label + note. */
+/* Pricing guidance, big number + label + note. */
 $tiers = array(
 	array( '$100+', __( 'Bespoke bouquets', 'wildflower' ), __( 'Most custom bouquets start around $100. You set the budget and we design to it.', 'wildflower' ) ),
 	array( '$250+', __( 'Events & centerpieces', 'wildflower' ), __( 'Table and space florals, scoped to your venue, headcount and season.', 'wildflower' ) ),
@@ -53,7 +53,7 @@ $tiers = array(
 /* Reviews tailored to custom work. */
 $reviews = array(
 	array( __( 'I described my grandmother’s garden and they recreated it as a bouquet. I actually teared up.', 'wildflower' ), 'Elena M.', __( 'Brookline', 'wildflower' ) ),
-	array( __( 'They handled our whole wedding — bridal, arch, tables. Calm, on time, exactly the palette we asked for.', 'wildflower' ), 'James & Priya', __( 'Cambridge', 'wildflower' ) ),
+	array( __( 'They handled our whole wedding, bridal, arch, tables. Calm, on time, exactly the palette we asked for.', 'wildflower' ), 'James & Priya', __( 'Cambridge', 'wildflower' ) ),
 	array( __( 'We get fresh flowers in the office lobby every Monday now. Clients always comment on them.', 'wildflower' ), 'Marcus T.', __( 'Seaport', 'wildflower' ) ),
 );
 
@@ -61,14 +61,14 @@ $reviews = array(
 $occasions = array( 'Bespoke bouquet', 'Wedding', 'Event / party', 'Sympathy & funeral', 'Corporate / recurring', 'Anniversary', 'Birthday', 'Just because', 'Other' );
 $budgets   = array( 'Under $100', '$100 – $200', '$200 – $400', '$400 – $750', '$750+', 'Not sure yet' );
 
-/* FAQ — drives the accordion and FAQPage schema. */
+/* FAQ, drives the accordion and FAQPage schema. */
 $faqs = array(
-	array( __( 'What is a custom flower order?', 'wildflower' ), __( 'It is an arrangement we design from scratch for you — your colors, flowers, size and occasion — rather than a fixed bouquet off the shop page. Everything from a single bespoke bouquet to full wedding florals starts here.', 'wildflower' ) ),
-	array( __( 'How far in advance should I request one?', 'wildflower' ), __( 'For everyday bespoke bouquets, 2–3 days is ideal. Weddings and large events are best started 2–4 weeks ahead so we can source specialty stems. Need something sooner? Ask — we often accommodate rush requests.', 'wildflower' ) ),
-	array( __( 'How much does a custom arrangement cost?', 'wildflower' ), __( 'It depends on size, flowers and season. Most custom bouquets start around $100, event and centerpiece work from about $250, and weddings are quoted individually. Tell us your budget and we design to it — you always approve a transparent quote first.', 'wildflower' ) ),
+	array( __( 'What is a custom flower order?', 'wildflower' ), __( 'It is an arrangement we design from scratch for you, your colors, flowers, size and occasion, rather than a fixed bouquet off the shop page. Everything from a single bespoke bouquet to full wedding florals starts here.', 'wildflower' ) ),
+	array( __( 'How far in advance should I request one?', 'wildflower' ), __( 'For everyday bespoke bouquets, 2–3 days is ideal. Weddings and large events are best started 2–4 weeks ahead so we can source specialty stems. Need something sooner? Ask, we often accommodate rush requests.', 'wildflower' ) ),
+	array( __( 'How much does a custom arrangement cost?', 'wildflower' ), __( 'It depends on size, flowers and season. Most custom bouquets start around $100, event and centerpiece work from about $250, and weddings are quoted individually. Tell us your budget and we design to it, you always approve a transparent quote first.', 'wildflower' ) ),
 	array( __( 'Can you match a photo or a specific palette?', 'wildflower' ), sprintf( __( 'Yes. Send a photo or describe the colors and we get as close as the season allows, suggesting the nearest available blooms where needed. We are based in %s and know what is fresh locally week to week.', 'wildflower' ), $city ) ),
-	array( __( 'Do you deliver custom orders?', 'wildflower' ), sprintf( __( 'We hand-deliver same-day across Boston & Nearby and most of Greater Boston, and reach regional destinations by arrangement. Delivery is calculated from the destination ZIP and shown before you pay — a flat $15 on orders of $85+. Order by %s for same-day.', 'wildflower' ), $brand['cutoff'] ) ),
-	array( __( 'Can I set up recurring or corporate flowers?', 'wildflower' ), __( 'Absolutely. We run standing weekly or biweekly orders for homes and businesses — lobbies, offices, restaurants — with simple invoicing and a designer’s choice of what is best that week.', 'wildflower' ) ),
+	array( __( 'Do you deliver custom orders?', 'wildflower' ), sprintf( __( 'We hand-deliver same-day across Boston & Nearby and most of Greater Boston, and reach regional destinations by arrangement. Delivery is calculated from the destination ZIP and shown before you pay, a flat $15 on orders of $85+. Order by %s for same-day.', 'wildflower' ), $brand['cutoff'] ) ),
+	array( __( 'Can I set up recurring or corporate flowers?', 'wildflower' ), __( 'Absolutely. We run standing weekly or biweekly orders for homes and businesses, lobbies, offices, restaurants, with simple invoicing and a designer’s choice of what is best that week.', 'wildflower' ) ),
 );
 ?>
 
@@ -78,7 +78,7 @@ $faqs = array(
 		<?php wildflower_breadcrumbs(); ?>
 		<p class="eyebrow reveal"><?php printf( esc_html__( 'Custom florals · %s', 'wildflower' ), esc_html( $city ) ); ?></p>
 		<h1 class="kinetic corder-hero__title"><?php echo wildflower_kinetic( __( 'Custom flower orders in Boston', 'wildflower' ) ); // phpcs:ignore ?></h1>
-		<p class="corder-hero__lead reveal"><?php printf( esc_html__( 'Wildflower is a Boston flower studio designing bespoke bouquets and arrangements to order — your colors, your flowers, your occasion, hand-tied fresh and delivered across %s. Tell us what you have in mind and we’ll design it, quote it, and bring it to life.', 'wildflower' ), esc_html( $city ) ); ?></p>
+		<p class="corder-hero__lead reveal"><?php printf( esc_html__( 'Wildflower is a Boston flower studio designing bespoke bouquets and arrangements to order, your colors, your flowers, your occasion, hand-tied fresh and delivered across %s. Tell us what you have in mind and we’ll design it, quote it, and bring it to life.', 'wildflower' ), esc_html( $city ) ); ?></p>
 		<div class="corder-hero__cta reveal">
 			<a class="btn--accent btn--lg" href="#request"><?php esc_html_e( 'Start your request', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 			<a class="btn--outline btn--lg" href="#what"><?php esc_html_e( 'See what we make', 'wildflower' ); ?></a>
@@ -152,7 +152,7 @@ $faqs = array(
 				</div>
 			<?php endforeach; ?>
 		</div>
-		<p class="corder-price__note muted"><?php esc_html_e( 'You always approve a transparent quote before we begin. Delivery is calculated by destination ZIP and shown at checkout — a flat $15 on orders of $85 or more.', 'wildflower' ); ?></p>
+		<p class="corder-price__note muted"><?php esc_html_e( 'You always approve a transparent quote before we begin. Delivery is calculated by destination ZIP and shown at checkout, a flat $15 on orders of $85 or more.', 'wildflower' ); ?></p>
 	</div>
 </section>
 
@@ -220,7 +220,7 @@ $faqs = array(
 						<button type="submit" class="btn--primary btn--lg"><?php esc_html_e( 'Send request', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></button>
 						<span class="corder__note"><?php printf( esc_html__( 'Opens your email to %s. Prefer to write yourself? That works too.', 'wildflower' ), esc_html( $email ) ); ?></span>
 					</div>
-					<p class="corder__ok" data-custom-order-ok hidden><?php esc_html_e( 'Thanks — your email draft is ready. Hit send and we’ll reply within one business day.', 'wildflower' ); ?></p>
+					<p class="corder__ok" data-custom-order-ok hidden><?php esc_html_e( 'Thanks, your email draft is ready. Hit send and we’ll reply within one business day.', 'wildflower' ); ?></p>
 				</form>
 			</div>
 
@@ -289,7 +289,7 @@ echo '<script type="application/ld+json">' . wp_json_encode(
 			'@context'    => 'https://schema.org',
 			'@type'       => 'Service',
 			'serviceType' => 'Custom floral design',
-			'name'        => 'Custom flower orders — Greater Boston',
+			'name'        => 'Custom flower orders, Greater Boston',
 			'provider'    => array( '@id' => $home . '#business' ),
 			'areaServed'  => $city,
 			'url'         => get_permalink(),

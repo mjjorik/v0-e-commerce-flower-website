@@ -1,6 +1,6 @@
 <?php
 /**
- * Structured data (JSON-LD), social meta and crawler rules — SEO / GEO / AEO.
+ * Structured data (JSON-LD), social meta and crawler rules, SEO / GEO / AEO.
  *
  * If you run Rank Math or Yoast, they may also output schema/meta. Disable the
  * theme's Product schema with:
@@ -42,7 +42,7 @@ function wildflower_brand_image() {
 }
 
 /**
- * LocalBusiness (Florist) + Organization + WebSite — output in <head> everywhere.
+ * LocalBusiness (Florist) + Organization + WebSite, output in <head> everywhere.
  */
 function wildflower_head_jsonld() {
 	$home  = home_url( '/' );
@@ -213,7 +213,7 @@ function wildflower_product_jsonld() {
 	);
 
 	// Real, on-page reviews only (this is what earns star snippets, and Google
-	// requires the ratings to be visible on the page — WooCommerce shows them).
+	// requires the ratings to be visible on the page, WooCommerce shows them).
 	if ( $product->get_review_count() > 0 && wc_review_ratings_enabled() ) {
 		$data['aggregateRating'] = array(
 			'@type'       => 'AggregateRating',
@@ -333,7 +333,7 @@ function wildflower_catalog_document_title( $parts ) {
 				? __( 'Rose Bouquets & Delivery in Boston', 'wildflower' )
 				: sprintf(
 					/* translators: %s: product-category name. */
-					__( '%s — Flower Delivery in Boston', 'wildflower' ),
+					__( '%s, Flower Delivery in Boston', 'wildflower' ),
 					$term->name
 				);
 		}
@@ -473,7 +473,7 @@ function wildflower_robots_txt( $output, $public ) {
 		return $output;
 	}
 	$ai = array( 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'anthropic-ai', 'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Applebot-Extended', 'Bytespider', 'CCBot' );
-	$lines = array( '', '# AI answer engines — allowed so the studio can be cited/recommended' );
+	$lines = array( '', '# AI answer engines, allowed so the studio can be cited/recommended' );
 	foreach ( $ai as $bot ) {
 		$lines[] = 'User-agent: ' . $bot;
 		$lines[] = 'Allow: /';

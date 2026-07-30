@@ -2,15 +2,15 @@
 /**
  * Theming engine + owner remote ("the pult").
  *
- * A *theme* here is a complete look — not a single colour. Each theme defines:
- *   • two accent colours (both change per theme — nothing is hardcoded),
+ * A *theme* here is a complete look, not a single colour. Each theme defines:
+ *   • two accent colours (both change per theme, nothing is hardcoded),
  *   • a dark "statement" colour with single-hue gradient stops,
  *   • a typography pair (heading + body),
  *   • a button corner radius.
  *
  * Everything is defined ONCE in wildflower_themes() / wildflower_font_pairs().
  * The CSS variables for every theme are generated from that source, and the
- * remote builds its UI from the same source — so adding a theme is a one-entry
+ * remote builds its UI from the same source, so adding a theme is a one-entry
  * change with no copy-paste. The published theme is stored as a site option and
  * applied server-side via <html data-theme="…"> (no flash). Admins can preview
  * any theme without publishing via ?wf_preview=<id>.
@@ -60,7 +60,7 @@ function wildflower_font_pairs() {
 }
 
 /**
- * The curated themes — the single source of truth.
+ * The curated themes, the single source of truth.
  *
  * Keys: label, desc, primary (+ -2 lighter / -3 darker gradient stops),
  * accent (main: prices, links, dot, cart), accent2 (headline italics &
@@ -72,7 +72,7 @@ function wildflower_themes() {
 	return array(
 		'forest' => array(
 			'label'  => 'Forest',
-			'desc'   => 'Ivory + ink + matcha. Restrained monochrome — the flowers are the colour.',
+			'desc'   => 'Ivory + ink + matcha. Restrained monochrome, the flowers are the colour.',
 			'primary' => '#45533a', 'primary2' => '#56653f', 'primary3' => '#2f3a25',
 			'accent'  => '#5e7042', 'accent2'  => '#6f8350', 'ondark' => '#d4c193',
 			'font'    => 'editorial', 'radius' => '3px',
@@ -190,7 +190,7 @@ function wildflower_theme_font( $theme ) {
 
 /**
  * Pick a readable text colour (dark or light) for a given accent background,
- * using WCAG relative luminance — so accent strips/badges stay legible across
+ * using WCAG relative luminance, so accent strips/badges stay legible across
  * every theme (a light gold and a dark wine both get the right text).
  *
  * @param string $hex Background colour.

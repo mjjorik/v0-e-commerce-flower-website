@@ -53,13 +53,13 @@ $journal = new WP_Query(
 			wp_reset_postdata();
 		else :
 			$demo = array(
-				array( 'Care Guide', 'How to make cut flowers last twice as long', 'Five florist habits — fresh water, a clean cut, the right spot — that keep a bouquet beautiful for two weeks.' ),
+				array( 'Care Guide', 'How to make cut flowers last twice as long', 'Five florist habits, fresh water, a clean cut, the right spot, that keep a bouquet beautiful for two weeks.' ),
 				array( 'Seasonal', 'What’s blooming in Boston this month', 'A look at the stems we’re loving right now and how to style them at home.' ),
-				array( 'Behind the studio', 'A morning with our florists', 'From the 5 AM market run to the first delivery — a day in the life of the studio.' ),
+				array( 'Behind the studio', 'A morning with our florists', 'From the 5 AM market run to the first delivery, a day in the life of the studio.' ),
 				array( 'Gifting', 'The right flowers for every occasion', 'A simple guide to choosing blooms that say exactly what you mean.' ),
 				array( 'Care Guide', 'Reviving a tired bouquet', 'Three quick tricks to bring drooping stems back to life.' ),
-				array( 'Seasonal', 'Why we buy local & seasonal', 'Fresher, longer-lasting, lower-impact — the case for flowers grown nearby.' ),
-				array( 'Gifting', 'Flowers that say thank you', 'Our florists’ picks for showing a little gratitude — and why they work so well.' ),
+				array( 'Seasonal', 'Why we buy local & seasonal', 'Fresher, longer-lasting, lower-impact, the case for flowers grown nearby.' ),
+				array( 'Gifting', 'Flowers that say thank you', 'Our florists’ picks for showing a little gratitude, and why they work so well.' ),
 			);
 			?>
 			<article class="journal-feature">

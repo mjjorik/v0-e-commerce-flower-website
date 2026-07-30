@@ -144,7 +144,7 @@ $brand = wildflower_brand();
 </footer>
 
 <?php if ( class_exists( 'WooCommerce' ) ) : ?>
-<!-- Mobile sticky action bar — appears after the hero (phones only) -->
+<!-- Mobile sticky action bar, appears after the hero (phones only) -->
 <div class="mobile-bar" data-mobile-bar aria-hidden="true">
 	<div class="mobile-bar__info">
 		<span class="mobile-bar__label"><?php esc_html_e( 'Bouquets', 'wildflower' ); ?></span>
@@ -156,7 +156,7 @@ $brand = wildflower_brand();
 
 <?php
 /* Floating WhatsApp button (bottom-right). Uses the WhatsApp number if set,
-   otherwise the studio phone digits — set brand['whatsapp'] to the real line. */
+   otherwise the studio phone digits, set brand['whatsapp'] to the real line. */
 $wf_wa = ! empty( $brand['whatsapp'] ) ? preg_replace( '/[^0-9]/', '', $brand['whatsapp'] ) : preg_replace( '/[^0-9]/', '', $brand['phone'] );
 if ( strlen( $wf_wa ) === 10 ) {
 	$wf_wa = '1' . $wf_wa; // US country code.

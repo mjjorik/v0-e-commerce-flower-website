@@ -4,7 +4,7 @@
  *
  * A standalone, installable (PWA) "pult" for the site owner. Big buttons switch
  * the colour theme; a live preview shows the change before you Publish it to all
- * visitors. Admin-only — everyone else sees a sign-in prompt.
+ * visitors. Admin-only, everyone else sees a sign-in prompt.
  *
  * To use: create a Page (e.g. "Studio"), set its template to "Wildflower Studio
  * (Remote)", then open it on your phone/desktop and "Add to Home Screen".

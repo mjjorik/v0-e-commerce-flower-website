@@ -22,7 +22,7 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 		<?php wildflower_breadcrumbs(); ?>
 		<p class="eyebrow reveal"><?php esc_html_e( 'Contact', 'wildflower' ); ?></p>
 		<h1 class="page-hero__title kinetic"><?php echo wildflower_kinetic( __( 'Say hello', 'wildflower' ) ); // phpcs:ignore ?></h1>
-		<p class="page-hero__lead reveal"><?php esc_html_e( 'Questions about an order, a custom arrangement, weddings or corporate gifting? We’re a real studio with real people — reach out and we’ll get back same day.', 'wildflower' ); ?></p>
+		<p class="page-hero__lead reveal"><?php esc_html_e( 'Questions about an order, a custom arrangement, weddings or corporate gifting? We’re a real studio with real people, reach out and we’ll get back same day.', 'wildflower' ); ?></p>
 	</div>
 </section>
 
@@ -38,7 +38,7 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 			$wf_prefill  = '';
 			if ( '' !== $wf_plan ) {
 				/* translators: %s: subscription plan name. */
-				$wf_prefill = sprintf( __( "Hi Wildflower — I'd like to start the %s. Please tell me the next steps.", 'wildflower' ), $wf_plan );
+				$wf_prefill = sprintf( __( "Hi Wildflower, I'd like to start the %s. Please tell me the next steps.", 'wildflower' ), $wf_plan );
 			}
 			?>
 			<form class="contact__form reveal" method="post" action="#" novalidate>
@@ -59,7 +59,7 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 				</label>
 				<label class="field"><span><?php esc_html_e( 'Message', 'wildflower' ); ?></span><textarea name="message" rows="5"><?php echo esc_textarea( $wf_prefill ); ?></textarea></label>
 				<button type="submit" class="btn--primary btn--lg"><?php esc_html_e( 'Send message', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></button>
-				<p class="contact__note muted"><?php esc_html_e( 'Prefer email? Write us directly — we reply within a few hours during studio hours.', 'wildflower' ); ?></p>
+				<p class="contact__note muted"><?php esc_html_e( 'Prefer email? Write us directly, we reply within a few hours during studio hours.', 'wildflower' ); ?></p>
 			</form>
 
 			<aside class="contact__aside reveal">

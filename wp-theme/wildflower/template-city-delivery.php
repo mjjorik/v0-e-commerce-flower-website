@@ -4,7 +4,7 @@
  *
  * Renders a per-city same-day delivery landing page from the unique data in
  * inc/delivery-cities.php (matched by page slug). Assigned automatically to the
- * provisioned city pages. Each page's copy is genuinely distinct — this is a
+ * provisioned city pages. Each page's copy is genuinely distinct, this is a
  * set of helpful local pages, not templated doorway clones.
  *
  * @package Wildflower
@@ -123,7 +123,7 @@ $city = $wf_city;
 <!-- FAQ -->
 <section class="section">
 	<div class="container">
-		<div class="section-head"><div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'Good to know', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( sprintf( __( 'Flower delivery in %s — FAQ', 'wildflower' ), $city['name'] ) ); // phpcs:ignore ?></h2></div></div>
+		<div class="section-head"><div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'Good to know', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( sprintf( __( 'Flower delivery in %s, FAQ', 'wildflower' ), $city['name'] ) ); // phpcs:ignore ?></h2></div></div>
 		<div class="faq reveal">
 			<?php foreach ( $city['faqs'] as $f ) : ?>
 				<details class="faq__item">

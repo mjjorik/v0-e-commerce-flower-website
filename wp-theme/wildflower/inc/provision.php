@@ -26,7 +26,7 @@ add_action( 'after_switch_theme', 'wildflower_provision_pages' );
  * so it runs once per version, with a short lock to avoid concurrent double-runs.
  */
 function wildflower_provision_pages() {
-	if ( 'v6' === get_option( 'wildflower_provisioned' ) ) {
+	if ( 'v7' === get_option( 'wildflower_provisioned' ) ) {
 		return;
 	}
 	if ( get_transient( 'wildflower_provisioning' ) ) {
@@ -103,30 +103,42 @@ function wildflower_provision_pages() {
 		update_option( 'wp_page_for_privacy_policy', $ids['privacy-policy'] );
 	}
 
-	// Journal posts — created from code so they appear with the deploy, no
+	// Journal posts, created from code so they appear with the deploy, no
 	// manual import. Also trash the default "Hello World" post so the grid
 	// stays a clean feature + 6.
 	if ( function_exists( 'wildflower_journal_articles' ) ) {
 		$admins    = get_users( array( 'role' => 'administrator', 'number' => 1, 'fields' => 'ID' ) );
 		$author_id = ! empty( $admins ) ? (int) $admins[0] : 1;
 		foreach ( wildflower_journal_articles() as $art ) {
-			if ( get_page_by_path( $art['slug'], OBJECT, 'post' ) instanceof WP_Post ) {
-				continue;
+			$existing = get_page_by_path( $art['slug'], OBJECT, 'post' );
+			if ( $existing instanceof WP_Post ) {
+				// Keep the repo as the source of truth: re-sync the title, body and
+				// excerpt so content edits (e.g. copy fixes) reach live posts too.
+				wp_update_post(
+					array(
+						'ID'           => $existing->ID,
+						'post_title'   => $art['title'],
+						'post_content' => $art['content'],
+						'post_excerpt' => $art['excerpt'],
+					)
+				);
+				$post_id = (int) $existing->ID;
+			} else {
+				$post_id = wp_insert_post(
+					array(
+						'post_type'      => 'post',
+						'post_status'    => 'publish',
+						'post_author'    => $author_id,
+						'post_name'      => $art['slug'],
+						'post_title'     => $art['title'],
+						'post_content'   => $art['content'],
+						'post_excerpt'   => $art['excerpt'],
+						'post_date'      => $art['date'],
+						'comment_status' => 'closed',
+						'ping_status'    => 'closed',
+					)
+				);
 			}
-			$post_id = wp_insert_post(
-				array(
-					'post_type'      => 'post',
-					'post_status'    => 'publish',
-					'post_author'    => $author_id,
-					'post_name'      => $art['slug'],
-					'post_title'     => $art['title'],
-					'post_content'   => $art['content'],
-					'post_excerpt'   => $art['excerpt'],
-					'post_date'      => $art['date'],
-					'comment_status' => 'closed',
-					'ping_status'    => 'closed',
-				)
-			);
 			if ( $post_id && ! is_wp_error( $post_id ) && ! empty( $art['category'] ) ) {
 				$term = term_exists( $art['category'], 'category' );
 				if ( ! $term ) {
@@ -148,7 +160,7 @@ function wildflower_provision_pages() {
 	// WooCommerce shop sections (Roses / Bouquets / …) + auto-file products.
 	wildflower_provision_product_categories();
 
-	update_option( 'wildflower_provisioned', 'v6' );
+	update_option( 'wildflower_provisioned', 'v7' );
 	delete_transient( 'wildflower_provisioning' );
 }
 
@@ -157,7 +169,7 @@ function wildflower_provision_pages() {
  * them so the Shop menu links (and the Home → Shop → Roses breadcrumb) resolve to
  * real category archives instead of falling back to the shop.
  *
- * Products are matched by name — "tin can" → Tin Can Bouquets, "rose" → Roses,
+ * Products are matched by name, "tin can" → Tin Can Bouquets, "rose" → Roses,
  * "gift" → Gifts, everything else → Bouquets. Only products that are still
  * uncategorised are touched, so any category picked by hand in WooCommerce wins.
  */
@@ -227,7 +239,7 @@ function wildflower_provision_product_categories() {
 }
 
 /**
- * Starter Terms & Conditions copy. Plain, editable, brand-aware — the owner
+ * Starter Terms & Conditions copy. Plain, editable, brand-aware, the owner
  * should review it, but it is complete enough to publish immediately.
  *
  * @return string
@@ -268,16 +280,16 @@ function wildflower_privacy_starter() {
 	$email = $brand['email'];
 
 	$p = array(
-		'<p><em>' . esc_html__( 'Last updated: on publication. This is a starter policy — please review it and confirm it reflects how your store actually handles data.', 'wildflower' ) . '</em></p>',
+		'<p><em>' . esc_html__( 'Last updated: on publication. This is a starter policy, please review it and confirm it reflects how your store actually handles data.', 'wildflower' ) . '</em></p>',
 		'<p>' . sprintf( esc_html__( 'This policy explains how %1$s collects and uses your information when you visit our site or place an order.', 'wildflower' ), esc_html( $name ) ) . '</p>',
 		'<h2>' . esc_html__( 'What we collect', 'wildflower' ) . '</h2>',
 		'<p>' . esc_html__( 'When you order we collect your name, email, phone number, billing and delivery addresses, and the details of your order and any gift message. When you browse, we collect standard technical data such as your IP address, browser type and the pages you view.', 'wildflower' ) . '</p>',
 		'<h2>' . esc_html__( 'How we use it', 'wildflower' ) . '</h2>',
-		'<p>' . esc_html__( 'We use your information to process and deliver orders, communicate with you about them, provide support, prevent fraud, and — only if you opt in — send occasional updates and offers. You can unsubscribe at any time.', 'wildflower' ) . '</p>',
+		'<p>' . esc_html__( 'We use your information to process and deliver orders, communicate with you about them, provide support, prevent fraud, and, only if you opt in, send occasional updates and offers. You can unsubscribe at any time.', 'wildflower' ) . '</p>',
 		'<h2>' . esc_html__( 'Cookies', 'wildflower' ) . '</h2>',
 		'<p>' . esc_html__( 'We use cookies to keep your cart working, remember your preferences and understand how the site is used. You can control cookies in your browser settings.', 'wildflower' ) . '</p>',
 		'<h2>' . esc_html__( 'Sharing', 'wildflower' ) . '</h2>',
-		'<p>' . esc_html__( 'We share data only with the services needed to run the store — for example our payment processor, delivery couriers and hosting provider — and never sell your personal information.', 'wildflower' ) . '</p>',
+		'<p>' . esc_html__( 'We share data only with the services needed to run the store, for example our payment processor, delivery couriers and hosting provider, and never sell your personal information.', 'wildflower' ) . '</p>',
 		'<h2>' . esc_html__( 'Your rights', 'wildflower' ) . '</h2>',
 		'<p>' . sprintf( esc_html__( 'You may request a copy of the data we hold about you, ask us to correct it, or ask us to delete it. To make a request, email %s.', 'wildflower' ), esc_html( $email ) ) . '</p>',
 	);

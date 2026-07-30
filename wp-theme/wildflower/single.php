@@ -1,6 +1,6 @@
 <?php
 /**
- * Single post (article) template — editorial reading layout.
+ * Single post (article) template, editorial reading layout.
  *
  * Reading-progress bar, centered hero, full cover, readable prose column,
  * author + related posts. BlogPosting JSON-LD. Wildflower system.
@@ -61,18 +61,20 @@ while ( have_posts() ) :
 				<div class="article__tags"><?php the_tags( '', '', '' ); ?></div>
 			<?php endif; ?>
 
+			<?php $wf_author = wildflower_article_author(); ?>
 			<div class="article__author">
 				<span class="article__avatar media-fallback media-fallback--2" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span>
 				<div>
-					<strong><?php echo esc_html( wildflower_post_author() ); ?></strong>
-					<p><?php esc_html_e( 'Lead florist at Wildflower — farm-fresh flowers, hand-tied and delivered same-day across Greater Boston since 2015.', 'wildflower' ); ?></p>
+					<strong><?php echo esc_html( $wf_author['name'] ); ?></strong>
+					<span class="article__author-role"><?php echo esc_html( $wf_author['role'] ); ?></span>
+					<p><?php echo esc_html( $wf_author['bio'] ); ?></p>
 				</div>
 			</div>
 		</div>
 	</article>
 
 	<?php
-	// Related posts — same category first, then topped up with recent posts
+	// Related posts, same category first, then topped up with recent posts
 		// so the row always shows 3 (no empty column when a category is small).
 		$current_id    = get_the_ID();
 		$related_posts = array();

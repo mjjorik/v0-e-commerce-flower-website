@@ -1,6 +1,6 @@
 <?php
 /**
- * Front page — the Wildflower homepage.
+ * Front page, the Wildflower homepage.
  *
  * Section order (see docs/STUDIO_PLAN.md):
  * hero → trust strip → occasions bento → bestsellers (3 big) → add-ons →
@@ -28,7 +28,7 @@ if ( $has_woo ) {
 	);
 	$cats = is_wp_error( $cats ) ? array() : $cats;
 
-	// Six bestsellers — shown 3 at a time in a horizontal scroller.
+	// Six bestsellers, shown 3 at a time in a horizontal scroller.
 	$markup = do_shortcode( '[products limit="6" columns="6" visibility="featured"]' );
 	if ( substr_count( $markup, '<li' ) < 6 ) {
 		$markup = do_shortcode( '[products limit="6" columns="6" category="bouquets" orderby="date" order="DESC"]' );
@@ -156,7 +156,7 @@ if ( '' === $markup ) {
 </section>
 
 <?php if ( $markup ) : ?>
-<!-- 5 · BESTSELLERS — 3 shown, 6 total, horizontal scroll (placed above Shop by occasion) -->
+<!-- 5 · BESTSELLERS, 3 shown, 6 total, horizontal scroll (placed above Shop by occasion) -->
 <section class="section section--alt scroller" data-scroller>
 	<div class="container">
 		<div class="section-head">
@@ -181,7 +181,7 @@ if ( '' === $markup ) {
 </section>
 <?php endif; ?>
 
-<!-- 6 · SHOP BY OCCASION — interactive picker (hover swaps the image) -->
+<!-- 6 · SHOP BY OCCASION, interactive picker (hover swaps the image) -->
 <section class="section">
 	<div class="container">
 		<div class="section-head">
@@ -261,20 +261,20 @@ if ( '' === $markup ) {
 			<div class="vstory__overlay" data-vstory-overlay>
 				<p class="eyebrow"><?php esc_html_e( 'In the studio', 'wildflower' ); ?></p>
 				<h2 class="vstory__title"><?php esc_html_e( 'Hand-tied, every single morning', 'wildflower' ); ?></h2>
-				<p class="vstory__lead"><?php esc_html_e( 'Real florists, real flowers, cut this week — not a warehouse. Watch a bouquet come together before it heads to your door.', 'wildflower' ); ?></p>
+				<p class="vstory__lead"><?php esc_html_e( 'Real florists, real flowers, cut this week, not a warehouse. Watch a bouquet come together before it heads to your door.', 'wildflower' ); ?></p>
 				<a class="btn--accent btn--lg" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 			</div>
 		</div>
 	</div>
 </section>
 
-<!-- 7 · COMPLETE THE GIFT — ADD-ONS (dark) -->
+<!-- 7 · COMPLETE THE GIFT, ADD-ONS (dark) -->
 <section class="section addons">
 	<div class="container addons__inner" data-scroller>
 		<div class="addons__head reveal">
 			<p class="eyebrow"><?php esc_html_e( 'The little extras', 'wildflower' ); ?></p>
 			<h2 class="kinetic" style="margin-top:.5rem;color:var(--primary-foreground);"><?php echo wildflower_kinetic( __( 'Complete the gift', 'wildflower' ) ); // phpcs:ignore ?></h2>
-			<p class="addons__lead"><?php esc_html_e( 'Make it unforgettable — add a little something at checkout.', 'wildflower' ); ?></p>
+			<p class="addons__lead"><?php esc_html_e( 'Make it unforgettable, add a little something at checkout.', 'wildflower' ); ?></p>
 		</div>
 		<div class="addons__grid" data-scroller-track>
 			<?php
@@ -306,14 +306,14 @@ if ( '' === $markup ) {
 	</div>
 </section>
 
-<!-- 8 · DELIVERY — brief (full details on /delivery/) -->
+<!-- 8 · DELIVERY, brief (full details on /delivery/) -->
 <section class="section section--alt">
 	<div class="container">
 		<div class="delivery">
 			<div class="delivery__body reveal">
 				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'Delivery', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Same-day across Boston', 'wildflower' ) ); // phpcs:ignore ?></h2>
-				<p class="delivery__lead"><?php printf( esc_html__( 'Order by %s and we hand-deliver the same day across Boston, Cambridge, Somerville and the metro. Zone-based delivery from $19 — a flat $15 on orders over $85.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>
+				<p class="delivery__lead"><?php printf( esc_html__( 'Order by %s and we hand-deliver the same day across Boston, Cambridge, Somerville and the metro. Zone-based delivery from $19, a flat $15 on orders over $85.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>
 				<div class="delivery__facts">
 					<div><strong><?php esc_html_e( 'Same-day', 'wildflower' ); ?></strong><span><?php esc_html_e( 'Order by 1 PM', 'wildflower' ); ?></span></div>
 					<div><strong><?php esc_html_e( 'From $19', 'wildflower' ); ?></strong><span><?php esc_html_e( '$15 on orders $85+', 'wildflower' ); ?></span></div>
@@ -342,7 +342,7 @@ if ( '' === $markup ) {
 		<div class="how__grid">
 			<?php
 			$steps = array(
-				array( '01', 'Pick your bouquet', 'Browse the line-up or start a subscription. Choose a size — Petite, Classic or Grand.' ),
+				array( '01', 'Pick your bouquet', 'Browse the line-up or start a subscription. Choose a size, Petite, Classic or Grand.' ),
 				array( '02', 'Tell us when & where', 'Add a delivery date, a time slot and a gift message. Same-day if you order by 1 PM.' ),
 				array( '03', 'We hand-deliver it', 'Our local couriers bring it fresh to the door, anywhere across Greater Boston.' ),
 			);
@@ -370,7 +370,7 @@ if ( '' === $markup ) {
 			<div class="sub-teaser__body reveal">
 				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Fresh flowers, every week', 'wildflower' ) ); // phpcs:ignore ?></h2>
-				<p style="margin-top:1.25rem;max-width:28rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.6;"><?php esc_html_e( 'A standing order of seasonal blooms, chosen by our studio and delivered like clockwork. Pause, skip or cancel anytime — no strings, just stems.', 'wildflower' ); ?></p>
+				<p style="margin-top:1.25rem;max-width:28rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.6;"><?php esc_html_e( 'A standing order of seasonal blooms, chosen by our studio and delivered like clockwork. Pause, skip or cancel anytime, no strings, just stems.', 'wildflower' ); ?></p>
 				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$70</span> <span style="font-size:1rem;color:var(--muted-foreground);">/ delivery</span></p>
 				<a class="btn--primary" style="margin-top:1.75rem;" href="<?php echo esc_url( home_url( '/subscriptions/' ) ); ?>"><?php esc_html_e( 'Explore subscriptions', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 			</div>

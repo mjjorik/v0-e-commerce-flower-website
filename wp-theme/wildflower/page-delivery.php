@@ -2,8 +2,8 @@
 /**
  * Delivery page (auto-applies to the page with slug "delivery").
  *
- * Information mirrors the brand's delivery model — region tiers + a ZIP-based
- * rate ladder, "exact fee by destination ZIP at checkout" — rewritten in the
+ * Information mirrors the brand's delivery model, region tiers + a ZIP-based
+ * rate ladder, "exact fee by destination ZIP at checkout", rewritten in the
  * Wildflower system (so it inherits the active theme + Studio remote).
  * Per the brief: the closest tier starts at $19 (not $20), and delivery is a
  * flat $15 on orders of $85+.
@@ -38,7 +38,7 @@ $tiers = array(
 /* The published rate ladder (exact fee resolved by destination ZIP). */
 $rates = array( '$19', '$25', '$35', '$40', '$45+' );
 
-/* FAQ — drives the on-page accordion and FAQPage schema (AEO). */
+/* FAQ, drives the on-page accordion and FAQPage schema (AEO). */
 $faqs = array(
 	array(
 		__( 'Do you offer same-day flower delivery in Boston?', 'wildflower' ),
@@ -54,11 +54,11 @@ $faqs = array(
 	),
 	array(
 		__( 'How is my exact delivery fee determined?', 'wildflower' ),
-		__( 'By your destination ZIP code. We map every ZIP to a rate based on distance from our studio, so you always see the precise fee at checkout — no surprises. Extended-distance orders may require a quick custom quote.', 'wildflower' ),
+		__( 'By your destination ZIP code. We map every ZIP to a rate based on distance from our studio, so you always see the precise fee at checkout, no surprises. Extended-distance orders may require a quick custom quote.', 'wildflower' ),
 	),
 	array(
 		__( 'Can I pick up my order?', 'wildflower' ),
-		__( 'We run as a closed studio for the freshest, fastest dispatch, so pick-up isn’t available — every order is hand-delivered by a local courier.', 'wildflower' ),
+		__( 'We run as a closed studio for the freshest, fastest dispatch, so pick-up isn’t available, every order is hand-delivered by a local courier.', 'wildflower' ),
 	),
 	array(
 		__( 'What if no one is home?', 'wildflower' ),
@@ -93,7 +93,7 @@ $faqs = array(
 	</div>
 </section>
 
-<!-- COVERAGE AT A GLANCE (table — scannable + AI-citable) -->
+<!-- COVERAGE AT A GLANCE (table, scannable + AI-citable) -->
 <section class="section">
 	<div class="container">
 		<div class="section-head"><div style="max-width:40rem;"><p class="eyebrow reveal"><?php esc_html_e( 'Coverage at a glance', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Zones, cut-off & rates', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
@@ -119,7 +119,7 @@ $faqs = array(
 				</tbody>
 			</table>
 		</div>
-		<p class="price-zones__note muted" style="margin-top:1.25rem;"><?php printf( esc_html__( 'Exact fee is set by destination ZIP and shown at checkout. Delivery is a flat $15 on orders of $85+. We deliver across all of Greater Boston and, by arrangement, beyond — order by %s ET for same-day.', 'wildflower' ), esc_html( $cutoff ) ); ?></p>
+		<p class="price-zones__note muted" style="margin-top:1.25rem;"><?php printf( esc_html__( 'Exact fee is set by destination ZIP and shown at checkout. Delivery is a flat $15 on orders of $85+. We deliver across all of Greater Boston and, by arrangement, beyond, order by %s ET for same-day.', 'wildflower' ), esc_html( $cutoff ) ); ?></p>
 	</div>
 </section>
 
@@ -161,7 +161,7 @@ $faqs = array(
 				<li class="rate"><?php echo esc_html( $r ); ?></li>
 			<?php endforeach; ?>
 		</ul>
-		<p class="price-zones__note muted"><?php esc_html_e( 'The exact fee is calculated from the destination ZIP code and shown at checkout — about 1,291 Greater Boston ZIPs are mapped by distance from our studio. Spend $85 or more and delivery is a flat $15. Extended-distance deliveries may require a quick custom quote.', 'wildflower' ); ?></p>
+		<p class="price-zones__note muted"><?php esc_html_e( 'The exact fee is calculated from the destination ZIP code and shown at checkout, about 1,291 Greater Boston ZIPs are mapped by distance from our studio. Spend $85 or more and delivery is a flat $15. Extended-distance deliveries may require a quick custom quote.', 'wildflower' ); ?></p>
 	</div>
 </section>
 
@@ -171,7 +171,7 @@ $faqs = array(
 <section class="section section--alt">
 	<div class="container">
 		<div class="section-head"><div style="max-width:40rem;"><p class="eyebrow reveal"><?php esc_html_e( 'Delivery areas', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Same-day delivery, city by city', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
-		<p class="price-zones__note muted" style="margin-bottom:1.75rem;"><?php esc_html_e( 'We deliver across all of Greater Boston and beyond. Here are the cities we cover most — each with its own neighborhoods, ZIP codes and cut-off details.', 'wildflower' ); ?></p>
+		<p class="price-zones__note muted" style="margin-bottom:1.75rem;"><?php esc_html_e( 'We deliver across all of Greater Boston and beyond. Here are the cities we cover most, each with its own neighborhoods, ZIP codes and cut-off details.', 'wildflower' ); ?></p>
 		<div class="corder-types">
 			<?php foreach ( $wf_cities as $wf_slug => $wf_c ) : ?>
 				<a class="corder-type reveal" href="<?php echo esc_url( home_url( '/' . $wf_slug . '/' ) ); ?>" style="text-decoration:none;">
@@ -279,7 +279,7 @@ wildflower_print_jsonld(
 			'@context'    => 'https://schema.org',
 			'@type'       => 'Service',
 			'serviceType' => 'Flower delivery',
-			'name'        => 'Same-day flower delivery — Greater Boston',
+			'name'        => 'Same-day flower delivery, Greater Boston',
 			'provider'    => array( '@id' => $home . '#business' ),
 			'areaServed'  => $all_areas,
 			'offers'      => array( '@type' => 'Offer', 'priceCurrency' => 'USD', 'priceSpecification' => array( '@type' => 'PriceSpecification', 'minPrice' => 15, 'maxPrice' => 45, 'priceCurrency' => 'USD' ) ),

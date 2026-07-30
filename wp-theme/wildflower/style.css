@@ -1745,6 +1745,7 @@ body.admin-bar .read-progress { top: 32px; }
 .article__author { max-width: 44rem; margin: 2.5rem auto 0; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; gap: 1rem; align-items: flex-start; }
 .article__avatar img { width: 3.5rem; height: 3.5rem; border-radius: 999px; }
 .article__author strong { font-family: var(--font-serif); font-size: 1.1rem; }
+.article__author-role { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); font-weight: 600; margin-top: .2rem; }
 .article__author p { color: var(--muted-foreground); font-size: .9rem; margin-top: .25rem; line-height: 1.55; }
 /* Placeholder cover + avatar (posts with no featured image). */
 .article__cover .media-fallback { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -1752,7 +1753,10 @@ body.admin-bar .read-progress { top: 32px; }
 .article__avatar .media-fallback { position: absolute; inset: 0; }
 
 /* Prose tables (article comparison tables) — clean, on-brand, scrollable. */
-.prose table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: .95rem; display: block; overflow-x: auto; }
+/* Full-width table that fills the reading column (matching the text and the
+   accent band). It only becomes a horizontal scroller on narrow phones. */
+.prose table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: .95rem; }
+@media (max-width: 640px) { .prose table { display: block; overflow-x: auto; } }
 .prose thead th { background: var(--muted); text-align: left; font-family: var(--font-sans); font-weight: 600; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-foreground); }
 .prose th, .prose td { border: 1px solid var(--border); padding: .8rem 1rem; text-align: left; vertical-align: top; line-height: 1.5; }
 .prose tbody td:first-child { font-weight: 600; color: var(--foreground); white-space: nowrap; }
@@ -1822,8 +1826,11 @@ body.admin-bar .read-progress { top: 32px; }
   color: var(--surface-soft-foreground); border-radius: var(--radius-2xl); box-shadow: var(--shadow-soft);
 }
 .article-cta__body { min-width: 0; }
-.article-cta__eyebrow { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .14em; color: var(--accent-on-dark); margin: 0 0 .45rem; }
-.article-cta__title { font-family: var(--font-serif); font-size: clamp(1.2rem, 2.2vw, 1.55rem); line-height: 1.25; color: var(--surface-soft-foreground); margin: 0; max-width: 34ch; }
+/* Scoped with the block class so they beat `.prose p` (class+element) on
+   specificity — otherwise the title fell back to the dark prose colour and read
+   as dark-on-dark-green. */
+.article-cta .article-cta__eyebrow { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .14em; color: var(--accent-on-dark); margin: 0 0 .45rem; }
+.article-cta .article-cta__title { font-family: var(--font-serif); font-size: clamp(1.2rem, 2.2vw, 1.55rem); line-height: 1.25; color: var(--surface-soft-foreground); margin: 0; max-width: 34ch; }
 .article-cta .btn--accent { flex: 0 0 auto; background-color: var(--accent-on-dark); background-image: none; color: var(--primary); }
 .article-cta .btn--accent:hover { background-color: color-mix(in oklab, var(--accent-on-dark) 88%, white); }
 @media (max-width: 560px) { .article-cta { flex-direction: column; align-items: flex-start; } .article-cta .btn--accent { width: 100%; } }

@@ -2,7 +2,7 @@
 /**
  * About page (auto-applies to the page with slug "about").
  *
- * Story / values / team — strong E-E-A-T (real local studio, founder, florists).
+ * Story / values / team, strong E-E-A-T (real local studio, founder, florists).
  * Wildflower system (theme + pult aware). AboutPage + Organization + Person +
  * BreadcrumbList JSON-LD.
  *
@@ -15,9 +15,9 @@ $shop  = class_exists( 'WooCommerce' ) ? wc_get_page_permalink( 'shop' ) : home_
 $media = wildflower_page_media( 'about' );
 
 $values = array(
-	array( 'M12 21v-9M12 14C8.5 14 6 11 6 7c4 0 6 3 6 7zM12 12c3.2 0 5.5-2.2 5.5-5.5C14 6.5 12 8.6 12 12z', __( 'Seasonal & local', 'wildflower' ), __( 'Cut this week from New England growers — what’s freshest, not what ships cheapest.', 'wildflower' ) ),
+	array( 'M12 21v-9M12 14C8.5 14 6 11 6 7c4 0 6 3 6 7zM12 12c3.2 0 5.5-2.2 5.5-5.5C14 6.5 12 8.6 12 12z', __( 'Seasonal & local', 'wildflower' ), __( 'Cut this week from New England growers, what’s freshest, not what ships cheapest.', 'wildflower' ) ),
 	array( 'M5 13l4 4L19 7', __( 'Hand-tied daily', 'wildflower' ), __( 'Every bouquet is arranged by a real florist the morning it’s delivered.', 'wildflower' ) ),
-	array( 'M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6', __( 'Honest pricing', 'wildflower' ), __( 'Beautiful flowers from $50 to $130 — the kind you can send on a Tuesday.', 'wildflower' ) ),
+	array( 'M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6', __( 'Honest pricing', 'wildflower' ), __( 'Beautiful flowers from $50 to $130, the kind you can send on a Tuesday.', 'wildflower' ) ),
 	array( 'M20 6 9 17l-5-5', __( 'Freshness guarantee', 'wildflower' ), __( 'If your flowers wilt early, we replace them. No fuss, just stems.', 'wildflower' ) ),
 );
 
@@ -41,7 +41,7 @@ $team = array(
 					<span class="italic"><?php echo wildflower_kinetic( 'around the corner.' ); ?></span>
 				</h1>
 				<div class="hero__lead">
-					<p><?php esc_html_e( 'We’re a small Boston studio — not a warehouse. Since 2015 we’ve hand-tied farm-fresh bouquets and delivered them same-day across the city, one doorstep at a time.', 'wildflower' ); ?></p>
+					<p><?php esc_html_e( 'We’re a small Boston studio, not a warehouse. Since 2015 we’ve hand-tied farm-fresh bouquets and delivered them same-day across the city, one doorstep at a time.', 'wildflower' ); ?></p>
 					<div class="hero__cta">
 						<a class="btn--primary btn--lg btn--magnetic" data-magnetic="0.25" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 						<a class="btn--outline btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Visit the studio', 'wildflower' ); ?></a>
@@ -63,7 +63,7 @@ $team = array(
 			<div class="story__body reveal">
 				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'Since 2015', 'wildflower' ); ?></p>
 				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Flowers, the way a neighbor would do it', 'wildflower' ) ); // phpcs:ignore ?></h2>
-				<p class="story__text"><?php esc_html_e( 'It started with a market stall and a stubborn belief: that beautiful flowers shouldn’t cost a fortune or feel like a warehouse afterthought. Today our studio hand-ties every order from stems cut this week, and a local courier brings it to the door — fresh, upright, and on time.', 'wildflower' ); ?></p>
+				<p class="story__text"><?php esc_html_e( 'It started with a market stall and a stubborn belief: that beautiful flowers shouldn’t cost a fortune or feel like a warehouse afterthought. Today our studio hand-ties every order from stems cut this week, and a local courier brings it to the door, fresh, upright, and on time.', 'wildflower' ); ?></p>
 				<div class="story__stats">
 					<div><strong>2015</strong><span><?php esc_html_e( 'Studio founded', 'wildflower' ); ?></span></div>
 					<div><strong>40k+</strong><span><?php esc_html_e( 'Bouquets delivered', 'wildflower' ); ?></span></div>

@@ -40,7 +40,7 @@ function wildflower_setup() {
 add_action( 'after_setup_theme', 'wildflower_setup' );
 
 /**
- * Asset version helper — uses file mtime so browsers never serve a stale
+ * Asset version helper, uses file mtime so browsers never serve a stale
  * cached CSS/JS after an update (a common "animations stopped working" cause).
  *
  * @param string $rel Path relative to the theme root, e.g. '/assets/js/main.js'.
@@ -232,13 +232,13 @@ function wildflower_brand() {
 		'instagram' => 'https://instagram.com/wildflower.boston',
 		'facebook'  => 'https://facebook.com/wildflower.boston',
 		// WhatsApp number in international format, digits only (e.g. 16175550142).
-		// Defaults to the phone digits — set the real WhatsApp line here.
+		// Defaults to the phone digits, set the real WhatsApp line here.
 		'whatsapp'  => '',
-		// Extra socials — icons show now; drop the real URLs in when ready.
+		// Extra socials, icons show now; drop the real URLs in when ready.
 		'pinterest' => '',
 		'tiktok'    => '',
 		/*
-		 * Real studio address / geo — used by the LocalBusiness schema, the
+		 * Real studio address / geo, used by the LocalBusiness schema, the
 		 * footer/contact blocks and the map. Keep in sync with Google Business
 		 * Profile byte-for-byte.
 		 */
@@ -348,7 +348,7 @@ function wildflower_video_mime( $url ) {
 
 /**
  * Render the hero visual. Prefers a video (uploaded attachment or URL), falls
- * back to the hero image, then to the elegant botanical placeholder — so the
+ * back to the hero image, then to the elegant botanical placeholder, so the
  * hero always looks intentional whatever is (or isn't) configured.
  */
 function wildflower_hero_visual() {
@@ -445,7 +445,7 @@ function wildflower_story_visual() {
 }
 
 /**
- * Render a rich mosaic of clickable placeholder tiles (varied sizes — big,
+ * Render a rich mosaic of clickable placeholder tiles (varied sizes, big,
  * tall and wide) that open in a lightbox. The size pattern has a total area
  * that's a multiple of 12, so it tiles flush on 2 / 3 / 4 columns with no gaps
  * (render-verified). Pass $sets to repeat the pattern (e.g. 2 for the full
@@ -561,17 +561,56 @@ function wildflower_read_time( $post_id = null ) {
 
 /**
  * A clean author byline for posts. The WP account behind auto-provisioned
- * articles is often the admin whose display name is an email address — never
+ * articles is often the admin whose display name is an email address, never
  * show that. Falls back to the studio's named designer.
  *
  * @return string
  */
+/**
+ * The studio's two bylined people, with roles and short bios.
+ *
+ * @return array<string, array<string, string>>
+ */
+function wildflower_authors() {
+	return array(
+		'stan' => array(
+			'name' => 'Stan Whitmore',
+			'role' => __( 'Founder & master florist', 'wildflower' ),
+			'bio'  => __( 'Founder and master florist at Wildflower, hand-tying farm-fresh flowers and delivering same-day across Greater Boston since 2015.', 'wildflower' ),
+		),
+		'emma' => array(
+			'name' => 'Emma Caldwell',
+			'role' => __( 'Head florist & art director', 'wildflower' ),
+			'bio'  => __( 'Head florist and art director at Wildflower, designing seasonal bouquets and same-day arrangements across Greater Boston.', 'wildflower' ),
+		),
+	);
+}
+
+/**
+ * Resolve the byline person for a post. Founder Stan signs the flagship
+ * expertise pieces; head florist Emma signs everything else.
+ *
+ * @param int|null $post_id Post ID (defaults to current).
+ * @return array{name:string,role:string,bio:string}
+ */
+function wildflower_article_author( $post_id = null ) {
+	$post_id = $post_id ? $post_id : get_the_ID();
+	$slug    = get_post_field( 'post_name', $post_id );
+	$stan    = array(
+		'best-flowers-every-season-boston',
+		'how-to-make-cut-flowers-last-longer',
+		'wedding-flowers-boston-seasonal-guide',
+		'how-much-do-flowers-cost-boston',
+		'sympathy-funeral-flowers-guide',
+	);
+	$people = wildflower_authors();
+	$key    = in_array( $slug, $stan, true ) ? 'stan' : 'emma';
+	return apply_filters( 'wildflower_article_author', $people[ $key ], $post_id );
+}
+
 function wildflower_post_author() {
-	$name = trim( (string) get_the_author() );
-	if ( '' === $name || false !== strpos( $name, '@' ) ) {
-		$name = 'Marco Reyes';
-	}
-	return apply_filters( 'wildflower_post_author', $name );
+	$author = wildflower_article_author();
+	return apply_filters( 'wildflower_post_author', $author['name'] );
 }
 
 /**
@@ -615,7 +654,7 @@ function wildflower_breadcrumbs() {
 	} elseif ( is_search() ) {
 		$crumbs[] = array( __( 'Search', 'wildflower' ), '' );
 	} else {
-		return; // Home, 404, etc. — no trail worth showing.
+		return; // Home, 404, etc., no trail worth showing.
 	}
 
 	$last = count( $crumbs ) - 1;
@@ -632,7 +671,7 @@ function wildflower_breadcrumbs() {
 }
 
 /**
- * Accent hero band for a page title — the green banner with breadcrumbs, a gold
+ * Accent hero band for a page title, the green banner with breadcrumbs, a gold
  * eyebrow and a large title. Used by page.php and the WooCommerce archives so a
  * plain page never opens on an empty white screen.
  *
@@ -668,7 +707,7 @@ function wildflower_customize( $wp_customize ) {
 	$wp_customize->add_section(
 		'wildflower_home',
 		array(
-			'title'    => __( 'Wildflower — Home', 'wildflower' ),
+			'title'    => __( 'Wildflower, Home', 'wildflower' ),
 			'priority' => 30,
 		)
 	);
@@ -687,7 +726,7 @@ function wildflower_customize( $wp_customize ) {
 		)
 	);
 
-	// Hero video — takes precedence over the image when present.
+	// Hero video, takes precedence over the image when present.
 	$wp_customize->add_setting( 'wildflower_hero_video', array( 'sanitize_callback' => 'absint' ) );
 	$wp_customize->add_control(
 		new WP_Customize_Media_Control(
@@ -707,7 +746,7 @@ function wildflower_customize( $wp_customize ) {
 		'wildflower_hero_video_url',
 		array(
 			'label'       => __( 'Hero video URL (optional)', 'wildflower' ),
-			'description' => __( 'External MP4/WebM URL — used if no video is uploaded above.', 'wildflower' ),
+			'description' => __( 'External MP4/WebM URL, used if no video is uploaded above.', 'wildflower' ),
 			'section'     => 'wildflower_home',
 			'type'        => 'url',
 		)
@@ -751,7 +790,7 @@ function wildflower_customize( $wp_customize ) {
 }
 add_action( 'customize_register', 'wildflower_customize' );
 
-// Colour theme switcher ("the pult") — data-theme + REST API.
+// Colour theme switcher ("the pult"), data-theme + REST API.
 require get_template_directory() . '/inc/theme-switcher.php';
 
 // Structured data (JSON-LD) and WooCommerce tweaks.

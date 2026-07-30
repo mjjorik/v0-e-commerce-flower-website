@@ -43,7 +43,7 @@ $occasions = array(
 					<span class="hero__rotate-word<?php echo 0 === $si ? ' is-active' : ''; ?>"><?php echo esc_html( $w ); ?></span>
 				<?php endforeach; ?>
 			</span></h1>
-		<p class="page-hero__lead reveal"><?php esc_html_e( 'Whatever the moment, there’s a bouquet for it — hand-tied and delivered same-day across Greater Boston. Pick an occasion to start.', 'wildflower' ); ?></p>
+		<p class="page-hero__lead reveal"><?php esc_html_e( 'Whatever the moment, there’s a bouquet for it, hand-tied and delivered same-day across Greater Boston. Pick an occasion to start.', 'wildflower' ); ?></p>
 	</div>
 </section>
 
@@ -97,7 +97,7 @@ $occasions = array(
 	</div>
 </section>
 
-<!-- LIGHT BAND — separates the dark section above from the dark footer below -->
+<!-- LIGHT BAND, separates the dark section above from the dark footer below -->
 <section class="section section--alt">
 	<div class="container" style="text-align:center;">
 		<p class="eyebrow reveal"><?php esc_html_e( 'Every day, not just occasions', 'wildflower' ); ?></p>

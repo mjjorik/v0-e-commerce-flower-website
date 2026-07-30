@@ -55,7 +55,7 @@ add_filter( 'the_content', 'wildflower_faq_accordions', 20 );
 
 /**
  * Insert one accent (matcha-green) callout roughly in the middle of an article,
- * before the central heading — so the reading column is broken up by a branded
+ * before the central heading, so the reading column is broken up by a branded
  * band instead of running as one long light column, and doubles as a soft CTA.
  *
  * @param string $content Post content.
@@ -105,9 +105,9 @@ function wildflower_journal_articles() {
 		'title'    => 'The Best Flowers for Every Season in Boston',
 		'category' => 'Seasonal',
 		'date'     => '2026-07-20 09:00:00',
-		'excerpt'  => "A Boston florist's month-by-month guide to the freshest seasonal flowers — spring tulips to winter amaryllis — and how to choose blooms that last.",
+		'excerpt'  => "A Boston florist's month-by-month guide to the freshest seasonal flowers, spring tulips to winter amaryllis, and how to choose blooms that last.",
 		'content'  => <<<'HTML'
-<p><strong>The best flowers for each Boston season are the ones cut nearby that week: tulips, ranunculus and lilac in spring; peonies, garden roses and dahlias in summer; chrysanthemums and amaranth in fall; amaryllis, anemone and evergreens in winter.</strong> Buying with the New England season means fresher stems, longer vase life, and better value — here is how we choose them at the studio, month by month.</p>
+<p><strong>The best flowers for each Boston season are the ones cut nearby that week: tulips, ranunculus and lilac in spring; peonies, garden roses and dahlias in summer; chrysanthemums and amaranth in fall; amaryllis, anemone and evergreens in winter.</strong> Buying with the New England season means fresher stems, longer vase life, and better value, here is how we choose them at the studio, month by month.</p>
 
 <h2>Why seasonal flowers last longer</h2>
 <p>Seasonal stems are harvested closer to when you receive them, so they open on your table instead of in a shipping box. In our experience delivering across Greater Boston since 2015, an in-season peony or dahlia routinely outlasts an out-of-season import by several days. Seasonal also tends to cost less, because it is not being flown across the world against the clock.</p>
@@ -124,7 +124,7 @@ function wildflower_journal_articles() {
 </table>
 
 <h3>Spring</h3>
-<p>Spring in Boston is tulip and ranunculus season. These stems keep growing in the vase, so give them room and expect a little movement. Lilac arrives briefly in May — grab it when you see it, and recut the woody stems daily.</p>
+<p>Spring in Boston is tulip and ranunculus season. These stems keep growing in the vase, so give them room and expect a little movement. Lilac arrives briefly in May, grab it when you see it, and recut the woody stems daily.</p>
 
 <h3>Summer</h3>
 <p>Peonies are the headline act, usually early June into July, followed by dahlias and garden roses that carry the season through August. This is the most generous time of year for flowers, and our favorite for weddings.</p>
@@ -144,7 +144,7 @@ function wildflower_journal_articles() {
 
 <h2>FAQ</h2>
 <h3>What flowers are in season in Boston right now?</h3>
-<p>In mid-summer, peonies are finishing and dahlias, garden roses and hydrangea are at their peak. Ask us what arrived this week — it changes constantly.</p>
+<p>In mid-summer, peonies are finishing and dahlias, garden roses and hydrangea are at their peak. Ask us what arrived this week, it changes constantly.</p>
 <h3>Are seasonal flowers cheaper?</h3>
 <p>Usually, yes. In-season stems do not carry the cost and risk of long-distance, off-season shipping, so you get more flower for your budget.</p>
 <h3>Can I still get peonies out of season?</h3>
@@ -157,7 +157,7 @@ HTML
 		'title'    => 'How to Make Cut Flowers Last Longer',
 		'category' => 'Care',
 		'date'     => '2026-07-14 09:00:00',
-		'excerpt'  => "A Boston florist's care guide to keeping cut flowers fresh — the five habits, where to place the vase, a vase-life chart, and how to revive wilting stems.",
+		'excerpt'  => "A Boston florist's care guide to keeping cut flowers fresh, the five habits, where to place the vase, a vase-life chart, and how to revive wilting stems.",
 		'content'  => <<<'HTML'
 <p><strong>To make cut flowers last longer, recut the stems at an angle, put them in clean water with flower food, change that water every two days, and keep the vase out of direct sun, heat and ripening fruit.</strong> Done consistently, these habits routinely add four to seven days of vase life. Here is the florist's version, in the order that actually matters.</p>
 
@@ -171,7 +171,7 @@ HTML
 </ol>
 
 <h2>Where you put the vase matters</h2>
-<p>Flowers last longest somewhere cool. Keep them away from direct sunlight, heating vents, and the top of the fridge — and away from the fruit bowl, because ripening fruit releases ethylene gas that ages blooms quickly.</p>
+<p>Flowers last longest somewhere cool. Keep them away from direct sunlight, heating vents, and the top of the fridge, and away from the fruit bowl, because ripening fruit releases ethylene gas that ages blooms quickly.</p>
 
 <h2>How long different flowers last</h2>
 <table>
@@ -182,18 +182,18 @@ HTML
 <tr><td>Roses</td><td>7–12 days</td><td>Recut daily for the longest life</td></tr>
 <tr><td>Tulips</td><td>5–7 days</td><td>Keep cool; they keep growing</td></tr>
 <tr><td>Peonies</td><td>5–7 days</td><td>Buy in bud for maximum vase time</td></tr>
-<tr><td>Hydrangea</td><td>4–7 days</td><td>Thirsty — mist and re-hydrate if wilting</td></tr>
+<tr><td>Hydrangea</td><td>4–7 days</td><td>Thirsty, mist and re-hydrate if wilting</td></tr>
 </tbody>
 </table>
 
 <h2>Reviving a wilting bouquet</h2>
-<p>If stems flop early, recut them and stand them in deep, cool water for a couple of hours — often they perk right back up. For hydrangea, a full dunk of the flower head in cool water can bring it back, because it drinks through its petals as well as its stem.</p>
+<p>If stems flop early, recut them and stand them in deep, cool water for a couple of hours, often they perk right back up. For hydrangea, a full dunk of the flower head in cool water can bring it back, because it drinks through its petals as well as its stem.</p>
 
 <h2>FAQ</h2>
 <h3>Should I refrigerate my flowers at night?</h3>
 <p>You do not have to, but a cool room helps. Florists store flowers cold because every degree cooler slows aging.</p>
 <h3>Does adding sugar or aspirin really work?</h3>
-<p>In a pinch, yes — sugar feeds, a little acid helps stems drink, and a trace of bleach controls bacteria. Proper flower food does all three, balanced.</p>
+<p>In a pinch, yes, sugar feeds, a little acid helps stems drink, and a trace of bleach controls bacteria. Proper flower food does all three, balanced.</p>
 <h3>Why did my bouquet die in three days?</h3>
 <p>Almost always dirty water or a missed recut. Fresh water, a clean vase and a new angled cut are the fix.</p>
 HTML
@@ -209,7 +209,7 @@ HTML
 <p><strong>Same-day flower delivery in Boston works on a cutoff: order by 1 PM ET and a local florist hand-ties your bouquet that morning and delivers it the same afternoon.</strong> Delivery fees are set by the destination ZIP code, and orders placed after the cutoff arrive the next day. Here is exactly how it works at our studio.</p>
 
 <h2>The 1 PM cutoff</h2>
-<p>Same-day delivery depends on time to design and drive. Order before <strong>1 PM Eastern</strong> and we can arrange and deliver the same day across Boston and most of Greater Boston. After 1 PM, we schedule you for the next available day. During peak dates (Valentine's Day, Mother's Day), order earlier — those days book up.</p>
+<p>Same-day delivery depends on time to design and drive. Order before <strong>1 PM Eastern</strong> and we can arrange and deliver the same day across Boston and most of Greater Boston. After 1 PM, we schedule you for the next available day. During peak dates (Valentine's Day, Mother's Day), order earlier, those days book up.</p>
 
 <h2>How delivery zones and fees work</h2>
 <p>We calculate delivery from the destination ZIP code, mapped by distance from the studio in Brighton. The exact fee shows at checkout, so there are no surprises.</p>
@@ -235,7 +235,7 @@ HTML
 <h3>How much is same-day flower delivery?</h3>
 <p>From $19 in Boston &amp; Nearby and from $25 in Greater Boston, set by ZIP and shown at checkout. Orders of $85+ ship for a flat $15.</p>
 <h3>Can you deliver to a Boston hospital the same day?</h3>
-<p>Yes — order by 1 PM and add the patient's floor and room. We keep hospital arrangements compact and unscented.</p>
+<p>Yes, order by 1 PM and add the patient's floor and room. We keep hospital arrangements compact and unscented.</p>
 HTML
 	);
 
@@ -273,7 +273,7 @@ HTML
 <ul>
 <li>What is in season and stunning on my date?</li>
 <li>Have you worked at my venue before?</li>
-<li>What is included — delivery, setup, teardown, rentals?</li>
+<li>What is included, delivery, setup, teardown, rentals?</li>
 <li>Can we repurpose ceremony flowers at the reception?</li>
 </ul>
 
@@ -294,7 +294,7 @@ HTML
 		'date'     => '2026-06-23 09:00:00',
 		'excerpt'  => 'A gentle guide to sympathy and funeral flowers: where to send them, which blooms are appropriate, color and scent, and what to write on the card.',
 		'content'  => <<<'HTML'
-<p><strong>For sympathy, send flowers to the family's home; for a funeral or wake, send to the service. White and soft-toned blooms — lilies, roses, chrysanthemums and hydrangea — are always appropriate, and a short handwritten note matters more than the size of the arrangement.</strong> Here is how to get it right with care.</p>
+<p><strong>For sympathy, send flowers to the family's home; for a funeral or wake, send to the service. White and soft-toned blooms, lilies, roses, chrysanthemums and hydrangea, are always appropriate, and a short handwritten note matters more than the size of the arrangement.</strong> Here is how to get it right with care.</p>
 
 <h2>Where to send, and when</h2>
 <ul>
@@ -315,10 +315,10 @@ HTML
 </table>
 
 <h2>Color and scent</h2>
-<p>Soft, restrained palettes — white, cream, blush, pale green — feel most appropriate. If the arrangement is for a home or a small indoor service, we keep the scent gentle so it is comforting rather than overwhelming. When we know something about the person, we will happily work in a color or flower they loved.</p>
+<p>Soft, restrained palettes, white, cream, blush, pale green, feel most appropriate. If the arrangement is for a home or a small indoor service, we keep the scent gentle so it is comforting rather than overwhelming. When we know something about the person, we will happily work in a color or flower they loved.</p>
 
 <h2>What to write on the card</h2>
-<p>Keep it simple and sincere. "With deepest sympathy," "Thinking of you and your family," or "Holding you close" are always enough. You do not need the perfect words — presence is the point.</p>
+<p>Keep it simple and sincere. "With deepest sympathy," "Thinking of you and your family," or "Holding you close" are always enough. You do not need the perfect words, presence is the point.</p>
 
 <h2>FAQ</h2>
 <h3>Is it better to send flowers to the home or the funeral?</h3>
@@ -335,15 +335,15 @@ HTML
 		'title'    => 'Are Flower Subscriptions Worth It?',
 		'category' => 'Guides',
 		'date'     => '2026-06-16 09:00:00',
-		'excerpt'  => 'An honest look at whether flower subscriptions are worth it — who they suit, a plan comparison at $70/$95/$130, the value math, and how to get the most from one.',
+		'excerpt'  => 'An honest look at whether flower subscriptions are worth it, who they suit, a plan comparison at $70/$95/$130, the value math, and how to get the most from one.',
 		'content'  => <<<'HTML'
-<p><strong>A flower subscription is worth it if you want fresh flowers at home regularly and value convenience and per-stem savings over choosing each bouquet yourself.</strong> Because subscriptions use designer's-choice seasonal stems, they usually cost less per flower than one-off orders — but they are less predictable. Here is an honest look.</p>
+<p><strong>A flower subscription is worth it if you want fresh flowers at home regularly and value convenience and per-stem savings over choosing each bouquet yourself.</strong> Because subscriptions use designer's-choice seasonal stems, they usually cost less per flower than one-off orders, but they are less predictable. Here is an honest look.</p>
 
 <h2>Who a subscription suits</h2>
 <ul>
 <li><strong>People who love fresh flowers at home</strong> and do not want to reorder each week.</li>
 <li><strong>Gift-givers</strong> who want to send flowers on repeat without the reminders.</li>
-<li><strong>Businesses</strong> — a lobby or reception that always looks cared for.</li>
+<li><strong>Businesses</strong>, a lobby or reception that always looks cared for.</li>
 </ul>
 <p>If you need a specific bouquet for a specific event, a one-off custom order is the better fit.</p>
 
@@ -359,18 +359,18 @@ HTML
 <p>All plans include free delivery, and you can pause, skip or cancel anytime.</p>
 
 <h2>The value math</h2>
-<p>Because a subscription is designer's choice from the freshest stems that week, we buy efficiently and pass that on — so you generally get more flower per dollar than a one-off. The trade is control: you receive our best of the week, not a fixed recipe. In our experience, that is exactly why regulars love it — it is always seasonal and never the same twice.</p>
+<p>Because a subscription is designer's choice from the freshest stems that week, we buy efficiently and pass that on, so you generally get more flower per dollar than a one-off. The trade is control: you receive our best of the week, not a fixed recipe. In our experience, that is exactly why regulars love it, it is always seasonal and never the same twice.</p>
 
 <h2>Making it worth it</h2>
 <ul>
-<li>Pick a cadence you will actually enjoy — weekly is a lot of flowers.</li>
+<li>Pick a cadence you will actually enjoy, weekly is a lot of flowers.</li>
 <li>Tell us any no-go flowers or allergies once, and we work around them every time.</li>
 <li>Use skip/pause when you travel so nothing is wasted.</li>
 </ul>
 
 <h2>FAQ</h2>
 <h3>Can I cancel a flower subscription anytime?</h3>
-<p>Yes — pause, skip or cancel from your account, with no fees.</p>
+<p>Yes, pause, skip or cancel from your account, with no fees.</p>
 <h3>Do I get to choose the flowers?</h3>
 <p>It is designer's choice from the freshest seasonal stems, which is what keeps the value and quality high. Tell us any flowers to avoid and we will.</p>
 <h3>Is a subscription cheaper than buying bouquets?</h3>
@@ -385,7 +385,7 @@ HTML
 		'date'     => '2026-06-09 09:00:00',
 		'excerpt'  => 'The best get-well flowers to send in Boston: bright, low-scent, compact picks, what hospitals allow, delivery tips for Longwood, and what to write.',
 		'content'  => <<<'HTML'
-<p><strong>The best get-well flowers are bright, cheerful and low-scent, in a compact arrangement that fits a bedside or side table — think sunflowers, gerbera daisies, alstroemeria and roses.</strong> For hospitals, keep it small and unscented, and always include the patient's floor and room. Here is how to send get-well flowers that genuinely lift someone's day.</p>
+<p><strong>The best get-well flowers are bright, cheerful and low-scent, in a compact arrangement that fits a bedside or side table, think sunflowers, gerbera daisies, alstroemeria and roses.</strong> For hospitals, keep it small and unscented, and always include the patient's floor and room. Here is how to send get-well flowers that genuinely lift someone's day.</p>
 
 <h2>What makes a great get-well arrangement</h2>
 <ul>
@@ -408,7 +408,7 @@ HTML
 </table>
 
 <h2>Sending flowers to a Boston hospital</h2>
-<p>We deliver to Boston's hospitals — including the Longwood Medical Area — every day. A few tips from experience: confirm the patient is still admitted, add the floor and room number, and skip lilies and heavily scented stems, which some units limit. If a delivery cannot reach a room, staff usually hold it at the nurses' station, so a phone number for the recipient helps.</p>
+<p>We deliver to Boston's hospitals, including the Longwood Medical Area, every day. A few tips from experience: confirm the patient is still admitted, add the floor and room number, and skip lilies and heavily scented stems, which some units limit. If a delivery cannot reach a room, staff usually hold it at the nurses' station, so a phone number for the recipient helps.</p>
 
 <h2>What to write</h2>
 <p>Keep it light and warm: "Get well soon," "Thinking of you," or a shared inside joke. Humor and normalcy are a gift when someone is stuck in a hospital bed.</p>
@@ -419,7 +419,7 @@ HTML
 <h3>What flowers should you not send to a hospital?</h3>
 <p>Avoid strongly scented flowers like lilies and stargazers, and very large arrangements. Bright, compact and low-scent is best.</p>
 <h3>Are potted plants a good get-well gift?</h3>
-<p>They can be, and they last — but check the patient can care for it. For a hospital stay, a tidy fresh arrangement is usually easier.</p>
+<p>They can be, and they last, but check the patient can care for it. For a hospital stay, a tidy fresh arrangement is usually easier.</p>
 HTML
 	);
 
@@ -430,7 +430,7 @@ HTML
 		'date'     => '2026-07-28 09:00:00',
 		'excerpt'  => 'What flowers really cost in Boston in 2026: honest price ranges for bouquets, arrangements, weddings and subscriptions, what drives the price, and how to get more for your budget.',
 		'content'  => <<<'HTML'
-<p><strong>In Boston, a hand-tied bouquet delivered typically costs $65 to $150, with most everyday arrangements landing between $85 and $120. Weekly flower subscriptions start around $70, and wedding or event work is quoted per project.</strong> Prices move with the season and the flowers you choose — here is a transparent, florist's breakdown of what you pay for and how to get the most for your money.</p>
+<p><strong>In Boston, a hand-tied bouquet delivered typically costs $65 to $150, with most everyday arrangements landing between $85 and $120. Weekly flower subscriptions start around $70, and wedding or event work is quoted per project.</strong> Prices move with the season and the flowers you choose, here is a transparent, florist's breakdown of what you pay for and how to get the most for your money.</p>
 
 <h2>Typical flower prices in Boston</h2>
 <p>These are real, current ranges from our studio and comparable Boston florists in 2026. They include design and local hand-delivery, not national wire-service markups.</p>
@@ -460,7 +460,7 @@ HTML
 </table>
 
 <h2>Delivery fees in and around Boston</h2>
-<p>We price delivery by destination rather than baking a flat national fee into the flowers. Central neighborhoods — Back Bay, Beacon Hill, the South End, Cambridge and Somerville — sit at the lower end, while outer suburbs cost a little more for the courier's time. You will always see the exact fee at checkout before you pay.</p>
+<p>We price delivery by destination rather than baking a flat national fee into the flowers. Central neighborhoods, Back Bay, Beacon Hill, the South End, Cambridge and Somerville, sit at the lower end, while outer suburbs cost a little more for the courier's time. You will always see the exact fee at checkout before you pay.</p>
 
 <h2>How to get more flowers for your budget</h2>
 <ul>
@@ -474,7 +474,7 @@ HTML
 <h3>How much should I spend on a nice bouquet in Boston?</h3>
 <p>For a gift that looks generous, $85 to $120 hits the sweet spot at most Boston florists. Below about $65, delivered and designed, the arrangement is usually quite small.</p>
 <h3>Why are florist flowers more expensive than the supermarket?</h3>
-<p>You are paying for fresher, longer-lasting stems, a florist's design, and local hand-delivery — not a bucket of grab-and-go flowers cut weeks ago. The vase life difference alone is usually several days.</p>
+<p>You are paying for fresher, longer-lasting stems, a florist's design, and local hand-delivery, not a bucket of grab-and-go flowers cut weeks ago. The vase life difference alone is usually several days.</p>
 <h3>Is there a delivery fee on top of the flowers?</h3>
 <p>Yes, a local delivery fee is calculated by ZIP code and shown at checkout. Same-day orders in Greater Boston need to be placed by 1 PM.</p>
 <h3>Are flower subscriptions cheaper than one-off bouquets?</h3>
@@ -487,9 +487,9 @@ HTML
 		'title'    => 'Anniversary Flowers by Year: The Complete Guide',
 		'category' => 'Occasions',
 		'date'     => '2026-07-24 09:00:00',
-		'excerpt'  => 'A complete guide to anniversary flowers by year — the traditional bloom for every milestone from the 1st to the 50th, what each one means, and how to choose.',
+		'excerpt'  => 'A complete guide to anniversary flowers by year, the traditional bloom for every milestone from the 1st to the 50th, what each one means, and how to choose.',
 		'content'  => <<<'HTML'
-<p><strong>Each wedding anniversary has a traditional flower: carnations for the 1st, daisies for the 5th, roses for the 15th, and yellow roses and violets for the 50th.</strong> Choosing the year's bloom is a thoughtful, meaningful way to mark a milestone — here is the full year-by-year guide, plus how we help Boston couples make it personal.</p>
+<p><strong>Each wedding anniversary has a traditional flower: carnations for the 1st, daisies for the 5th, roses for the 15th, and yellow roses and violets for the 50th.</strong> Choosing the year's bloom is a thoughtful, meaningful way to mark a milestone, here is the full year-by-year guide, plus how we help Boston couples make it personal.</p>
 
 <h2>Anniversary flowers year by year</h2>
 <table>
@@ -509,13 +509,13 @@ HTML
 </table>
 
 <h2>How to make it personal</h2>
-<p>The tradition is a lovely starting point, not a rule. In the studio we often blend the year's flower with the couple's own story — the palette from their wedding, a stem that grew in a grandmother's garden, or simply their favorite color. The tradition gives the gift meaning; the personal touch makes it theirs.</p>
+<p>The tradition is a lovely starting point, not a rule. In the studio we often blend the year's flower with the couple's own story, the palette from their wedding, a stem that grew in a grandmother's garden, or simply their favorite color. The tradition gives the gift meaning; the personal touch makes it theirs.</p>
 
 <h3>By color and milestone</h3>
 <ul>
-<li><strong>Early years:</strong> soft and romantic — blush roses, carnations, sweet pea.</li>
-<li><strong>Middle years:</strong> confident and full — garden roses, hydrangea, lisianthus.</li>
-<li><strong>Golden years:</strong> rich and celebratory — yellow and gold roses, iris, a touch of violet.</li>
+<li><strong>Early years:</strong> soft and romantic, blush roses, carnations, sweet pea.</li>
+<li><strong>Middle years:</strong> confident and full, garden roses, hydrangea, lisianthus.</li>
+<li><strong>Golden years:</strong> rich and celebratory, yellow and gold roses, iris, a touch of violet.</li>
 </ul>
 
 <h2>Roses by color for anniversaries</h2>
@@ -525,11 +525,11 @@ HTML
 <h3>What is the traditional flower for a 1st anniversary?</h3>
 <p>The carnation, which symbolizes young and devoted love. It is hardy and long-lasting, which makes it a fitting first-year bloom.</p>
 <h3>What flower represents 25 years of marriage?</h3>
-<p>The iris, a symbol of faith and cherished years — a natural fit for a silver anniversary. Many couples pair it with white or silver-toned accents.</p>
+<p>The iris, a symbol of faith and cherished years, a natural fit for a silver anniversary. Many couples pair it with white or silver-toned accents.</p>
 <h3>Do I have to use the traditional flower?</h3>
 <p>Not at all. It is a meaningful anchor, but we regularly design around a couple's wedding palette or favorite flowers instead. Tell us the story and we will build around it.</p>
 <h3>Can you deliver an anniversary arrangement same-day in Boston?</h3>
-<p>Yes — order by 1 PM and we deliver same-day across Greater Boston, gift message included.</p>
+<p>Yes, order by 1 PM and we deliver same-day across Greater Boston, gift message included.</p>
 HTML
 	);
 
@@ -538,9 +538,9 @@ HTML
 		'title'    => 'What Your Flower Colors Really Mean',
 		'category' => 'Guides',
 		'date'     => '2026-07-11 09:00:00',
-		'excerpt'  => 'A florist\'s guide to what flower colors mean — red, pink, white, yellow, orange, purple and blue — and how to pick a palette that says exactly what you intend.',
+		'excerpt'  => 'A florist\'s guide to what flower colors mean, red, pink, white, yellow, orange, purple and blue, and how to pick a palette that says exactly what you intend.',
 		'content'  => <<<'HTML'
-<p><strong>Flower color carries as much meaning as the flower itself: red says love and passion, pink says gratitude and admiration, white says purity and sympathy, yellow says friendship and joy, orange says energy, and purple says admiration and grace.</strong> Getting the color right means your flowers say exactly what you intend — here is how we think about palette in the studio.</p>
+<p><strong>Flower color carries as much meaning as the flower itself: red says love and passion, pink says gratitude and admiration, white says purity and sympathy, yellow says friendship and joy, orange says energy, and purple says admiration and grace.</strong> Getting the color right means your flowers say exactly what you intend, here is how we think about palette in the studio.</p>
 
 <h2>Flower color meanings at a glance</h2>
 <table>
@@ -559,7 +559,7 @@ HTML
 <h2>How to choose a palette</h2>
 <p>You rarely need a single color. The most beautiful arrangements usually pair a lead color with one or two supporting tones. A few combinations we return to again and again:</p>
 <ul>
-<li><strong>Blush and ivory:</strong> soft, romantic and hard to get wrong — a studio favorite for weddings and thank-yous.</li>
+<li><strong>Blush and ivory:</strong> soft, romantic and hard to get wrong, a studio favorite for weddings and thank-yous.</li>
 <li><strong>White and green:</strong> calm, modern and endlessly elegant; our default for sympathy.</li>
 <li><strong>Coral and peach:</strong> warm and joyful, perfect for birthdays and congratulations.</li>
 <li><strong>Jewel tones:</strong> plum, burgundy and deep gold for a rich, dramatic look, especially in fall and winter.</li>
@@ -572,11 +572,11 @@ HTML
 <h3>What color flowers mean love?</h3>
 <p>Red is the classic color of romantic love and passion. Deep pink also signals love mixed with gratitude and admiration, which many people prefer for a softer message.</p>
 <h3>What flower color is best for sympathy?</h3>
-<p>White and soft green are the most fitting — they read as peaceful and respectful. Gentle pastels are also appropriate; bright, high-energy colors are usually best avoided.</p>
+<p>White and soft green are the most fitting, they read as peaceful and respectful. Gentle pastels are also appropriate; bright, high-energy colors are usually best avoided.</p>
 <h3>What do yellow flowers symbolize?</h3>
 <p>Friendship, joy and optimism. That makes them ideal for get-well wishes, congratulations and any time you want to lift someone's spirits.</p>
 <h3>Can I mix colors that mean different things?</h3>
-<p>Absolutely — most arrangements do. A skilled florist blends colors so the overall feeling lands right, rather than treating each stem as a separate message.</p>
+<p>Absolutely, most arrangements do. A skilled florist blends colors so the overall feeling lands right, rather than treating each stem as a separate message.</p>
 HTML
 	);
 
@@ -585,9 +585,9 @@ HTML
 		'title'    => 'Birthday Flowers: How to Choose the Perfect Bouquet',
 		'category' => 'Occasions',
 		'date'     => '2026-07-03 09:00:00',
-		'excerpt'  => 'How to choose birthday flowers that feel personal — birth-month blooms, picking by personality and color, and same-day delivery tips for Boston.',
+		'excerpt'  => 'How to choose birthday flowers that feel personal, birth-month blooms, picking by personality and color, and same-day delivery tips for Boston.',
 		'content'  => <<<'HTML'
-<p><strong>The best birthday flowers match the person: bright and bold for someone outgoing, soft and pretty for a romantic, or their birth-month bloom for a personal touch.</strong> A birthday bouquet should feel like it was chosen for them, not pulled off a shelf — here is how we help you get it right.</p>
+<p><strong>The best birthday flowers match the person: bright and bold for someone outgoing, soft and pretty for a romantic, or their birth-month bloom for a personal touch.</strong> A birthday bouquet should feel like it was chosen for them, not pulled off a shelf, here is how we help you get it right.</p>
 
 <h2>Birth-month flowers</h2>
 <p>Like birthstones, every month has its own flower. Working one into the design is a small detail that makes a birthday gift feel considered.</p>
@@ -611,7 +611,7 @@ HTML
 
 <h2>Choose by personality</h2>
 <ul>
-<li><strong>The bold one:</strong> vivid color and big blooms — sunflowers, dahlias, hot-pink garden roses.</li>
+<li><strong>The bold one:</strong> vivid color and big blooms, sunflowers, dahlias, hot-pink garden roses.</li>
 <li><strong>The romantic:</strong> blush and ivory, soft textures, plenty of roses and ranunculus.</li>
 <li><strong>The minimalist:</strong> a single variety in one color, arranged simply and cleanly.</li>
 <li><strong>The plant lover:</strong> a garden-style mix full of texture, or a lasting potted bloom.</li>
@@ -624,7 +624,7 @@ HTML
 <h3>What are the most popular birthday flowers?</h3>
 <p>Roses, sunflowers, gerbera daisies and lilies are perennial favorites because they are cheerful, recognizable and long-lasting. A mixed seasonal bouquet is the safest crowd-pleaser.</p>
 <h3>What flowers should I send for a milestone birthday?</h3>
-<p>For a big birthday, go fuller and a little more luxe — garden roses, peonies in season, or a statement arrangement. Their birth-month flower is a lovely detail to include.</p>
+<p>For a big birthday, go fuller and a little more luxe, garden roses, peonies in season, or a statement arrangement. Their birth-month flower is a lovely detail to include.</p>
 <h3>Can I get birthday flowers delivered same-day in Boston?</h3>
 <p>Yes. Order by 1 PM and we deliver same-day across Greater Boston, with your gift message included.</p>
 <h3>What if I don't know their favorite flower?</h3>
@@ -645,7 +645,7 @@ HTML
 <ul>
 <li><strong>First impressions.</strong> A fresh arrangement at reception signals care before anyone says a word.</li>
 <li><strong>A better space to work in.</strong> Greenery and blooms lift a room and the people in it.</li>
-<li><strong>Effortless upkeep.</strong> On a subscription, we handle the design, delivery and rotation — nothing for staff to manage.</li>
+<li><strong>Effortless upkeep.</strong> On a subscription, we handle the design, delivery and rotation, nothing for staff to manage.</li>
 </ul>
 
 <h2>How weekly office delivery works</h2>
@@ -663,17 +663,17 @@ HTML
 <p>Standing office arrangements typically start around $70 to $130 per delivery depending on size, with larger lobby installations quoted per project. Because it is a recurring order designed around seasonal stems, it is more cost-effective than ordering one-off arrangements each week.</p>
 
 <h2>Choosing flowers that last the week</h2>
-<p>Longevity is everything in a workplace, so we lean on hardy, long-lasting stems — chrysanthemums, alstroemeria, carnations and hardy greenery — arranged so they still look fresh on Friday. We also match the palette to your brand or interior, keeping it calm and professional rather than loud.</p>
+<p>Longevity is everything in a workplace, so we lean on hardy, long-lasting stems, chrysanthemums, alstroemeria, carnations and hardy greenery, arranged so they still look fresh on Friday. We also match the palette to your brand or interior, keeping it calm and professional rather than loud.</p>
 
 <h2>FAQ</h2>
 <h3>Do you deliver flowers to offices in Boston?</h3>
-<p>Yes — we deliver to offices, lobbies and coworking spaces across Greater Boston, on both one-off and recurring schedules.</p>
+<p>Yes, we deliver to offices, lobbies and coworking spaces across Greater Boston, on both one-off and recurring schedules.</p>
 <h3>How much do weekly office flowers cost?</h3>
 <p>Standing arrangements generally start around $70 to $130 per delivery by size, with larger installations quoted individually. A recurring plan is more cost-effective than weekly one-off orders.</p>
 <h3>Can we set up a recurring corporate account?</h3>
 <p>Yes. We can bill on a regular schedule and keep a consistent style and delivery day so it runs quietly in the background for your team.</p>
 <h3>Which flowers last longest in an office?</h3>
-<p>Chrysanthemums, alstroemeria, carnations and sturdy greenery hold up best in a warm, dry office — often a full week or more with fresh water.</p>
+<p>Chrysanthemums, alstroemeria, carnations and sturdy greenery hold up best in a warm, dry office, often a full week or more with fresh water.</p>
 HTML
 	);
 

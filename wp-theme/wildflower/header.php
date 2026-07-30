@@ -28,7 +28,7 @@ $brand = wildflower_brand();
 		<?php
 		/* translators: 1: city, 2: order cutoff time. */
 		printf(
-			esc_html__( 'Same-day delivery across %1$s — order by %2$s', 'wildflower' ),
+			esc_html__( 'Same-day delivery across %1$s, order by %2$s', 'wildflower' ),
 			esc_html( $brand['city'] ),
 			esc_html( $brand['cutoff'] )
 		);

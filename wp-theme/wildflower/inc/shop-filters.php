@@ -3,12 +3,12 @@
  * Shop catalog filters (off-canvas drawer) for the WooCommerce archive.
  *
  * How it maps to WooCommerce (the "right" way):
- *  • Flower Type / Palette / Occasion / Size — global product ATTRIBUTES
+ *  • Flower Type / Palette / Occasion / Size, global product ATTRIBUTES
  *    (pa_* taxonomies). Rendered dynamically from registered attributes and
  *    filtered with a tax_query.
- *  • New Arrivals / Best Sellers — NOT attributes: query modifiers
+ *  • New Arrivals / Best Sellers, NOT attributes: query modifiers
  *    (orderby date / total_sales).
- *  • Same-day available — a special flag (a 'same-day' term on a
+ *  • Same-day available, a special flag (a 'same-day' term on a
  *    pa_availability attribute, or a 'same-day' product category).
  *
  * All inputs are GET (shareable, SEO-friendly URLs) and sanitized.
@@ -31,7 +31,7 @@ function wildflower_filter_attributes() {
 	if ( function_exists( 'wc_get_attribute_taxonomies' ) ) {
 		foreach ( wc_get_attribute_taxonomies() as $tax ) {
 			$slug = wc_attribute_taxonomy_name( $tax->attribute_name ); // e.g. pa_flower-type
-			// Hide the availability attribute — it's surfaced as its own toggle.
+			// Hide the availability attribute, it's surfaced as its own toggle.
 			if ( 'pa_availability' === $slug ) {
 				continue;
 			}
@@ -100,7 +100,7 @@ function wildflower_render_shop_filters() {
 				<button type="button" class="wf-filters__close" data-filters-close><?php esc_html_e( 'Close', 'wildflower' ); ?></button>
 			</div>
 			<div class="wf-filters__scroll">
-				<p class="wf-filters__lede"><?php esc_html_e( 'Narrow it down — by type, palette, occasion and more.', 'wildflower' ); ?></p>
+				<p class="wf-filters__lede"><?php esc_html_e( 'Narrow it down, by type, palette, occasion and more.', 'wildflower' ); ?></p>
 
 				<?php
 				wildflower_filter_group(
