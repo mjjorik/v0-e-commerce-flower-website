@@ -42,7 +42,18 @@ $brand = wildflower_brand();
 		<a class="site-header__brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
 			<?php
 			if ( has_custom_logo() ) {
-				the_custom_logo();
+				$custom_logo_id = (int) get_theme_mod( 'custom_logo' );
+				echo wp_kses_post(
+					wp_get_attachment_image(
+						$custom_logo_id,
+						'full',
+						false,
+						array(
+							'class' => 'custom-logo',
+							'alt'   => get_bloginfo( 'name' ),
+						)
+					)
+				);
 			} else {
 				echo esc_html( $brand['name'] );
 			}
