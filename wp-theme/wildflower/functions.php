@@ -574,12 +574,12 @@ function wildflower_read_time( $post_id = null ) {
 function wildflower_authors() {
 	return array(
 		'stan' => array(
-			'name' => 'Stan Whitmore',
+			'name' => 'Stan',
 			'role' => __( 'Founder & master florist', 'wildflower' ),
 			'bio'  => __( 'Founder and master florist at Wildflower, hand-tying farm-fresh flowers and delivering same-day across Greater Boston since 2015.', 'wildflower' ),
 		),
 		'emma' => array(
-			'name' => 'Emma Caldwell',
+			'name' => 'Emma',
 			'role' => __( 'Head florist & art director', 'wildflower' ),
 			'bio'  => __( 'Head florist and art director at Wildflower, designing seasonal bouquets and same-day arrangements across Greater Boston.', 'wildflower' ),
 		),
