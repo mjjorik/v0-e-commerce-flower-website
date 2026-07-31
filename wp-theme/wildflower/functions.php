@@ -79,6 +79,78 @@ function wildflower_assets() {
 add_action( 'wp_enqueue_scripts', 'wildflower_assets' );
 
 /**
+ * Performance: trim render-blocking third-party CSS/JS that WooCommerce and the
+ * block editor enqueue on every page.
+ *
+ * - WooCommerce block styles (wc-blocks-*) are never used by our PHP templates,
+ *   so they load only where a block cart/checkout might render.
+ * - On pages with no shop content at all, the core shop CSS and the cart
+ *   AJAX (fragments) script are dropped entirely.
+ * Runs late so it overrides the plugin's own enqueues.
+ */
+function wildflower_trim_assets() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$is_cart_checkout = ( function_exists( 'is_cart' ) && is_cart() ) || ( function_exists( 'is_checkout' ) && is_checkout() );
+
+	// Gutenberg / WooCommerce block CSS — our storefront is classic-template based.
+	if ( ! $is_cart_checkout ) {
+		foreach ( array( 'wc-blocks-style', 'wc-blocks-vendors-style', 'wc-blocks-packages-style', 'wp-block-library', 'wp-block-library-theme', 'global-styles', 'classic-theme-styles' ) as $handle ) {
+			wp_dequeue_style( $handle );
+		}
+	}
+
+	// Pages with genuinely no WooCommerce content: drop the shop CSS + cart AJAX.
+	$has_shop = $is_cart_checkout
+		|| ( function_exists( 'is_woocommerce' ) && is_woocommerce() )
+		|| ( function_exists( 'is_account_page' ) && is_account_page() )
+		|| is_front_page();
+
+	if ( ! $has_shop ) {
+		foreach ( array( 'woocommerce-general', 'woocommerce-layout', 'woocommerce-smallscreen', 'woocommerce-inline' ) as $handle ) {
+			wp_dequeue_style( $handle );
+		}
+		wp_dequeue_script( 'wc-cart-fragments' );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'wildflower_trim_assets', 99 );
+
+/**
+ * Performance: load the Google Fonts stylesheet without blocking first paint
+ * (print-media swap) and warm the font-host connections. display=swap keeps text
+ * visible in the fallback face until the webfont arrives.
+ *
+ * @param string $tag    The full <link> tag.
+ * @param string $handle Stylesheet handle.
+ * @return string
+ */
+function wildflower_async_font_css( $tag, $handle ) {
+	if ( 'wildflower-fonts' !== $handle ) {
+		return $tag;
+	}
+	$async = str_replace( "media='all'", "media='print' onload=\"this.media='all'\"", $tag );
+	if ( $async === $tag ) {
+		$async = str_replace( '>', " media=\"print\" onload=\"this.media='all'\">", $tag );
+	}
+	return $async . '<noscript>' . $tag . '</noscript>';
+}
+add_filter( 'style_loader_tag', 'wildflower_async_font_css', 10, 2 );
+
+/**
+ * Preconnect to the Google Fonts hosts so the async font CSS resolves fast.
+ */
+function wildflower_font_preconnect( $urls, $relation_type ) {
+	if ( 'preconnect' === $relation_type ) {
+		$urls[] = array( 'href' => 'https://fonts.googleapis.com' );
+		$urls[] = array( 'href' => 'https://fonts.gstatic.com', 'crossorigin' => 'anonymous' );
+	}
+	return $urls;
+}
+add_filter( 'wp_resource_hints', 'wildflower_font_preconnect', 10, 2 );
+
+/**
  * Theme-controlled primary navigation (used by both the desktop bar and the
  * mobile burger). Order is fixed here so it's predictable everywhere:
  * Home, Shop, Subscriptions, Gallery, Journal, Occasions, Delivery, then

@@ -217,7 +217,7 @@ if ( '' === $markup ) {
 						<span class="occasions__thumb">
 							<?php
 							if ( $occasion_media_id ) {
-								echo wp_get_attachment_image( $occasion_media_id, 'medium', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								echo wp_get_attachment_image( $occasion_media_id, 'medium', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async', 'sizes' => '(max-width: 700px) 45vw, 240px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							} else {
 								echo '<span class="media-fallback media-fallback--' . esc_attr( ( $oi % 5 ) + 1 ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
 							}
@@ -289,7 +289,7 @@ if ( '' === $markup ) {
 				?>
 				<div class="addon reveal" data-delay="<?php echo esc_attr( $ai * 90 ); ?>">
 					<?php if ( $addon_media_id ) : ?>
-						<?php echo wp_get_attachment_image( $addon_media_id, 'medium', false, array( 'class' => 'addon__image', 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						<?php echo wp_get_attachment_image( $addon_media_id, 'medium', false, array( 'class' => 'addon__image', 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async', 'sizes' => '(max-width: 700px) 22vw, 7rem' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<?php endif; ?>
 					<span class="addon__name"><?php echo esc_html( $a[1] ); ?></span>
 					<span class="addon__price"><?php echo esc_html( $a[2] ); ?></span>
