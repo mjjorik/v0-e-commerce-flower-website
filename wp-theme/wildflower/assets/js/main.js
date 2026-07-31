@@ -61,7 +61,25 @@
       if (video === heroVideo && video.dataset.videoReady !== 'true') return;
 
       loadVideo(video);
-      video.play().catch(function () {});
+      // iOS/Android only allow programmatic playback when the video is actually
+      // muted (property, not just the attribute) and inline.
+      video.muted = true;
+      video.setAttribute('playsinline', '');
+      var attempt = video.play();
+      if (attempt && attempt.catch) {
+        attempt.catch(function () {
+          // A play() right after load() is often rejected on mobile because the
+          // media isn't ready yet. Retry once it can play.
+          var retry = function () {
+            video.removeEventListener('canplay', retry);
+            if (!document.hidden && isVisible(video)) {
+              video.muted = true;
+              video.play().catch(function () {});
+            }
+          };
+          video.addEventListener('canplay', retry);
+        });
+      }
     }
 
     function activateHero() {

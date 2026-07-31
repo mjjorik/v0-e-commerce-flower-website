@@ -367,7 +367,7 @@ function wildflower_hero_visual() {
 		$poster = $poster_id ? wp_get_attachment_image_url( $poster_id, 'large' ) : '';
 		echo '<span class="media">';
 		printf(
-			'<video class="hero__video" data-home-video="hero" muted loop playsinline preload="none"%1$s><source data-src="%2$s" type="%3$s"></video>',
+			'<video class="hero__video" data-home-video="hero" muted loop playsinline autoplay preload="none"%1$s><source data-src="%2$s" type="%3$s"></video>',
 			$poster ? ' poster="' . esc_url( $poster ) . '"' : '',
 			esc_url( $src ),
 			esc_attr( wildflower_video_mime( $src ) )
@@ -434,7 +434,7 @@ function wildflower_story_visual() {
 	if ( $src ) {
 		$poster = $poster_id ? wp_get_attachment_image_url( $poster_id, 'full' ) : '';
 		printf(
-			'<video class="vstory__video" data-home-video="story" muted loop playsinline preload="none"%1$s><source data-src="%2$s" type="%3$s"></video>',
+			'<video class="vstory__video" data-home-video="story" muted loop playsinline autoplay preload="none"%1$s><source data-src="%2$s" type="%3$s"></video>',
 			$poster ? ' poster="' . esc_url( $poster ) . '"' : '',
 			esc_url( $src ),
 			esc_attr( wildflower_video_mime( $src ) )
