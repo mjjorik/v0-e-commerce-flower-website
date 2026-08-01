@@ -28,6 +28,18 @@ jobs:
             grep -n -iE 'Bestsellers|Shop by occasion' "$f" 2>/dev/null | head -4 | sed 's/^/      /'
             echo "    style.css ver: $(grep -oE 'style\.css\?ver=[0-9]+' "$f" 2>/dev/null | head -1)"
           done
+          echo "=================== HERO / STORY VIDEO MARKUP ==================="
+          for f in home_normal.html home_query.html; do
+            echo "--- $f ---"
+            echo "  <video ...> tags:"
+            grep -oE '<video[^>]*>' "$f" 2>/dev/null | sed 's/^/    /'
+            echo "  video src / source URLs:"
+            grep -oE '(hero__video|vstory__video)[^>]*src="[^"]+"' "$f" 2>/dev/null | grep -oE 'src="[^"]+"' | sed 's/^/    /'
+            grep -oE '<source[^>]+src="[^"]+"[^>]*>' "$f" 2>/dev/null | sed 's/^/    /'
+            echo "  any .mov / .mp4 / .webm references:"
+            grep -oE 'https?://[^" ]+\.(mov|mp4|webm|m4v|ogv)' "$f" 2>/dev/null | sort -u | sed 's/^/    /'
+            echo "  data-home-video present: $(grep -c 'data-home-video' "$f" 2>/dev/null)"
+          done
           echo "=================== RESPONSE HEADERS (normal) ==================="
           curl -sI -A "$UA" --max-time 30 "https://boston-wildflower.com/" | grep -iE 'HTTP/|x-litespeed|x-lsadc|x-cache|x-qc|cache-control|cf-cache|age:|server:|x-turbo|platform'
           echo "=================== RESPONSE HEADERS (query-string) ==================="

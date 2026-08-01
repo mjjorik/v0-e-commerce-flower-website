@@ -439,10 +439,12 @@ function wildflower_hero_visual() {
 		$poster = $poster_id ? wp_get_attachment_image_url( $poster_id, 'large' ) : '';
 		echo '<span class="media">';
 		printf(
-			'<video class="hero__video" data-home-video="hero" muted loop playsinline autoplay preload="metadata"%1$s><source src="%2$s" type="%3$s"></video>',
+			// src on the element (no <source type>) so the browser sniffs the real
+			// codec — a .mov declared as video/quicktime is silently skipped by
+			// Chrome/Firefox, which is why the video failed across browsers.
+			'<video class="hero__video" data-home-video="hero" muted loop playsinline autoplay preload="metadata" src="%2$s"%1$s></video>',
 			$poster ? ' poster="' . esc_url( $poster ) . '"' : '',
-			esc_url( $src ),
-			esc_attr( wildflower_video_mime( $src ) )
+			esc_url( $src )
 		);
 		echo '</span>';
 		return;
@@ -506,10 +508,12 @@ function wildflower_story_visual() {
 	if ( $src ) {
 		$poster = $poster_id ? wp_get_attachment_image_url( $poster_id, 'full' ) : '';
 		printf(
-			'<video class="vstory__video" data-home-video="story" muted loop playsinline autoplay preload="metadata"%1$s><source src="%2$s" type="%3$s"></video>',
+			// src on the element (no <source type>) so the browser sniffs the real
+			// codec — a .mov declared as video/quicktime is silently skipped by
+			// Chrome/Firefox.
+			'<video class="vstory__video" data-home-video="story" muted loop playsinline autoplay preload="metadata" src="%2$s"%1$s></video>',
 			$poster ? ' poster="' . esc_url( $poster ) . '"' : '',
-			esc_url( $src ),
-			esc_attr( wildflower_video_mime( $src ) )
+			esc_url( $src )
 		);
 		return;
 	}
