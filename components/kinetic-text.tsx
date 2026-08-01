@@ -4,6 +4,16 @@ import { motion, useReducedMotion } from 'motion/react'
 import type { ReactNode } from 'react'
 
 /**
+ * Normalize a delay to seconds. The codebase historically mixed milliseconds
+ * (e.g. 100, 300) with seconds (e.g. 0.1, 0.3). Values above 5 are treated as
+ * milliseconds so both conventions animate correctly instead of waiting
+ * minutes before appearing.
+ */
+function toSeconds(delay: number) {
+  return delay > 5 ? delay / 1000 : delay
+}
+
+/**
  * Reveals text word-by-word with a slight upward motion + fade.
  */
 export function KineticText({
@@ -36,7 +46,7 @@ export function KineticText({
       initial="hidden"
       whileInView="show"
       viewport={{ once, amount: 0.4 }}
-      transition={{ staggerChildren: stagger, delayChildren: delay }}
+      transition={{ staggerChildren: stagger, delayChildren: toSeconds(delay) }}
       aria-label={text}
     >
       {words.map((word, i) => (
@@ -79,7 +89,7 @@ export function Reveal({
       initial={reduce ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.7, delay: toSeconds(delay), ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>

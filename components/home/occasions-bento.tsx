@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { Reveal } from '@/components/kinetic-text'
+import { SmartImage } from '@/components/smart-image'
 import { OCCASION_CARDS } from '@/lib/occasions'
 import { cn } from '@/lib/utils'
 
@@ -71,11 +71,12 @@ function OccasionTile({
         className
       )}
     >
-      <Image
-        src={occasion.image || '/placeholder.svg'}
+      <SmartImage
+        src={occasion.image}
         alt={occasion.imageAlt}
         fill
         sizes={big ? '(max-width: 1024px) 100vw, 50vw' : '(max-width: 1024px) 50vw, 25vw'}
+        showMotif={false}
         className="object-cover transition-transform duration-700 group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />

@@ -1,9 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
+import { SmartImage } from '@/components/smart-image'
 import { BRAND } from '@/lib/brand'
 
 const InstagramIcon = ({ className }: { className?: string }) => (
@@ -63,11 +63,12 @@ export function SiteFooter() {
             href="/shop"
             className="group relative aspect-square overflow-hidden"
           >
-            <Image
-              src={src || '/placeholder.svg'}
+            <SmartImage
+              src={src}
               alt="Wildflower arrangement on Instagram"
               fill
               sizes="(max-width: 640px) 33vw, 16vw"
+              showMotif={i % 2 === 0}
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
             <span className="absolute inset-0 flex items-center justify-center bg-primary/0 text-primary-foreground opacity-0 transition-all duration-300 group-hover:bg-primary/30 group-hover:opacity-100">
@@ -148,7 +149,7 @@ export function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {BRAND.name}. Made in {BRAND.city}.
           </p>
-          <p>Delivering across Boston, Cambridge, Somerville, Brookline &amp; beyond. (v1.0.7-Elite-GSAP)</p>
+          <p>Delivering across Boston, Cambridge, Somerville, Brookline &amp; beyond.</p>
           <div className="flex items-center gap-2 text-foreground/60">
             <span className="rounded border border-border px-2 py-1">VISA</span>
             <span className="rounded border border-border px-2 py-1">MC</span>

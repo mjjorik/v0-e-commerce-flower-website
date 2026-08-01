@@ -4,7 +4,8 @@ import { BRAND } from '@/lib/brand'
 
 export const metadata: Metadata = {
   title: 'Contact Us',
-  description: 'Get in touch with the Wildflower Boston team.',
+  description: 'Get in touch with the Wildflower Boston team — questions about an order, bouquet advice or wholesale enquiries.',
+  alternates: { canonical: '/contact' },
 }
 
 export default function ContactPage() {
@@ -52,7 +53,7 @@ export default function ContactPage() {
             <label htmlFor="message" className="text-sm font-medium">Message</label>
             <textarea id="message" rows={5} className="w-full resize-none rounded-xl border border-border bg-transparent px-4 py-3 outline-none focus:border-foreground"></textarea>
           </div>
-          <button type="button" className="rounded-full bg-primary px-8 py-3.5 text-sm font-medium text-primary-foreground hover:opacity-90">
+          <button type="button" className="btn-primary">
             Send Message
           </button>
         </form>

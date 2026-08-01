@@ -1,0 +1,582 @@
+/* ============================================================
+   WooCommerce — mapped to the Wildflower design system
+   Cards (archive + loops) use the shared .product__media/.product__body
+   system from style.css. Here we handle the grid, the single product,
+   cart/checkout, and the primary action buttons.
+   ============================================================ */
+
+/* ---- Primary action buttons (specific — NOT the loop "+" card button) ---- */
+.woocommerce .single_add_to_cart_button,
+.woocommerce .checkout-button,
+.woocommerce #place_order,
+.woocommerce .wc-proceed-to-checkout a.button,
+.woocommerce-cart .actions .button,
+.woocommerce .woocommerce-Button,
+.woocommerce form.checkout button,
+.woocommerce .button.alt,
+.wc-block-components-button,
+.wp-element-button {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  background-color: var(--primary) !important; background-image: var(--primary-grad) !important;
+  color: var(--primary-foreground) !important;
+  border: none !important; border-radius: var(--radius-btn) !important;
+  padding: .95rem 1.9rem !important; font-size: .9rem !important; font-weight: 500 !important;
+  letter-spacing: -0.01em; text-transform: none !important; line-height: 1.2 !important;
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--primary) 35%, transparent);
+  transition: transform .3s var(--ease-luxe), box-shadow .3s var(--ease-luxe);
+}
+.woocommerce .single_add_to_cart_button:hover,
+.woocommerce .checkout-button:hover,
+.woocommerce #place_order:hover,
+.woocommerce .button.alt:hover,
+.wp-element-button:hover {
+  transform: translateY(-2px); box-shadow: 0 14px 32px -10px color-mix(in oklab, var(--primary) 50%, transparent);
+}
+/* Secondary / quiet buttons (continue shopping, update cart, apply coupon) */
+.woocommerce .button.wc-backward,
+.woocommerce-cart .actions .button[name="update_cart"],
+.woocommerce .coupon .button {
+  background: transparent !important; background-image: none !important; color: var(--foreground) !important;
+  border: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent) !important; box-shadow: none !important;
+}
+.woocommerce .button.wc-backward:hover {
+  background: var(--foreground) !important; color: var(--background) !important;
+}
+
+/* ---- Shop / archive grid (card internals come from style.css) ---- */
+.woocommerce ul.products,
+.woocommerce-page ul.products {
+  display: grid !important; grid-template-columns: repeat(2, 1fr); gap: clamp(1.5rem, 3vw, 2.75rem) clamp(1rem, 2vw, 1.5rem);
+  margin: 0 !important; padding: 0; list-style: none;
+}
+.woocommerce ul.products::before,
+.woocommerce ul.products::after,
+.woocommerce-page ul.products::before,
+.woocommerce-page ul.products::after {
+  content: none !important; display: none !important;
+}
+@media (min-width: 1024px) {
+  .woocommerce ul.products, .woocommerce-page ul.products { grid-template-columns: repeat(3, 1fr); }
+}
+.woocommerce ul.products li.product,
+.woocommerce-page ul.products li.product {
+  width: auto !important; margin: 0 !important; float: none !important; clear: none !important; text-align: left; position: relative;
+}
+/* Homepage bestseller scroller: keep Woo's archive grid from collapsing the
+   horizontal row. The main stylesheet defines the actual card widths. */
+.products--scroll ul.products,
+.woocommerce .products--scroll ul.products,
+.woocommerce-page .products--scroll ul.products {
+  display: flex !important; gap: clamp(1rem, 2vw, 1.5rem);
+  flex: 0 0 auto; width: max-content; max-width: none;
+  margin: 0 !important; padding: 0; list-style: none;
+}
+.products--scroll ul.products li.product,
+.woocommerce .products--scroll ul.products li.product,
+.woocommerce-page .products--scroll ul.products li.product {
+  flex: 0 0 min(80vw, 22rem) !important;
+  width: min(80vw, 22rem) !important;
+  max-width: none !important;
+}
+@media (min-width: 700px) {
+  .products--scroll ul.products li.product,
+  .woocommerce .products--scroll ul.products li.product,
+  .woocommerce-page .products--scroll ul.products li.product {
+    flex-basis: clamp(14rem, 28vw, 23rem) !important;
+    width: clamp(14rem, 28vw, 23rem) !important;
+  }
+}
+/* Woo's default onsale flag → our accent badge, pinned to the media corner. */
+.woocommerce span.onsale,
+.woocommerce ul.products li.product .onsale {
+  position: absolute; top: .7rem; left: .7rem; z-index: 2; min-height: auto; min-width: auto; margin: 0;
+  border-radius: 999px; padding: .25rem .7rem; background-color: var(--accent); background-image: var(--accent-grad);
+  color: var(--accent-foreground); font-size: .68rem; font-weight: 600; line-height: 1.5;
+}
+
+/* ---- Result count & ordering ---- */
+.woocommerce .woocommerce-result-count { color: var(--muted-foreground); font-size: .9rem; }
+.woocommerce .woocommerce-ordering select {
+  border: 1px solid var(--border); border-radius: 999px; padding: .55rem 2.25rem .55rem 1rem; background: var(--cream);
+  font-size: .875rem; color: var(--foreground);
+}
+
+/* WooCommerce utility pages (cart, checkout, account) render inside the
+   theme's narrow .prose column — that squeezed the cart so the totals overlapped
+   the table. Give these pages the full container width. */
+.woocommerce-cart .prose,
+.woocommerce-checkout .prose,
+.woocommerce-account .prose { max-width: none; margin-inline: 0; font-size: 1rem; }
+
+/* ---- Single product ---- */
+.woocommerce div.product { display: grid; gap: clamp(2rem, 5vw, 4rem); }
+/* Below tablet: single column, both halves full width (no squished summary). */
+@media (max-width: 767px) {
+  .woocommerce div.product { display: block; }
+  .woocommerce div.product .woocommerce-product-gallery,
+  .woocommerce div.product .summary.entry-summary { width: 100% !important; float: none !important; margin-left: 0 !important; }
+  .woocommerce div.product .summary.entry-summary { margin-top: 2rem; }
+}
+@media (min-width: 768px) { .woocommerce div.product { grid-template-columns: 1.05fr .95fr; align-items: start; } }
+/* Gallery must FILL its grid column (WooCommerce defaults it to 48% + float,
+   which left the image small with whitespace beside it). */
+.woocommerce div.product .woocommerce-product-gallery { margin: 0; width: 100% !important; float: none !important; }
+/* The summary column must FILL its grid cell. WooCommerce core sets it to
+   width:48%; float:right, which (inside our grid) left it ~255px wide — the
+   title broke one word per line with a huge empty gap. Reset it at every width;
+   the grid handles the two-column split. */
+.woocommerce div.product .summary.entry-summary { width: 100% !important; float: none !important; margin: 0 !important; }
+.woocommerce div.product .woocommerce-product-gallery img { border-radius: var(--radius-2xl); width: 100%; }
+.woocommerce div.product .woocommerce-product-gallery .flex-viewport { border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-card); }
+.woocommerce div.product .woocommerce-product-gallery__wrapper { border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-card); }
+@media (min-width: 1024px) { .woocommerce div.product .woocommerce-product-gallery { position: sticky; top: 6rem; } }
+/* Gallery thumbnails row below the main image. The margin-top is forced so
+   WooCommerce core's own gallery stylesheet (equal specificity, may load after
+   ours) can't collapse the gap — the thumbs must never stick to the main photo. */
+.woocommerce div.product .flex-control-thumbs { display: flex; flex-wrap: wrap; gap: .7rem; margin: 1.5rem 0 0 !important; padding: 0; list-style: none; clear: both; }
+.woocommerce div.product .flex-control-thumbs li { width: 4.5rem; margin: 0 !important; padding: 0; }
+.woocommerce div.product .flex-control-thumbs img { border-radius: var(--radius-md); opacity: .6; transition: opacity .2s; cursor: pointer; }
+.woocommerce div.product .flex-control-thumbs img.flex-active,
+.woocommerce div.product .flex-control-thumbs img:hover { opacity: 1; }
+.woocommerce div.product .product_title {
+  font-family: var(--font-serif); font-size: clamp(2.25rem, 4vw, 3.25rem); line-height: 1.02; margin: 0 0 .75rem;
+}
+.woocommerce div.product p.price,
+.woocommerce div.product span.price {
+  color: var(--accent); font-family: var(--font-serif); font-size: 1.65rem; font-weight: 600;
+}
+.woocommerce div.product p.price del { color: var(--muted-foreground); font-weight: 400; margin-right: .5rem; }
+.woocommerce div.product .woocommerce-product-rating { margin-bottom: 1rem; }
+.woocommerce .star-rating span::before { color: var(--accent); }
+.woocommerce div.product .woocommerce-product-details__short-description {
+  color: color-mix(in oklab, var(--foreground) 75%, transparent); line-height: 1.7; margin-top: 1.25rem;
+  border-top: 1px solid var(--border); padding-top: 1.25rem;
+}
+.woocommerce div.product form.cart { margin-top: 1.75rem; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+.woocommerce div.product form.cart .quantity input {
+  border: 1px solid var(--border); border-radius: var(--radius-btn); padding: .85rem; width: 4.5rem; background: var(--cream);
+}
+/* Variation selects (size: Petite / Classic / Grand) */
+.woocommerce div.product form.cart .variations { margin-bottom: 1rem; width: 100%; }
+.woocommerce div.product form.cart .variations td,
+.woocommerce div.product form.cart .variations th { padding: .35rem 0; }
+.woocommerce div.product form.cart .variations select,
+.woocommerce div.product .single_variation_wrap .variations select {
+  border: 1px solid var(--border) !important; border-radius: var(--radius-btn) !important;
+  padding: .75rem 2.25rem .75rem 1rem !important; background: var(--cream); font-size: .95rem; min-width: 12rem;
+}
+.woocommerce div.product .single_add_to_cart_button { flex: 1; min-width: 12rem; }
+/* Variable products nest quantity + button inside .woocommerce-variation-add-to-cart
+   (outside form.cart's own flex), so they stacked and touched. Lay them out as a
+   clean inline row with breathing room. */
+.woocommerce div.product .woocommerce-variation-add-to-cart { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: 1rem; }
+.woocommerce div.product .woocommerce-variation-add-to-cart .quantity { margin: 0; }
+.woocommerce div.product .single_variation_wrap .single_variation { margin-bottom: 1rem; }
+
+/* Tabs / description — strip WooCommerce's default gray "folder tab" chrome
+   (its selectors include div.product, so we must match that specificity) and
+   rebuild as clean editorial text tabs with an accent underline. */
+/* Description / info tabs: a clean light editorial panel with DARK text on a
+   cream card. Deliberately NOT a dark/green panel — light-on-light was the
+   "white on white" bug, so text here is always the dark foreground colour and
+   can never wash out, regardless of which single rule wins on the live site. */
+.woocommerce div.product .woocommerce-tabs {
+  grid-column: 1 / -1; margin-top: clamp(2.5rem, 5vw, 4rem);
+  background-color: var(--cream); background-image: var(--grain);
+  color: var(--foreground);
+  border: 1px solid var(--border); box-shadow: var(--shadow-card);
+  border-radius: var(--radius-2xl); padding: clamp(1.75rem, 4vw, 3rem);
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs {
+  display: flex; flex-wrap: wrap; gap: 2rem; margin: 0 0 2rem; padding: 0 0 .9rem;
+  border-bottom: 1px solid var(--border); list-style: none;
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li { list-style: none; }
+.woocommerce div.product .woocommerce-tabs ul.tabs::before,
+.woocommerce div.product .woocommerce-tabs ul.tabs::after { display: none; content: none; }
+.woocommerce div.product .woocommerce-tabs ul.tabs li {
+  margin: 0; padding: 0; background: transparent; border: 0; border-radius: 0;
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li::before,
+.woocommerce div.product .woocommerce-tabs ul.tabs li::after { display: none; content: none; border: 0; }
+.woocommerce div.product .woocommerce-tabs ul.tabs li a {
+  position: relative; display: inline-block; padding: 0 0 .1rem; font-family: var(--font-sans);
+  font-weight: 600; font-size: .82rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted-foreground); transition: color .2s;
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li a::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -.95rem; height: 2px; background: var(--accent);
+  transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease-luxe);
+}
+.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover { color: var(--foreground); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a { color: var(--foreground); }
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a::after { transform: scaleX(1); }
+.woocommerce div.product .woocommerce-Tabs-panel {
+  font-size: 1rem; line-height: 1.75; color: color-mix(in oklab, var(--foreground) 88%, transparent); max-width: 48rem;
+}
+.woocommerce div.product .woocommerce-Tabs-panel > h2 {
+  font-family: var(--font-serif); font-size: clamp(1.5rem, 3vw, 2rem); color: var(--foreground); margin: 0 0 1rem;
+}
+.woocommerce div.product .woocommerce-Tabs-panel p { margin: 0 0 1rem; color: color-mix(in oklab, var(--foreground) 88%, transparent); }
+.woocommerce div.product .woocommerce-Tabs-panel ul,
+.woocommerce div.product .woocommerce-Tabs-panel ol { margin: 0 0 1rem 1.25rem; }
+.woocommerce div.product .woocommerce-Tabs-panel li { margin-bottom: .4rem; }
+/* Additional-info attribute table — dark text, light header cells. */
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; color: var(--foreground); }
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes th { background: var(--muted); font-weight: 600; color: var(--foreground); }
+.woocommerce div.product .woocommerce-Tabs-panel table.shop_attributes td { font-style: normal; color: color-mix(in oklab, var(--foreground) 88%, transparent); }
+
+/* Reviews tab */
+.woocommerce div.product #reviews .comment-reply-title { font-family: var(--font-serif); font-size: 1.3rem; display: block; margin-bottom: .5rem; }
+.woocommerce div.product #reviews ol.commentlist { margin: 0 0 2rem; padding: 0; list-style: none; }
+.woocommerce div.product #reviews ol.commentlist li.review {
+  border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1rem; background: var(--cream);
+}
+.woocommerce div.product #reviews .comment-text { margin: 0; }
+.woocommerce div.product #reviews .woocommerce-review__author { font-family: var(--font-serif); font-size: 1.05rem; font-style: normal; }
+.woocommerce div.product #reviews .woocommerce-review__dash { display: none; }
+.woocommerce div.product #reviews .woocommerce-review__published-date { color: var(--muted-foreground); font-size: .82rem; }
+.woocommerce div.product #reviews .description { margin-top: .5rem; line-height: 1.6; color: color-mix(in oklab, var(--foreground) 82%, transparent); }
+.woocommerce div.product #reviews .woocommerce-noreviews { color: var(--muted-foreground); }
+.woocommerce div.product #review_form_wrapper { max-width: 40rem; }
+.woocommerce div.product #review_form .comment-form-rating label { display: block; margin-bottom: .35rem; }
+.woocommerce div.product #review_form p.comment-form-comment textarea,
+.woocommerce div.product #review_form .comment-form-author input,
+.woocommerce div.product #review_form .comment-form-email input {
+  width: 100%; border: 1px solid var(--border) !important; border-radius: var(--radius-btn) !important; padding: .8rem 1rem !important; background: var(--cream);
+}
+.woocommerce div.product #review_form label { font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-foreground); }
+.woocommerce div.product .star-rating span::before,
+.woocommerce div.product p.stars a { color: var(--accent); }
+
+/* ---- Upsells ("Complete the gift") + Related ("You may also like") ---- */
+.woocommerce .upsells.products,
+.woocommerce .related.products,
+.woocommerce .cross-sells {
+  grid-column: 1 / -1; margin-top: clamp(3rem, 6vw, 5rem);
+  border-top: 1px solid var(--border); padding-top: clamp(2rem, 4vw, 3rem);
+}
+.woocommerce .upsells.products > h2,
+.woocommerce .related.products > h2,
+.woocommerce .cross-sells > h2 {
+  font-family: var(--font-serif); font-size: clamp(1.6rem, 3vw, 2.25rem); margin-bottom: 1.75rem;
+}
+
+/* ---- Tables: cart ---- */
+.woocommerce table.shop_table {
+  width: 100%; border: 1px solid var(--border); border-radius: var(--radius-2xl); border-collapse: separate; overflow: hidden;
+}
+/* The cart table must fill its grid column — otherwise it sizes to content and
+   leaves a big empty band inside the frame beside the totals box. The product
+   column takes the slack so Price/Qty/Subtotal sit at the right edge. */
+.woocommerce-cart table.cart { width: 100% !important; table-layout: auto; }
+.woocommerce-cart table.cart td.product-name,
+.woocommerce-cart table.cart th.product-name { width: 100%; }
+.woocommerce table.shop_table th { font-family: var(--font-sans); font-weight: 500; }
+.woocommerce-cart table.cart img { border-radius: var(--radius-md); width: 64px; }
+.woocommerce .cart_totals h2 { font-family: var(--font-serif); }
+
+/* ---- Forms (checkout, account, coupon) ---- */
+.woocommerce form .form-row input.input-text,
+.woocommerce form .form-row textarea,
+.woocommerce-checkout select,
+.select2-container .select2-selection {
+  border: 1px solid var(--border) !important; border-radius: var(--radius-btn) !important;
+  padding: .8rem 1rem !important; background: var(--cream);
+}
+.woocommerce #payment, .woocommerce-checkout #payment {
+  background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-2xl);
+}
+.woocommerce-checkout #payment ul.payment_methods { border-color: var(--border); }
+.woocommerce .woocommerce-info,
+.woocommerce-message { border-top-color: var(--accent); }
+.woocommerce-message::before,
+.woocommerce-info::before { color: var(--accent); }
+
+/* ---- Breadcrumb ---- */
+.woocommerce .woocommerce-breadcrumb { color: var(--muted-foreground); font-size: .85rem; margin-bottom: 1.5rem; }
+.woocommerce .woocommerce-breadcrumb a { color: var(--muted-foreground); }
+.woocommerce .woocommerce-breadcrumb a:hover { color: var(--foreground); }
+
+.woocommerce-notices-wrapper { margin-bottom: 1.5rem; }
+
+/* ---- Mobile: upsells / related / cross-sells scroll horizontally,
+        with the next card peeking so it's obviously swipeable. ---- */
+@media (max-width: 767px) {
+  .woocommerce .upsells ul.products,
+  .woocommerce .related ul.products,
+  .woocommerce .cross-sells ul.products {
+    display: flex !important; grid-template-columns: none !important;
+    overflow-x: auto; gap: 1rem; scroll-snap-type: x mandatory;
+    scroll-padding-left: 1.5rem; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; -ms-overflow-style: none; padding-bottom: .5rem;
+  }
+  .woocommerce .upsells ul.products::-webkit-scrollbar,
+  .woocommerce .related ul.products::-webkit-scrollbar,
+  .woocommerce .cross-sells ul.products::-webkit-scrollbar { display: none; }
+  .woocommerce .upsells ul.products li.product,
+  .woocommerce .related ul.products li.product,
+  .woocommerce .cross-sells ul.products li.product {
+    flex: 0 0 76% !important; max-width: 76% !important; scroll-snap-align: start;
+  }
+}
+
+/* ============================================================
+   Shop filters — off-canvas drawer (accordion)
+   ============================================================ */
+.wf-filters-toggle {
+  display: inline-flex; align-items: center; gap: .5rem; padding: .6rem 1.1rem;
+  border: 1px solid color-mix(in oklab, var(--foreground) 20%, transparent); border-radius: 999px;
+  font-size: .85rem; font-weight: 500; color: var(--foreground); background: transparent;
+  transition: background-color .25s var(--ease-luxe), color .25s, border-color .25s;
+}
+.wf-filters-toggle:hover { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.wf-filters-toggle__count {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 1.2rem; height: 1.2rem;
+  padding: 0 .3rem; border-radius: 999px; background: var(--accent); color: var(--accent-foreground);
+  font-size: .68rem; font-weight: 700;
+}
+
+.wf-filters { position: fixed; inset: 0; z-index: 80; }
+.wf-filters[hidden] { display: none; }
+.wf-filters__backdrop { position: absolute; inset: 0; background: color-mix(in oklab, #000 45%, transparent); opacity: 0; transition: opacity .35s var(--ease-luxe); }
+.wf-filters.is-open .wf-filters__backdrop { opacity: 1; }
+.wf-filters__panel {
+  position: absolute; top: 0; left: 0; height: 100%; width: min(92vw, 27rem);
+  display: flex; flex-direction: column; background: var(--cream); box-shadow: 0 0 80px -20px rgba(0,0,0,.5);
+  transform: translateX(-100%); transition: transform .4s var(--ease-luxe);
+}
+.wf-filters.is-open .wf-filters__panel { transform: none; }
+@media (min-width: 1024px) { .wf-filters__panel { width: 27rem; } }
+
+.wf-filters__head {
+  display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
+}
+.wf-filters__title { font-weight: 700; text-transform: uppercase; letter-spacing: .12em; font-size: .9rem; flex: 1; }
+.wf-filters__reset, .wf-filters__close {
+  font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); background: none; border: 0; cursor: pointer;
+}
+.wf-filters__close { color: var(--foreground); }
+.wf-filters__scroll { flex: 1; overflow-y: auto; padding: 0 1.5rem 1.5rem; }
+.wf-filters__lede { color: var(--muted-foreground); font-size: .9rem; padding: 1.25rem 0; }
+.wf-filters__foot { padding: 1rem 1.5rem calc(1rem + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--border); }
+.wf-filters__foot .btn--primary { width: 100%; }
+
+.wf-filter-group { border-top: 1px solid var(--border); }
+.wf-filter-group:first-of-type { border-top: 0; }
+.wf-filter-group__head {
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+  padding: 1.1rem 0; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: .85rem; color: var(--foreground);
+  background: none; border: 0; cursor: pointer;
+}
+.wf-filter-chevron { color: var(--accent); transition: transform .3s var(--ease-luxe); }
+.wf-filter-group.is-open .wf-filter-chevron { transform: rotate(180deg); }
+.wf-filter-group__body { display: none; padding-bottom: 1rem; flex-direction: column; gap: .9rem; }
+.wf-filter-group.is-open .wf-filter-group__body { display: flex; }
+
+.wf-check { display: flex; align-items: center; gap: .75rem; cursor: pointer; font-size: .95rem; text-transform: uppercase; letter-spacing: .04em; color: color-mix(in oklab, var(--foreground) 85%, transparent); }
+.wf-check input { position: absolute; opacity: 0; width: 0; height: 0; }
+.wf-check__box { flex: 0 0 auto; width: 1.25rem; height: 1.25rem; border: 1.5px solid color-mix(in oklab, var(--accent) 55%, transparent); border-radius: 4px; transition: background-color .2s, border-color .2s; position: relative; }
+.wf-check input:checked + .wf-check__box { background: var(--accent); border-color: var(--accent); }
+.wf-check input:checked + .wf-check__box::after { content: ''; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px; border: solid var(--accent-foreground); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.wf-check input:focus-visible + .wf-check__box { outline: 2px solid var(--ring); outline-offset: 2px; }
+.wf-check:hover .wf-check__label { color: var(--foreground); }
+
+/* ============================================================
+   Shop archive header + toolbar
+   ============================================================ */
+.woocommerce-products-header { margin-bottom: 1.75rem; }
+.woocommerce-products-header__title {
+  font-family: var(--font-serif); font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: .98;
+  letter-spacing: -0.02em; margin: 0;
+}
+.woocommerce-products-header__title::before {
+  content: 'The collection'; display: block;
+  font-family: var(--font-sans); font-size: .7rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .28em; color: var(--accent); margin-bottom: 1rem;
+}
+.woocommerce-products-header__title::after { content: ''; }
+.term-description, .woocommerce-archive-description {
+  color: color-mix(in oklab, var(--foreground) 70%, transparent); max-width: 42rem; margin-top: .75rem; line-height: 1.6;
+}
+
+.wf-shop-toolbar {
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  padding: 1rem 0 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border);
+}
+.wf-shop-toolbar .woocommerce-result-count { margin: 0; order: 2; }
+.wf-shop-toolbar .wf-filters-toggle { order: 1; }
+.wf-shop-toolbar .woocommerce-ordering { margin: 0 0 0 auto; order: 3; }
+
+/* ============================================================
+   Shared catalog navigation — same links above and below every
+   product archive, expressed in Wildflower's editorial language.
+   ============================================================ */
+.wf-shop-sections {
+  margin-block: clamp(1.5rem, 3vw, 2.25rem);
+  border-block: 1px solid var(--border);
+  background: color-mix(in oklab, var(--cream) 62%, var(--background));
+}
+.wf-shop-sections--bottom { margin-top: clamp(3rem, 7vw, 5rem); margin-bottom: 0; }
+.wf-shop-sections__head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding: .8rem 1rem .7rem; border-bottom: 1px solid var(--border);
+}
+.wf-shop-sections__title {
+  font-family: var(--font-serif); font-size: clamp(1rem, 2vw, 1.2rem); line-height: 1.1;
+}
+.wf-shop-sections__hint {
+  color: var(--muted-foreground); font-size: .66rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+}
+.wf-shop-sections__viewport {
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch; scrollbar-color: color-mix(in oklab, var(--accent) 50%, transparent) transparent;
+  scrollbar-width: thin;
+}
+.wf-shop-sections__track { display: flex; width: max-content; min-width: 100%; }
+.wf-shop-sections__link {
+  position: relative; display: grid; grid-template-columns: auto auto; align-items: baseline; gap: .55rem;
+  min-height: 3.75rem; padding: 1.15rem clamp(1rem, 2.2vw, 1.5rem);
+  border-right: 1px solid var(--border); color: color-mix(in oklab, var(--foreground) 76%, transparent);
+  font-size: .78rem; font-weight: 650; letter-spacing: .08em; line-height: 1.2; text-transform: uppercase;
+  white-space: nowrap; scroll-snap-align: start;
+  transition: color .2s ease, background-color .2s ease;
+}
+.wf-shop-sections__link:first-child { border-left: 1px solid var(--border); }
+.wf-shop-sections__link::after {
+  content: ''; position: absolute; left: 1rem; right: 1rem; bottom: -1px; height: 2px;
+  background: var(--accent); transform: scaleX(0); transform-origin: left;
+  transition: transform .25s var(--ease-luxe);
+}
+.wf-shop-sections__index {
+  color: color-mix(in oklab, var(--accent) 72%, var(--muted-foreground));
+  font-family: var(--font-serif); font-size: .72rem; font-weight: 400; letter-spacing: 0;
+}
+.wf-shop-sections__link:hover {
+  color: var(--foreground); background: color-mix(in oklab, var(--accent) 7%, transparent);
+}
+.wf-shop-sections__link:hover::after,
+.wf-shop-sections__link.is-active::after { transform: scaleX(1); }
+.wf-shop-sections__link.is-active {
+  color: var(--foreground); background: color-mix(in oklab, var(--accent) 11%, var(--background));
+}
+.wf-shop-sections__link:focus-visible {
+  z-index: 1; outline: 2px solid var(--ring); outline-offset: -3px; color: var(--foreground);
+}
+@media (max-width: 767px) {
+  .wf-shop-sections { margin-inline: calc(var(--container-pad, 1.5rem) * -1); }
+  .wf-shop-sections__head { padding-inline: var(--container-pad, 1.5rem); }
+  .wf-shop-sections__viewport { scrollbar-width: none; scroll-padding-inline: var(--container-pad, 1.5rem); }
+  .wf-shop-sections__viewport::-webkit-scrollbar { display: none; }
+  .wf-shop-sections__track { padding-inline: var(--container-pad, 1.5rem); }
+  .wf-shop-sections__link { min-height: 3.5rem; padding-block: 1rem; }
+}
+@media (max-width: 1024px) {
+  .wf-shop-sections__link::after { bottom: 0; }
+}
+@media (min-width: 1025px) {
+  .wf-shop-sections__hint { display: none; }
+  .wf-shop-sections__viewport {
+    overflow-x: hidden; overscroll-behavior-x: auto; scroll-snap-type: none; scrollbar-width: none;
+  }
+  .wf-shop-sections__viewport::-webkit-scrollbar { display: none; }
+  .wf-shop-sections__track { width: 100%; min-width: 0; }
+  .wf-shop-sections__link {
+    flex: 1 1 0; justify-content: center; align-items: center; gap: .4rem; min-width: 0;
+    padding-inline: clamp(.4rem, .8vw, .85rem);
+    /* Long labels ("Tin Can Bouquets") wrap and center inside their equal cell
+       instead of spilling across the divider into the next tab. */
+    white-space: normal; text-align: center; line-height: 1.18; letter-spacing: .05em; font-size: .72rem;
+  }
+  .wf-shop-sections__index { align-self: center; }
+}
+
+/* Catalog pagination — restyled from WooCommerce's default numbered links. */
+.woocommerce nav.woocommerce-pagination { margin-top: clamp(2.5rem, 5vw, 4rem); text-align: center; }
+.woocommerce nav.woocommerce-pagination ul { display: inline-flex; align-items: center; gap: .4rem; border: 0; margin: 0; padding: 0; }
+.woocommerce nav.woocommerce-pagination ul li { border: 0; margin: 0; overflow: visible; }
+.woocommerce nav.woocommerce-pagination ul li a.page-numbers,
+.woocommerce nav.woocommerce-pagination ul li span.page-numbers {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 2.6rem; height: 2.6rem; padding: 0 .6rem;
+  border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground);
+  font-size: .9rem; font-weight: 500; transition: background-color .2s var(--ease-luxe), color .2s, border-color .2s;
+}
+.woocommerce nav.woocommerce-pagination ul li a.page-numbers:hover { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.woocommerce nav.woocommerce-pagination ul li span.current { background: var(--accent); background-image: var(--accent-grad); color: var(--accent-foreground); border-color: var(--accent); }
+.woocommerce nav.woocommerce-pagination ul li .page-numbers.dots { border: 0; min-width: 1.5rem; color: var(--muted-foreground); }
+.woocommerce nav.woocommerce-pagination ul li a.next, .woocommerce nav.woocommerce-pagination ul li a.prev { font-weight: 600; }
+
+/* ============================================================
+   Cart
+   ============================================================ */
+.woocommerce-cart .woocommerce-cart-form table.cart thead th {
+  text-transform: uppercase; letter-spacing: .1em; font-size: .72rem; color: var(--muted-foreground);
+}
+.woocommerce-cart table.cart td.product-name a { font-family: var(--font-serif); font-size: 1.05rem; color: var(--foreground); }
+.woocommerce-cart table.cart td.product-name a:hover { color: var(--accent); }
+.woocommerce-cart table.cart .product-price, .woocommerce-cart table.cart .product-subtotal { color: var(--foreground); }
+.woocommerce-cart table.cart td.product-subtotal { font-weight: 600; color: var(--accent); }
+.woocommerce a.remove {
+  color: var(--muted-foreground) !important; border: 1px solid var(--border); border-radius: 999px;
+  width: 1.5rem; height: 1.5rem; line-height: 1.35rem; font-weight: 400;
+}
+.woocommerce a.remove:hover { background: var(--accent) !important; color: var(--accent-foreground) !important; border-color: var(--accent); }
+.woocommerce .cart-collaterals .cart_totals,
+.woocommerce-page .cart-collaterals .cart_totals {
+  background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-2xl); padding: 1.75rem;
+}
+.woocommerce .cart_totals h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+.woocommerce .cart_totals table { border: 0; }
+.woocommerce .cart_totals .order-total .amount { color: var(--accent); font-family: var(--font-serif); }
+.woocommerce .wc-proceed-to-checkout a.checkout-button { width: 100%; margin-top: .5rem; }
+.woocommerce form.woocommerce-cart-form .actions .coupon { display: flex; gap: .5rem; }
+.woocommerce .cart-collaterals { margin-top: 1.5rem; }
+.woocommerce .cart-collaterals .cross-sells { margin-top: 0; border: 0; padding: 0; }
+/* Desktop: cart table + totals side by side using GRID, not floats. The old
+   float layout wasn't cleared, so the container collapsed and the footer rode
+   up over the cart. Grid can't collapse. */
+@media (min-width: 1024px) {
+  .woocommerce-cart .woocommerce {
+    display: grid; grid-template-columns: minmax(0, 1fr) 22rem; gap: 2.5rem 3rem; align-items: start;
+  }
+  .woocommerce-cart .woocommerce > .woocommerce-notices-wrapper { grid-column: 1 / -1; }
+  .woocommerce-cart .woocommerce-cart-form { width: auto; float: none; margin: 0; }
+  .woocommerce-cart .cart-collaterals { width: auto; float: none; margin: 0; }
+  .woocommerce-cart .cart-collaterals .cart_totals { width: 100%; float: none; position: sticky; top: 6rem; }
+}
+/* Belt-and-suspenders: clear floats at every width so the page can never
+   collapse behind the footer. */
+.woocommerce-cart .woocommerce::after { content: ''; display: block; clear: both; }
+
+/* ============================================================
+   Checkout
+   ============================================================ */
+.woocommerce-checkout h3 { font-family: var(--font-serif); font-size: 1.4rem; }
+.woocommerce-checkout #customer_details { margin-bottom: 1rem; }
+.woocommerce-checkout #order_review_heading { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 1rem; }
+.woocommerce-checkout #order_review {
+  background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius-2xl); padding: 1.75rem;
+}
+.woocommerce-checkout #order_review table.shop_table { border: 0; }
+.woocommerce-checkout #order_review .order-total .amount { color: var(--accent); font-family: var(--font-serif); }
+.woocommerce-checkout #place_order { width: 100%; margin-top: .5rem; }
+.woocommerce form.checkout .col2-set .col-1,
+.woocommerce form.checkout .col2-set .col-2 { float: none; width: 100%; }
+/* Desktop: two columns — customer details left, order summary (sticky) right. */
+@media (min-width: 900px) {
+  .woocommerce-checkout form.checkout {
+    display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 24rem); gap: 2rem 3rem; align-items: start;
+  }
+  .woocommerce-checkout form.checkout #customer_details { grid-column: 1; grid-row: 1 / span 3; }
+  .woocommerce-checkout form.checkout #order_review_heading { grid-column: 2; grid-row: 1; margin-top: 0; }
+  .woocommerce-checkout form.checkout #order_review { grid-column: 2; grid-row: 2; position: sticky; top: 6rem; }
+}
+/* Gift card message field. */
+.woocommerce-checkout .wf-card-message { margin-top: 1rem; }
+.woocommerce-checkout .wf-card-message textarea { min-height: 5rem; }
+.woocommerce .woocommerce-form-login, .woocommerce .checkout_coupon, .woocommerce-form-coupon-toggle {
+  border-radius: var(--radius-lg);
+}
+.woocommerce-info { background: var(--cream); border-radius: var(--radius-lg); }
