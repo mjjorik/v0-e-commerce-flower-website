@@ -1529,11 +1529,15 @@ textarea { resize: vertical; }
   .occasions__chips { grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; gap: .4rem; scrollbar-width: none; }
   .occasions__chips::-webkit-scrollbar { display: none; }
   .occasions__stage {
-    min-height: 26rem;
+    /* Definite height (not just min-height) so the cards' sizing resolves and
+       they don't collapse to zero — the cause of the blank panel on mobile. */
+    height: 26rem; min-height: 26rem;
     -webkit-mask-image: linear-gradient(to right, transparent 0, #000 13%, #000 87%, transparent 100%);
     mask-image: linear-gradient(to right, transparent 0, #000 13%, #000 87%, transparent 100%);
   }
-  .occasions__card { width: min(74%, 20rem); height: min(86%, 22rem); }
+  /* Fixed card height on mobile (percentage heights don't resolve reliably
+     against an absolutely-stacked deck) so the active card is always visible. */
+  .occasions__card { width: min(74%, 20rem); height: 21rem; }
   .occasions__card.is-prev { opacity: .45; transform: translateX(-27%) scale(.66) rotate(0); }
   .occasions__card.is-next { opacity: .45; transform: translateX(27%) scale(.66) rotate(0); }
 }
