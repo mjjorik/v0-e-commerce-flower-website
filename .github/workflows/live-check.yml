@@ -40,6 +40,20 @@ jobs:
             grep -oE 'https?://[^" ]+\.(mov|mp4|webm|m4v|ogv)' "$f" 2>/dev/null | sort -u | sed 's/^/    /'
             echo "  data-home-video present: $(grep -c 'data-home-video' "$f" 2>/dev/null)"
           done
+          echo "=================== PROBE VIDEO FILES (codec / pixfmt / faststart) ==================="
+          sudo apt-get update -qq >/dev/null 2>&1 && sudo apt-get install -y -qq ffmpeg >/dev/null 2>&1
+          for u in \
+            "https://boston-wildflower.com/wp-content/uploads/2026/07/wildflower-boston-home-hero-v4.mp4" \
+            "https://boston-wildflower.com/wp-content/uploads/2026/07/wildflower-boston-studio-story-v2.mp4"; do
+            echo "---- $u ----"
+            curl -s --max-time 120 "$u" -o v.mp4 -w "    HTTP %{http_code}  size %{size_download} bytes  ctype %{content_type}\n"
+            echo "    streams:"
+            ffprobe -v error -show_entries stream=codec_name,codec_type,profile,width,height,pix_fmt,bit_rate -show_entries format=duration,format_name -of default=noprint_wrappers=1 v.mp4 2>&1 | sed 's/^/      /'
+            MOOV=$(grep -aboin 'moov' v.mp4 2>/dev/null | head -1 | cut -d: -f1)
+            MDAT=$(grep -aboin 'mdat' v.mp4 2>/dev/null | head -1 | cut -d: -f1)
+            echo "    moov offset: ${MOOV:-?}   mdat offset: ${MDAT:-?}"
+            if [ -n "$MOOV" ] && [ -n "$MDAT" ] && [ "$MOOV" -lt "$MDAT" ]; then echo "    => faststart OK"; elif [ -n "$MOOV" ]; then echo "    => NOT faststart (moov after mdat): mobile autoplay often fails"; fi
+          done
           echo "=================== RESPONSE HEADERS (normal) ==================="
           curl -sI -A "$UA" --max-time 30 "https://boston-wildflower.com/" | grep -iE 'HTTP/|x-litespeed|x-lsadc|x-cache|x-qc|cache-control|cf-cache|age:|server:|x-turbo|platform'
           echo "=================== RESPONSE HEADERS (query-string) ==================="
