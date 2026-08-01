@@ -181,15 +181,13 @@ if ( '' === $markup ) {
 </section>
 <?php endif; ?>
 
-<!-- 6 · SHOP BY OCCASION, interactive picker (hover swaps the image) -->
-<section class="section">
+<!-- 6 · SHOP BY OCCASION — chip rail drives a sliding card deck (behaviour: initOccasionsSlider in main.js) -->
+<section class="section" id="shop-by-occasion">
 	<div class="container">
-		<div class="section-head">
-			<div style="max-width:32rem;">
-				<p class="eyebrow reveal"><?php esc_html_e( 'For every moment', 'wildflower' ); ?></p>
-				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Shop by occasion', 'wildflower' ) ); // phpcs:ignore ?></h2>
-			</div>
-			<a class="link-underline reveal" href="<?php echo esc_url( home_url( '/occasions/' ) ); ?>"><?php esc_html_e( 'All occasions', 'wildflower' ); ?></a>
+		<div class="section-head section-head--center">
+			<p class="eyebrow reveal"><?php esc_html_e( 'For every moment', 'wildflower' ); ?></p>
+			<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Shop by occasion', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			<p class="section-sub reveal"><?php esc_html_e( 'Flip through the moments we arrange for, one bouquet at a time.', 'wildflower' ); ?></p>
 		</div>
 
 		<?php
@@ -206,48 +204,59 @@ if ( '' === $markup ) {
 			array( 'sympathy', 'Sympathy', 'When words fall short.', 'sympathy' ),
 			array( 'wedding_events', 'Wedding & events', 'Flowers for a day worth remembering.', 'wedding' ),
 		);
+		$occ_total = count( $occasions );
 		?>
-		<div class="occasions" data-occasions>
-			<div class="occasions__list">
+		<div class="occasions reveal" data-occasions>
+			<!-- static chip list (left) -->
+			<div class="occasions__rail">
+				<ul class="occasions__chips" role="tablist" aria-label="<?php esc_attr_e( 'Occasions', 'wildflower' ); ?>">
+					<?php foreach ( $occasions as $oi => $o ) :
+						$link = $has_woo && $o[3] ? add_query_arg( 'occasion', $o[3], $shop ) : $shop;
+						?>
+						<li role="presentation">
+							<button class="occasions__chip<?php echo 0 === $oi ? ' is-active' : ''; ?>" type="button" role="tab" data-occ-chip="<?php echo esc_attr( $oi ); ?>" data-href="<?php echo esc_url( $link ); ?>" aria-selected="<?php echo 0 === $oi ? 'true' : 'false'; ?>">
+								<span class="occasions__chip-ic" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span>
+								<span><?php echo esc_html( $o[1] ); ?></span>
+							</button>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+
+			<!-- sliding card deck (right) -->
+			<div class="occasions__stage" data-occ-stage>
 				<?php foreach ( $occasions as $oi => $o ) :
 					$link = $has_woo && $o[3] ? add_query_arg( 'occasion', $o[3], $shop ) : $shop;
 					$occasion_media_id = isset( $home_media[ 'occasion_' . $o[0] ] ) ? absint( $home_media[ 'occasion_' . $o[0] ] ) : 0;
 					?>
-					<a class="occasions__item reveal<?php echo 0 === $oi ? ' is-active' : ''; ?>" href="<?php echo esc_url( $link ); ?>" data-occ="<?php echo esc_attr( $oi ); ?>" data-delay="<?php echo esc_attr( $oi * 70 ); ?>">
-						<span class="occasions__thumb">
+					<a class="occasions__card<?php echo 0 === $oi ? ' is-active' : ''; ?>" data-occ-card="<?php echo esc_attr( $oi ); ?>" href="<?php echo esc_url( $link ); ?>"<?php echo 0 === $oi ? '' : ' tabindex="-1" aria-hidden="true"'; ?>>
+						<span class="occasions__media" aria-hidden="true">
 							<?php
 							if ( $occasion_media_id ) {
-								echo wp_get_attachment_image( $occasion_media_id, 'medium', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async', 'sizes' => '(max-width: 700px) 45vw, 240px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								echo wp_get_attachment_image( $occasion_media_id, 'large', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async', 'sizes' => '(max-width: 900px) 74vw, 24rem' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							} else {
-								echo '<span class="media-fallback media-fallback--' . esc_attr( ( $oi % 5 ) + 1 ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+								echo '<span class="media-fallback media-fallback--' . esc_attr( ( $oi % 5 ) + 1 ) . '">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
 							}
 							?>
 						</span>
-						<span class="occasions__index"><?php echo esc_html( sprintf( '%02d', $oi + 1 ) ); ?></span>
-						<span class="occasions__text">
-							<span class="occasions__name"><?php echo esc_html( $o[1] ); ?></span>
-							<span class="occasions__desc"><?php echo esc_html( $o[2] ); ?></span>
+						<span class="occasions__overlay">
+							<span class="occasions__num"><?php echo esc_html( sprintf( '%02d / %02d', $oi + 1, $occ_total ) ); ?></span>
+							<span class="occasions__cardtitle"><?php echo esc_html( $o[1] ); ?></span>
+							<span class="occasions__cardesc"><?php echo esc_html( $o[2] ); ?></span>
+							<span class="occasions__more"><?php esc_html_e( 'Shop now', 'wildflower' ); ?> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
 						</span>
-						<span class="occasions__arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
 					</a>
 				<?php endforeach; ?>
+
+				<div class="occasions__nav" aria-hidden="true">
+					<button class="occasions__arrow occasions__arrow--prev" type="button" data-occ-prev aria-label="<?php esc_attr_e( 'Previous occasion', 'wildflower' ); ?>"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+					<button class="occasions__arrow occasions__arrow--next" type="button" data-occ-next aria-label="<?php esc_attr_e( 'Next occasion', 'wildflower' ); ?>"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+				</div>
 			</div>
-			<div class="occasions__stage" aria-hidden="true">
-				<?php foreach ( $occasions as $oi => $o ) :
-					$occasion_media_id = isset( $home_media[ 'occasion_' . $o[0] ] ) ? absint( $home_media[ 'occasion_' . $o[0] ] ) : 0;
-					?>
-					<figure class="occasions__media<?php echo 0 === $oi ? ' is-active' : ''; ?>" data-occ-media="<?php echo esc_attr( $oi ); ?>">
-						<?php
-						if ( $occasion_media_id ) {
-							echo wp_get_attachment_image( $occasion_media_id, 'large', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-						} else {
-							echo '<span class="media-fallback media-fallback--' . esc_attr( ( $oi % 5 ) + 1 ) . '">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
-						}
-						?>
-						<figcaption class="occasions__cap"><?php echo esc_html( $o[1] ); ?></figcaption>
-					</figure>
-				<?php endforeach; ?>
-			</div>
+		</div>
+
+		<div class="occasions__cta reveal">
+			<a class="btn--outline" href="<?php echo esc_url( home_url( '/occasions/' ) ); ?>"><?php esc_html_e( 'View all occasions', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 		</div>
 	</div>
 </section>

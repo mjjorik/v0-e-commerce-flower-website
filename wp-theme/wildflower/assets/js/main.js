@@ -228,90 +228,112 @@
     }
   }
 
-  /* ---- Shop by occasion: a calm, visible-only rotating preview ---- */
+  /* ---- Shop by occasion: chip rail (left) drives a sliding card deck (right).
+     Active card centred, neighbours peek in from the sides. Auto-advances while
+     on screen, pauses on hover/focus/drag; supports chips, arrows, swipe and
+     keyboard. Ported from the "explore one by one" spotlight pattern. ---- */
   document.querySelectorAll('[data-occasions]').forEach(function (root) {
-    var items = root.querySelectorAll('[data-occ]');
-    var medias = root.querySelectorAll('[data-occ-media]');
-    var list = root.querySelector('.occasions__list');
-    var current = 0;
-    var timer = null;
-    var rootVisible = false;
-    // Auto-advance on every device — the brand wants this picker moving on
-    // mobile too, so we do not gate it behind the OS "reduce motion" flag.
-    var reducedMotion = false;
+    var chips = Array.prototype.slice.call(root.querySelectorAll('[data-occ-chip]'));
+    var cards = Array.prototype.slice.call(root.querySelectorAll('[data-occ-card]'));
+    if (chips.length < 2 || chips.length !== cards.length) return;
+    var stage = root.querySelector('[data-occ-stage]');
+    var idx = 0, timer = null, paused = false, visible = false;
 
-    function activate(index) {
-      if (index < 0 || index >= items.length) return;
-      current = index;
-      items.forEach(function (it, itemIndex) { it.classList.toggle('is-active', itemIndex === index); });
-      medias.forEach(function (m, mediaIndex) { m.classList.toggle('is-active', mediaIndex === index); });
+    // Position of card n relative to the active card, wrapped so the deck loops.
+    function cardStatus(n) {
+      var d = n - idx, len = cards.length;
+      if (d > len / 2) d -= len;
+      if (d < -len / 2) d += len;
+      if (d === 0) return 'is-active';
+      if (d === -1) return 'is-prev';
+      if (d === 1) return 'is-next';
+      return 'is-hidden';
+    }
+    function setActive(i, focus) {
+      idx = (i + cards.length) % cards.length;
+      chips.forEach(function (c, n) {
+        var a = n === idx;
+        c.classList.toggle('is-active', a);
+        c.setAttribute('aria-selected', a ? 'true' : 'false');
+      });
+      cards.forEach(function (c, n) {
+        c.classList.remove('is-active', 'is-prev', 'is-next', 'is-hidden');
+        var s = cardStatus(n);
+        c.classList.add(s);
+        if (s === 'is-active') { c.removeAttribute('aria-hidden'); c.removeAttribute('tabindex'); }
+        else { c.setAttribute('aria-hidden', 'true'); c.setAttribute('tabindex', '-1'); }
+      });
+      if (focus) { try { chips[idx].focus(); } catch (e) {} }
+    }
+    function stop() { if (timer) { window.clearInterval(timer); timer = null; } }
+    // Auto-advance on every device (the brand wants this moving on mobile too).
+    function start() {
+      if (timer || cards.length < 2) return;
+      timer = window.setInterval(function () { if (!paused && visible) setActive(idx + 1); }, 3600);
     }
 
-    function stopAutoplay() {
-      if (timer) {
-        window.clearInterval(timer);
-        timer = null;
-      }
-    }
-
-    function startAutoplay() {
-      if (reducedMotion || !rootVisible || timer || items.length < 2) return;
-      timer = window.setInterval(function () {
-        activate((current + 1) % items.length);
-      }, 3600);
-    }
-
-    items.forEach(function (it) {
-      var index = Number(it.dataset.occ);
-      it.addEventListener('mouseenter', function () { stopAutoplay(); activate(index); });
-      it.addEventListener('focus', function () { stopAutoplay(); activate(index); });
+    chips.forEach(function (c, n) {
+      // First tap selects the slide; tapping the already-active chip opens it.
+      c.addEventListener('click', function () {
+        if (n === idx) { var h = c.getAttribute('data-href'); if (h) { window.location.href = h; return; } }
+        setActive(n);
+      });
+      c.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); setActive(idx + 1, true); }
+        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); setActive(idx - 1, true); }
+      });
     });
 
-    root.addEventListener('mouseleave', startAutoplay);
-    root.addEventListener('focusout', function (event) {
-      if (!root.contains(event.relatedTarget)) startAutoplay();
-    });
+    root.addEventListener('mouseenter', function () { paused = true; });
+    root.addEventListener('mouseleave', function () { paused = false; });
+    root.addEventListener('focusin', function () { paused = true; });
+    root.addEventListener('focusout', function () { paused = false; });
 
+    var prevBtn = root.querySelector('[data-occ-prev]');
+    var nextBtn = root.querySelector('[data-occ-next]');
+    if (prevBtn) prevBtn.addEventListener('click', function () { paused = true; setActive(idx - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { paused = true; setActive(idx + 1); });
+
+    // Swipe / drag the deck itself (touch + mouse); a mostly-horizontal drag past
+    // the threshold flips one slide, vertical drags fall through to page scroll.
+    if (stage) {
+      var sx = 0, sy = 0, dragging = false, decided = false, horiz = false, swiped = false;
+      stage.addEventListener('pointerdown', function (e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        dragging = true; decided = false; horiz = false; swiped = false; sx = e.clientX; sy = e.clientY;
+      });
+      stage.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        var dx = e.clientX - sx, dy = e.clientY - sy;
+        if (!decided && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+          decided = true; horiz = Math.abs(dx) > Math.abs(dy);
+          if (horiz) { paused = true; stage.classList.add('is-grabbing'); }
+        }
+      });
+      var endDrag = function (e) {
+        if (!dragging) return;
+        dragging = false; stage.classList.remove('is-grabbing');
+        if (!horiz) return;
+        var dx = e.clientX - sx;
+        if (Math.abs(dx) > 45) { swiped = true; setActive(idx + (dx < 0 ? 1 : -1)); }
+      };
+      stage.addEventListener('pointerup', endDrag);
+      stage.addEventListener('pointercancel', function () { dragging = false; stage.classList.remove('is-grabbing'); });
+      stage.addEventListener('pointerleave', endDrag);
+      stage.addEventListener('dragstart', function (e) { e.preventDefault(); });
+      // A real swipe must not also fire the card's link.
+      stage.addEventListener('click', function (e) {
+        if (swiped) { e.preventDefault(); e.stopPropagation(); swiped = false; }
+      }, true);
+    }
+
+    setActive(0);
     if ('IntersectionObserver' in window) {
-      var sectionObserver = new IntersectionObserver(function (entries) {
-        rootVisible = entries[0].isIntersecting;
-        if (rootVisible) startAutoplay();
-        else stopAutoplay();
-      }, { threshold: 0.2 });
-      sectionObserver.observe(root);
-    } else {
-      rootVisible = true;
-      startAutoplay();
-    }
-
-    // Desktop lists can be scrolled independently. Keep the visible row and
-    // the large preview in lockstep, then continue the gentle rotation.
-    if (list) {
-      var scrollResumeTimer = null;
-      list.addEventListener('scroll', function () {
-        var listRect = list.getBoundingClientRect();
-        var listCentre = listRect.top + (listRect.height / 2);
-        var nearestIndex = current;
-        var nearestDistance = Infinity;
-        items.forEach(function (it, index) {
-          var rect = it.getBoundingClientRect();
-          var distance = Math.abs((rect.top + (rect.height / 2)) - listCentre);
-          if (distance < nearestDistance) {
-            nearestDistance = distance;
-            nearestIndex = index;
-          }
-        });
-        stopAutoplay();
-        activate(nearestIndex);
-        window.clearTimeout(scrollResumeTimer);
-        scrollResumeTimer = window.setTimeout(startAutoplay, 900);
-      }, { passive: true });
-    }
-
-    // On touch devices the section simply auto-advances on its own (like the
-    // WeFixit Electronics picker) — the row highlights each occasion in turn and
-    // the large preview swaps to match. We intentionally do NOT drive the active
-    // item from finger swipes / page scroll, which felt unpredictable.
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+        if (visible) start(); else stop();
+      }, { threshold: 0.2 }).observe(root);
+    } else { visible = true; start(); }
   });
 
   /* ---- Shop filters drawer ---- */
