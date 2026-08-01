@@ -1530,9 +1530,11 @@ textarea { resize: vertical; }
 /* Mobile: keep the deck, pull the peeks in, and soft-mask the stage edges so no
    photo is hard-cut; chips become a horizontal scroll row above the deck. */
 @media (max-width: 899px) {
-  .occasions__rail { padding: 1rem; }
-  .occasions__chips { grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; gap: .4rem; scrollbar-width: none; }
-  .occasions__chips::-webkit-scrollbar { display: none; }
+  /* Match BCS on mobile: the chip list stacks vertically in the rail on top,
+     the card deck sits below. (A horizontal chip row stretched the grid and
+     pushed the centred card off-screen — that was the blank-panel bug.) */
+  .occasions__rail { padding: 1rem 1rem .85rem; border-bottom: 1px solid color-mix(in oklab, var(--primary-foreground) 14%, transparent); }
+  .occasions__chips { gap: .12rem; max-height: 15rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .occasions__stage {
     /* Definite height (not just min-height) so the cards' sizing resolves and
        they don't collapse to zero — the cause of the blank panel on mobile. */
