@@ -32,9 +32,8 @@
     var videos = Array.prototype.slice.call(document.querySelectorAll('[data-home-video]'));
     if (!videos.length) return;
 
-    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (reducedMotion.matches) return;
-
+    // Note: intentionally NOT gated on prefers-reduced-motion — these background
+    // videos are part of the brand and should play regardless of that setting.
     var heroVideo = document.querySelector('[data-home-video="hero"]');
     var storyVideo = document.querySelector('[data-home-video="story"]');
 
@@ -57,7 +56,7 @@
     }
 
     function playVideo(video) {
-      if (!video || document.hidden || reducedMotion.matches) return;
+      if (!video || document.hidden) return;
       if (video === heroVideo && video.dataset.videoReady !== 'true') return;
 
       loadVideo(video);
@@ -138,6 +137,25 @@
         if (document.hidden || !isVisible(video)) video.pause();
         else playVideo(video);
       });
+    });
+
+    // Fallback: iOS Low Power Mode and some autoplay policies block even muted
+    // autoplay until the user interacts. On the first touch/scroll/click/key,
+    // force every video to play so it starts no matter the device settings.
+    var unlockEvents = ['touchstart', 'pointerdown', 'click', 'keydown', 'scroll'];
+    var unlocked = false;
+    function unlockPlayback() {
+      if (unlocked) return;
+      unlocked = true;
+      unlockEvents.forEach(function (ev) { window.removeEventListener(ev, unlockPlayback); });
+      videos.forEach(function (video) {
+        if (video === heroVideo) { video.dataset.videoReady = 'true'; }
+        loadVideo(video);
+        if (isVisible(video)) { playVideo(video); }
+      });
+    }
+    unlockEvents.forEach(function (ev) {
+      window.addEventListener(ev, unlockPlayback, { passive: true });
     });
   })();
 
