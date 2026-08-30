@@ -471,6 +471,9 @@ add_filter(
 	3
 );
 
+// Required customer details, delivery scheduling, and express-checkout safety.
+require_once get_template_directory() . '/inc/checkout.php';
+
 /* Remove product reviews entirely, no Reviews tab, no star rating. */
 add_filter(
 	'woocommerce_product_tabs',
