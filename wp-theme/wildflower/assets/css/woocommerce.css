@@ -576,6 +576,128 @@
 /* Gift card message field. */
 .woocommerce-checkout .wf-card-message { margin-top: 1rem; }
 .woocommerce-checkout .wf-card-message textarea { min-height: 5rem; }
+
+/* Delivery scheduling: Boston Flowers' checkout logic expressed in the
+   Wildflower theme's green, cream and editorial type system. */
+.woocommerce-checkout .wf-delivery-fields {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 1.25rem;
+  margin-top: 1.75rem; padding: clamp(1.15rem, 3vw, 1.6rem);
+  border: 1px solid var(--border); border-radius: var(--radius-2xl);
+  background: color-mix(in oklab, var(--cream) 76%, var(--background));
+}
+.woocommerce-checkout .wf-delivery-fields__heading,
+.woocommerce-checkout .wf-delivery-notice { grid-column: 1 / -1; }
+.woocommerce-checkout .wf-delivery-fields__heading { margin-bottom: .15rem; }
+.woocommerce-checkout .wf-delivery-fields__eyebrow {
+  margin: 0 0 .4rem; color: var(--accent); font-size: .68rem; font-weight: 700;
+  letter-spacing: .16em; line-height: 1.3; text-transform: uppercase;
+}
+.woocommerce-checkout .wf-delivery-fields h3 { margin: 0; font-size: clamp(1.35rem, 3vw, 1.7rem); }
+.woocommerce-checkout .wf-delivery-fields .form-row {
+  float: none; clear: none; width: auto; margin: 0; padding: 0;
+}
+.woocommerce-checkout .wf-delivery-fields label {
+  display: block; margin-bottom: .45rem; color: var(--foreground); font-size: .84rem; font-weight: 650;
+}
+.woocommerce-checkout .wf-delivery-fields input.input-text,
+.woocommerce-checkout .wf-delivery-fields select {
+  min-height: 3rem; width: 100%; background-color: var(--background) !important;
+  transition: border-color .2s var(--ease-luxe), box-shadow .2s var(--ease-luxe), background-color .2s var(--ease-luxe);
+}
+.woocommerce-checkout .wf-delivery-fields input.input-text:focus,
+.woocommerce-checkout .wf-delivery-fields select:focus {
+  outline: none; border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 16%, transparent);
+}
+.woocommerce-checkout #wildflower_delivery_date { cursor: pointer; }
+.woocommerce-checkout .wf-delivery-notice {
+  margin: .15rem 0 0; padding: .8rem .9rem; border-left: 2px solid var(--accent);
+  background: color-mix(in oklab, var(--accent) 7%, transparent);
+  color: color-mix(in oklab, var(--foreground) 80%, var(--accent));
+  font-size: .82rem; font-weight: 550; line-height: 1.55;
+}
+.woocommerce-checkout .wf-delivery-fields.is-pickup .wf-delivery-notice { display: none; }
+.woocommerce-checkout .wf-checkout-field-error {
+  display: block; margin-top: .45rem; color: #a52d2d; font-size: .78rem; font-weight: 650; line-height: 1.4;
+}
+.woocommerce-checkout .wf-delivery-fields .woocommerce-invalid input.input-text,
+.woocommerce-checkout .wf-delivery-fields .woocommerce-invalid select {
+  border-color: #a52d2d !important; box-shadow: 0 0 0 3px color-mix(in oklab, #a52d2d 12%, transparent);
+}
+
+/* jQuery UI ships without a front-end theme in WordPress. This compact skin
+   keeps the picker legible, keyboard-visible and consistent with Wildflower. */
+#ui-datepicker-div {
+  z-index: 999999 !important; width: min(21rem, calc(100vw - 2rem)); padding: .8rem;
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--background); color: var(--foreground);
+  box-shadow: 0 1.4rem 3.5rem color-mix(in oklab, var(--foreground) 18%, transparent);
+  font-family: var(--font-sans);
+}
+#ui-datepicker-div .ui-datepicker-header {
+  display: grid; grid-template-columns: 4.25rem 1fr 4.25rem; align-items: center; gap: .4rem;
+  margin-bottom: .55rem; padding-bottom: .7rem; border-bottom: 1px solid var(--border);
+}
+#ui-datepicker-div .ui-datepicker-prev,
+#ui-datepicker-div .ui-datepicker-next {
+  display: inline-flex; align-items: center; min-height: 2.25rem; padding: 0 .55rem;
+  border-radius: 999px; color: var(--accent); cursor: pointer;
+  font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-decoration: none; text-transform: uppercase;
+}
+#ui-datepicker-div .ui-datepicker-next { justify-content: flex-end; }
+#ui-datepicker-div .ui-datepicker-prev:hover,
+#ui-datepicker-div .ui-datepicker-next:hover { background: color-mix(in oklab, var(--accent) 9%, transparent); }
+#ui-datepicker-div .ui-datepicker-prev:focus-visible,
+#ui-datepicker-div .ui-datepicker-next:focus-visible,
+#ui-datepicker-div td a:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+#ui-datepicker-div .ui-datepicker-title {
+  grid-column: 2; grid-row: 1; text-align: center; font-family: var(--font-serif); font-size: 1.05rem;
+}
+#ui-datepicker-div table { width: 100%; border: 0; border-collapse: collapse; table-layout: fixed; }
+#ui-datepicker-div th {
+  padding: .35rem .1rem; color: var(--muted-foreground); font-size: .64rem; font-weight: 700;
+  letter-spacing: .08em; text-align: center; text-transform: uppercase;
+}
+#ui-datepicker-div td { padding: .12rem; border: 0; text-align: center; }
+#ui-datepicker-div td a,
+#ui-datepicker-div td span {
+  display: grid; place-items: center; min-height: 2.25rem; border-radius: 999px;
+  color: var(--foreground); font-size: .8rem; text-decoration: none;
+}
+#ui-datepicker-div td:not(.ui-datepicker-unselectable) a:hover { background: color-mix(in oklab, var(--accent) 11%, transparent); }
+#ui-datepicker-div td.ui-datepicker-current-day a { background: var(--accent); color: var(--accent-foreground); font-weight: 700; }
+#ui-datepicker-div td.ui-datepicker-today:not(.ui-datepicker-current-day) a { box-shadow: inset 0 0 0 1px var(--accent); }
+#ui-datepicker-div td.ui-datepicker-unselectable span { color: color-mix(in oklab, var(--muted-foreground) 50%, transparent); }
+
+/* WooPay is deliberately placed after the order total. It remains inert until
+   the complete classic form has also passed the server-side field check. */
+.woocommerce-checkout #order_review .wf-express-checkout {
+  position: relative; margin: 1.25rem 0; padding: 1.25rem 0;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.woocommerce-checkout #order_review .wf-express-checkout #wcpay-express-checkout-button-separator {
+  margin: 0 0 .8rem; color: var(--muted-foreground); font-size: .68rem; font-weight: 700;
+  letter-spacing: .14em; text-align: center; text-transform: uppercase;
+}
+.woocommerce-checkout #order_review .wf-express-checkout #wcpay-express-checkout-element,
+.woocommerce-checkout #order_review .wf-express-checkout #wcpay-express-checkout-element > div,
+.woocommerce-checkout #order_review .wf-express-checkout iframe { width: 100% !important; max-width: 100% !important; }
+.woocommerce-checkout #order_review .wf-express-checkout.wf-express-disabled #wcpay-express-checkout-element {
+  pointer-events: none; opacity: .38; filter: grayscale(.35);
+}
+.woocommerce-checkout #order_review .wf-express-required-note {
+  margin: .75rem 0 0; color: var(--muted-foreground); font-size: .74rem; line-height: 1.45; text-align: center;
+}
+.woocommerce-checkout #order_review .wf-express-checkout:not(.wf-express-disabled) .wf-express-required-note { display: none; }
+
+@media (max-width: 599px) {
+  .woocommerce-checkout .wf-delivery-fields { grid-template-columns: 1fr; }
+  .woocommerce-checkout .wf-delivery-fields__heading,
+  .woocommerce-checkout .wf-delivery-notice { grid-column: 1; }
+  #ui-datepicker-div { padding: .65rem; }
+  #ui-datepicker-div td a,
+  #ui-datepicker-div td span { min-height: 2.1rem; }
+}
 .woocommerce .woocommerce-form-login, .woocommerce .checkout_coupon, .woocommerce-form-coupon-toggle {
   border-radius: var(--radius-lg);
 }
