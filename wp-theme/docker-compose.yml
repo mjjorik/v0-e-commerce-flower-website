@@ -1,0 +1,67 @@
+# Wildflower — one-command local WordPress for previewing the theme.
+#
+#   cd wp-theme
+#   docker compose up -d        # starts WordPress + MariaDB
+#   ./setup.sh                  # installs WP, activates theme, creates pages/menu
+#   open http://localhost:8080
+#
+# Admin: http://localhost:8080/wp-admin  (login: admin / admin)
+# Tear down (keep data):  docker compose down
+# Tear down (wipe data):  docker compose down -v
+
+services:
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wp
+      MARIADB_PASSWORD: wp
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: "1"
+    volumes:
+      - wp:/var/www/html
+      - ./wildflower:/var/www/html/wp-content/themes/wildflower
+
+  # Run wp-cli commands with:  docker compose run --rm wpcli wp <command>
+  wpcli:
+    image: wordpress:cli-php8.3
+    depends_on:
+      db:
+        condition: service_healthy
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wp:/var/www/html
+      - ./wildflower:/var/www/html/wp-content/themes/wildflower
+    entrypoint: ["wp"]
+    command: ["--info"]
+
+volumes:
+  db:
+  wp:

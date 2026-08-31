@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { Reveal } from '@/components/kinetic-text'
+import { SmartImage } from '@/components/smart-image'
 import { BRAND } from '@/lib/brand'
 
 const InstagramIcon = ({ className }: { className?: string }) => (
@@ -44,11 +44,12 @@ export function CommunityStrip() {
               href="/shop"
               className={`group relative overflow-hidden rounded-xl ${shot.span}`}
             >
-              <Image
-                src={shot.src || '/placeholder.svg'}
+              <SmartImage
+                src={shot.src}
                 alt="Wildflower bouquet shared on Instagram"
                 fill
                 sizes="(max-width: 640px) 50vw, 25vw"
+                showMotif={i % 2 === 0}
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </Link>

@@ -1,11 +1,19 @@
-'use client'
-
+import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { OCCASIONS } from '@/lib/products'
 import { cn } from '@/lib/utils'
 import { Reveal } from '@/components/kinetic-text'
+import { SmartImage } from '@/components/smart-image'
+import { JsonLd } from '@/components/json-ld'
+import { breadcrumbLd } from '@/lib/seo'
+
+export const metadata: Metadata = {
+  title: 'Flowers for Every Occasion',
+  description:
+    'Birthday, anniversary, sympathy, new baby or just because — find the right bouquet for the moment and send it same-day across Greater Boston.',
+  alternates: { canonical: '/occasions' },
+}
 
 // Map occasions to specific layout spans for the Asymmetrical Bento
 const BENTO_MAP: Record<string, { span: string; img: string; delay: number }> = {
@@ -18,8 +26,14 @@ const BENTO_MAP: Record<string, { span: string; img: string; delay: number }> = 
 
 export default function OccasionsPage() {
   return (
-    <div className="min-h-[100dvh] w-full bg-[#FAF7F2] pb-32">
-      
+    <div className="min-h-[100dvh] w-full bg-background pb-32">
+      <JsonLd
+        data={breadcrumbLd([
+          { name: 'Home', path: '/' },
+          { name: 'Occasions', path: '/occasions' },
+        ])}
+      />
+
       {/* Header Section */}
       <section className="mx-auto max-w-[90rem] px-4 pt-24 sm:px-6 md:pt-32 lg:px-8">
         <div className="max-w-3xl">
@@ -52,12 +66,13 @@ export default function OccasionsPage() {
                   config.span
                 )}
               >
-                <div className="relative h-full w-full overflow-hidden rounded-[calc(2.5rem-0.375rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] bg-black">
-                  <Image 
-                    src={config.img} 
-                    alt={occasion} 
-                    fill 
-                    className="object-cover opacity-80 transition-transform duration-[1.5s] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105 group-hover:opacity-60"
+                <div className="relative h-full w-full overflow-hidden rounded-[calc(2.5rem-0.375rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] bg-primary">
+                  <SmartImage
+                    src={config.img}
+                    alt={`${occasion} flowers delivered in Greater Boston`}
+                    fill
+                    fallbackLabel={occasion}
+                    className="object-cover opacity-90 transition-transform duration-[1.5s] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105 group-hover:opacity-70"
                   />
                   
                   {/* Inner Content overlay */}

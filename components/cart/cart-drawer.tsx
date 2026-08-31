@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { AnimatePresence, motion } from 'motion/react'
+import { SmartImage } from '@/components/smart-image'
 import { X, Plus, Minus, ShoppingBag } from 'lucide-react'
 import {
   useCart,
@@ -93,11 +93,7 @@ export function CartDrawer() {
                 <p className="text-muted-foreground">
                   Your basket is empty — let&apos;s fix that.
                 </p>
-                <Link
-                  href="/shop"
-                  onClick={closeCart}
-                  className="rounded-full bg-primary px-6 py-3 text-sm text-primary-foreground"
-                >
+                <Link href="/shop" onClick={closeCart} className="btn-primary">
                   Shop Bouquets
                 </Link>
               </div>
@@ -108,11 +104,12 @@ export function CartDrawer() {
                     {items.map((item) => (
                       <li key={item.id} className="flex gap-4">
                         <div className="relative size-20 shrink-0 overflow-hidden rounded-md bg-card">
-                          <Image
-                            src={item.image || '/placeholder.svg'}
+                          <SmartImage
+                            src={item.image}
                             alt={item.imageAlt}
                             fill
                             sizes="80px"
+                            showMotif={false}
                             className="object-cover"
                           />
                         </div>
@@ -184,11 +181,12 @@ export function CartDrawer() {
                             className="flex items-center gap-3 rounded-lg bg-card p-2"
                           >
                             <div className="relative size-12 shrink-0 overflow-hidden rounded-md">
-                              <Image
-                                src={a.image || '/placeholder.svg'}
+                              <SmartImage
+                                src={a.image}
                                 alt={a.imageAlt}
                                 fill
                                 sizes="48px"
+                                showMotif={false}
                                 className="object-cover"
                               />
                             </div>
@@ -233,7 +231,7 @@ export function CartDrawer() {
                   <Link
                     href="/checkout"
                     onClick={closeCart}
-                    className="mt-4 flex w-full items-center justify-center rounded-full bg-primary px-6 py-3.5 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5"
+                    className="btn-primary mt-4 w-full"
                   >
                     Checkout
                   </Link>

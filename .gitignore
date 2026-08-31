@@ -16,3 +16,7 @@ node_modules
 out/
 *.tar.gz
 backup_restoration/
+
+# build/tooling artifacts
+tsconfig.tsbuildinfo
+pnpm-workspace.yaml

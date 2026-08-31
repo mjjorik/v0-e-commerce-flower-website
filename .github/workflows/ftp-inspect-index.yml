@@ -1,0 +1,44 @@
+name: FTP Inspect Index (what serves the homepage)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/website-redesign-bugs-doj090
+    paths:
+      - '.github/workflows/ftp-inspect-index.yml'
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+      - name: Fetch .htaccess + default.php and analyze
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          USER: ${{ secrets.FTP_USERNAME }}
+          PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          set +e
+          OPTS="set ftp:ssl-allow no; set ftp:passive-mode on; set net:timeout 15; set net:max-retries 2;"
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS get -O . .htaccess -o dot_htaccess.txt; get -O . default.php -o default_php.txt; bye" "ftp://$SERVER"
+          echo "=================== .htaccess (DirectoryIndex etc.) ==================="
+          if [ -f dot_htaccess.txt ]; then grep -iE "DirectoryIndex|RewriteRule|default\.php|index\.php" dot_htaccess.txt; echo "--- full .htaccess ---"; cat dot_htaccess.txt; else echo "(no .htaccess fetched)"; fi
+          echo ""
+          echo "=================== default.php: what is it? ==================="
+          if [ -f default_php.txt ]; then
+            echo "size: $(wc -c < default_php.txt) bytes, lines: $(wc -l < default_php.txt)"
+            echo "contains '<?php': $(grep -c '<?php' default_php.txt)"
+            echo "footer marker HELP (old): $(grep -c -i 'class=\"footer-menu\"\|>Help<\|>HELP<' default_php.txt)"
+            echo "footer marker EXPLORE (new): $(grep -c -i '>Explore<\|>EXPLORE<\|footer-cols' default_php.txt)"
+            echo "homepage markers: complete the gift=$(grep -c -i 'complete the gift' default_php.txt), bestsellers=$(grep -c -i 'bestsellers' default_php.txt), shop by occasion=$(grep -c -i 'shop by occasion' default_php.txt)"
+            echo "--- first 25 lines ---"; head -25 default_php.txt
+            echo "--- lines mentioning footer/Help/Explore ---"; grep -in -m 20 -E "footer|Help|Explore|Complete the gift" default_php.txt | head -20
+          else
+            echo "(no default.php fetched)"
+          fi
+          echo ""
+          echo "=================== docroot index candidates ==================="
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS cls -l index.php index.html index.htm default.php default.html home.php 2>/dev/null; bye" "ftp://$SERVER"
+          exit 0

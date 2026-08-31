@@ -32,10 +32,7 @@ export function FeaturedGrid() {
 
         <div className="mt-12 text-center">
           <Reveal delay={300}>
-            <Link
-              href="/shop"
-              className="inline-flex rounded-full border border-primary px-7 py-3.5 text-sm text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
+            <Link href="/shop" className="btn-outline">
               Shop all bouquets
             </Link>
           </Reveal>
