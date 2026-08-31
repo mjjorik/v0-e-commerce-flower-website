@@ -901,7 +901,7 @@ textarea { resize: vertical; }
 .product__unavailable {
   align-self: center; white-space: nowrap;
   font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
-  color: var(--muted, #8E8881);
+  color: var(--muted-foreground);
 }
 
 /* Product card title as a link — inherit the card's ink, no underline. */
