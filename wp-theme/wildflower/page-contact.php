@@ -81,7 +81,7 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 						</li>
 						<li>
 							<span class="contact__label"><?php esc_html_e( 'Studio hours', 'wildflower' ); ?></span>
-							<span><?php esc_html_e( 'Mon–Sat · 8 AM – 4 PM ET', 'wildflower' ); ?><br><?php printf( esc_html__( 'Same-day before %s', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></span>
+							<span><?php esc_html_e( 'Mon–Sat · 10 AM – 6 PM ET', 'wildflower' ); ?><br><?php printf( esc_html__( 'Same-day before %s', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></span>
 						</li>
 						<li>
 							<span class="contact__label"><?php esc_html_e( 'Area', 'wildflower' ); ?></span>

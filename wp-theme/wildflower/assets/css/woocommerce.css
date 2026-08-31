@@ -531,6 +531,19 @@
 .woocommerce .cart_totals table { border: 0; }
 .woocommerce .cart_totals .order-total .amount { color: var(--accent); font-family: var(--font-serif); }
 .woocommerce .wc-proceed-to-checkout a.checkout-button { width: 100%; margin-top: .5rem; }
+/* WooPayments renders the Affirm/Afterpay message inside a responsive iframe.
+   Let the iframe define its real height so wrapped copy never sits beneath the
+   checkout button on narrow cart totals cards. */
+.woocommerce-cart .cart_totals #payment-method-message {
+  box-sizing: border-box; display: block; width: 100%; min-width: 0;
+  height: auto !important; margin: 0 0 1rem !important; padding: .25rem 1rem 0 !important;
+  clear: both;
+}
+.woocommerce-cart .cart_totals #payment-method-message:not(:empty) { min-height: 4.75rem; }
+.woocommerce-cart .cart_totals #payment-method-message iframe {
+  display: block; width: 100% !important; max-width: 100% !important;
+}
+.woocommerce-cart .wc-proceed-to-checkout { clear: both; padding-top: .25rem; }
 .woocommerce form.woocommerce-cart-form .actions .coupon { display: flex; gap: .5rem; }
 .woocommerce .cart-collaterals { margin-top: 1.5rem; }
 .woocommerce .cart-collaterals .cross-sells { margin-top: 0; border: 0; padding: 0; }
@@ -691,6 +704,14 @@
 .woocommerce-checkout #order_review .wf-express-checkout:not(.wf-express-disabled) .wf-express-required-note { display: none; }
 
 @media (max-width: 599px) {
+  .woocommerce-cart .cart-collaterals .cart_totals,
+  .woocommerce-page.woocommerce-cart .cart-collaterals .cart_totals {
+    padding: 1rem;
+    border-radius: var(--radius-xl);
+  }
+  .woocommerce-cart .cart_totals #payment-method-message {
+    padding-inline: 0 !important;
+  }
   .woocommerce-checkout .wf-delivery-fields { grid-template-columns: 1fr; }
   .woocommerce-checkout .wf-delivery-fields__heading,
   .woocommerce-checkout .wf-delivery-notice { grid-column: 1; }

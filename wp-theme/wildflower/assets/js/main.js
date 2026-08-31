@@ -239,6 +239,20 @@
     var stage = root.querySelector('[data-occ-stage]');
     var idx = 0, timer = null, paused = false, visible = false;
 
+    // Hidden cards keep their native lazy-loading until the deck approaches the
+    // viewport. Prime them before auto-advance starts so a slow connection never
+    // reveals an empty card while preserving lazy-loading for the rest of the page.
+    function primeCardImage(card) {
+      if (!card) return;
+      var image = card.querySelector('img[loading="lazy"]');
+      if (!image) return;
+      image.loading = 'eager';
+      image.removeAttribute('loading');
+    }
+    function primeDeckImages() {
+      cards.forEach(primeCardImage);
+    }
+
     // Position of card n relative to the active card, wrapped so the deck loops.
     function cardStatus(n) {
       var d = n - idx, len = cards.length;
@@ -251,6 +265,7 @@
     }
     function setActive(i, focus) {
       idx = (i + cards.length) % cards.length;
+      primeCardImage(cards[idx]);
       chips.forEach(function (c, n) {
         var a = n === idx;
         c.classList.toggle('is-active', a);
@@ -329,11 +344,18 @@
 
     setActive(0);
     if ('IntersectionObserver' in window) {
+      var imageObserver = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        primeDeckImages();
+        imageObserver.disconnect();
+      }, { rootMargin: '900px 0px' });
+      imageObserver.observe(root);
+
       new IntersectionObserver(function (entries) {
         visible = entries[0].isIntersecting;
         if (visible) start(); else stop();
       }, { threshold: 0.2 }).observe(root);
-    } else { visible = true; start(); }
+    } else { primeDeckImages(); visible = true; start(); }
   });
 
   /* ---- Shop filters drawer ---- */

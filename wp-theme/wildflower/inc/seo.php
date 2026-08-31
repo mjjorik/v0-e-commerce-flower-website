@@ -88,8 +88,8 @@ function wildflower_head_jsonld() {
 		'openingHoursSpecification' => array(
 			'@type'     => 'OpeningHoursSpecification',
 			'dayOfWeek' => array( 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ),
-			'opens'     => '08:00',
-			'closes'    => '16:00',
+			'opens'     => '10:00',
+			'closes'    => '18:00',
 		),
 	);
 	if ( $image ) {

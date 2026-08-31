@@ -143,12 +143,22 @@ $brand = wildflower_brand();
 	</div>
 </footer>
 
-<?php if ( class_exists( 'WooCommerce' ) ) : ?>
+<?php if ( class_exists( 'WooCommerce' ) && ! is_cart() && ! is_checkout() ) : ?>
+<?php
+$wf_minimum_price = function_exists( 'wildflower_catalog_minimum_price' ) ? wildflower_catalog_minimum_price() : null;
+$wf_minimum_price = null !== $wf_minimum_price ? $wf_minimum_price : 50.0;
+$wf_price_decimals = floor( $wf_minimum_price ) === $wf_minimum_price ? 0 : wc_get_price_decimals();
+$wf_minimum_price_text = html_entity_decode(
+	wp_strip_all_tags( wc_price( $wf_minimum_price, array( 'decimals' => $wf_price_decimals ) ) ),
+	ENT_QUOTES,
+	get_bloginfo( 'charset' ) ?: 'UTF-8'
+);
+?>
 <!-- Mobile sticky action bar, appears after the hero (phones only) -->
 <div class="mobile-bar" data-mobile-bar aria-hidden="true">
 	<div class="mobile-bar__info">
 		<span class="mobile-bar__label"><?php esc_html_e( 'Bouquets', 'wildflower' ); ?></span>
-		<span class="mobile-bar__price"><?php esc_html_e( 'From $50 · same-day', 'wildflower' ); ?></span>
+		<span class="mobile-bar__price"><?php printf( esc_html__( 'From %s · same-day', 'wildflower' ), esc_html( $wf_minimum_price_text ) ); ?></span>
 	</div>
 	<a class="btn--accent btn--sm" href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>"><?php esc_html_e( 'Shop now', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
 </div>

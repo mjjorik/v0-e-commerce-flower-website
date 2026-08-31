@@ -27,7 +27,11 @@ $tiers = array(
 	),
 	array(
 		'Greater Boston', 'Rates from $25', 'Same-day',
-		array( 'Waltham', 'Quincy', 'Needham', 'Burlington', 'Lexington', 'Winchester', 'Milton', 'Dedham', 'Framingham', 'Natick', 'Wellesley', 'Braintree', 'Canton', 'Norwood', 'Westwood', 'Wakefield', 'Reading', 'Stoneham', 'Melrose', 'Woburn', 'Peabody', 'Lynn', 'Salem' ),
+		array( 'Waltham', 'Quincy', 'Needham', 'Burlington', 'Milton', 'Dedham', 'Framingham', 'Natick', 'Wellesley', 'Braintree', 'Canton', 'Norwood', 'Westwood', 'Wakefield', 'Reading', 'Stoneham', 'Melrose', 'Woburn', 'Peabody', 'Lynn', 'Salem' ),
+	),
+	array(
+		'Extended Greater Boston', 'Rates from $35', 'Same-day',
+		array( 'Lexington', 'Winchester' ),
 	),
 	array(
 		'Regional Delivery', 'Quoted individually', 'By arrangement',

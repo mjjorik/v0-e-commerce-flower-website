@@ -61,6 +61,65 @@ function wildflower_is_catalog_archive() {
 }
 
 /**
+ * Return the lowest current price of an available catalog bouquet.
+ *
+ * @return float|null
+ */
+function wildflower_catalog_minimum_price() {
+	if ( ! function_exists( 'wc_get_products' ) ) {
+		return null;
+	}
+
+	$cached = get_transient( 'wildflower_catalog_minimum_price' );
+	if ( false !== $cached && is_numeric( $cached ) ) {
+		return (float) $cached;
+	}
+
+	$products = wc_get_products(
+		array(
+			'category'     => array( 'bouquets' ),
+			'limit'        => -1,
+			'return'       => 'objects',
+			'status'       => 'publish',
+			'stock_status' => 'instock',
+			'visibility'   => 'visible',
+		)
+	);
+	$minimum = null;
+
+	foreach ( $products as $product ) {
+		if ( ! $product->is_visible() || ! $product->is_purchasable() || '' === $product->get_price() ) {
+			continue;
+		}
+
+		$price = (float) $product->get_price();
+		if ( $price <= 0 ) {
+			continue;
+		}
+
+		$minimum = null === $minimum ? $price : min( $minimum, $price );
+	}
+
+	if ( null !== $minimum ) {
+		set_transient( 'wildflower_catalog_minimum_price', (string) $minimum, HOUR_IN_SECONDS );
+	}
+
+	return $minimum;
+}
+
+/**
+ * Clear the cached catalog floor after a product or stock change.
+ */
+function wildflower_clear_catalog_minimum_price_cache() {
+	delete_transient( 'wildflower_catalog_minimum_price' );
+}
+add_action( 'woocommerce_new_product', 'wildflower_clear_catalog_minimum_price_cache' );
+add_action( 'woocommerce_update_product', 'wildflower_clear_catalog_minimum_price_cache' );
+add_action( 'woocommerce_delete_product', 'wildflower_clear_catalog_minimum_price_cache' );
+add_action( 'woocommerce_product_set_stock_status', 'wildflower_clear_catalog_minimum_price_cache' );
+add_action( 'woocommerce_variation_set_stock_status', 'wildflower_clear_catalog_minimum_price_cache' );
+
+/**
  * Hide unresolved product-category fallbacks from every Shop menu surface.
  * A missing term otherwise turns WooCommerce's product_cat query into a 404.
  * The item automatically returns as soon as its real category exists.
