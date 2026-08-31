@@ -392,7 +392,7 @@ function wildflower_render_operations_page() {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-		<p class="description"><?php esc_html_e( 'Both storefronts post into the same group: each site uses its own bot, and the topic keeps Boston Flowers and Wildflower traffic in one place per kind. Add every bot to the group before saving.', 'wildflower' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Both storefronts post into the same group, each using its own bot. The topic IDs above decide where Wildflower traffic lands, so point them at whichever topics you keep — one per site, or one per kind of traffic. Add every bot to the group before saving.', 'wildflower' ); ?></p>
 
 		<form method="post" action="options.php">
 			<?php settings_fields( 'wildflower_operations' ); ?>
