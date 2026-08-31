@@ -19,8 +19,12 @@ const WILDFLOWER_OPERATIONS_OPTION = 'wildflower_operations_settings';
  */
 function wildflower_operations_defaults() {
 	return array(
-		'telegram_bot_token'     => '',
-		'telegram_recipient_ids' => '',
+		'telegram_bot_token'           => '',
+		'telegram_recipient_ids'       => '',
+		'telegram_group_chat_id'       => '',
+		'telegram_topic_orders'        => '',
+		'telegram_topic_leads'         => '',
+		'telegram_topic_subscriptions' => '',
 	);
 }
 
@@ -91,6 +95,87 @@ function wildflower_lead_mailbox( $source, $fields ) {
 	}
 
 	return 'orders';
+}
+
+/**
+ * Telegram destinations, keyed by the route slug stored in the settings.
+ *
+ * @return array<string, string>
+ */
+function wildflower_telegram_routes() {
+	return array(
+		'orders'        => __( 'Orders', 'wildflower' ),
+		'leads'         => __( 'Leads', 'wildflower' ),
+		'subscriptions' => __( 'Subscriptions', 'wildflower' ),
+	);
+}
+
+/**
+ * Decide which Telegram topic a lead belongs to.
+ *
+ * Subscription interest is its own topic; every other form is a lead. Paid
+ * WooCommerce orders are the only thing that goes to the orders topic.
+ *
+ * @param string                $source Lead source.
+ * @param array<string, string> $fields Validated fields.
+ * @return string Route slug.
+ */
+function wildflower_lead_telegram_route( $source, $fields ) {
+	return 'subscriptions' === wildflower_lead_mailbox( $source, $fields ) ? 'subscriptions' : 'leads';
+}
+
+/**
+ * Resolve the forum topic ID for one route.
+ *
+ * An unset subscriptions topic falls back to the leads topic, and an unset
+ * topic altogether posts to the group's General topic.
+ *
+ * @param string $route Route slug.
+ * @return string Topic ID, or an empty string.
+ */
+function wildflower_telegram_thread_id( $route ) {
+	$settings = wildflower_operations_settings();
+	$key      = 'telegram_topic_' . $route;
+	$thread   = isset( $settings[ $key ] ) ? (string) $settings[ $key ] : '';
+
+	if ( '' === $thread && 'subscriptions' === $route ) {
+		$thread = (string) $settings['telegram_topic_leads'];
+	}
+
+	return $thread;
+}
+
+/**
+ * Resolve where one route is delivered.
+ *
+ * A configured group is the single destination and carries the topic; the
+ * per-person recipient IDs are the fallback used only while no group is set.
+ *
+ * @param string $route Route slug.
+ * @return array<int, array<string, string>> Chat ID / thread ID pairs.
+ */
+function wildflower_telegram_targets( $route ) {
+	$settings = wildflower_operations_settings();
+	$group    = trim( (string) $settings['telegram_group_chat_id'] );
+
+	if ( '' !== $group ) {
+		return array(
+			array(
+				'chat_id'   => $group,
+				'thread_id' => wildflower_telegram_thread_id( $route ),
+			),
+		);
+	}
+
+	$targets = array();
+	foreach ( wildflower_parse_telegram_recipient_ids( $settings['telegram_recipient_ids'] ) as $recipient ) {
+		$targets[] = array(
+			'chat_id'   => $recipient,
+			'thread_id' => '',
+		);
+	}
+
+	return $targets;
 }
 
 /**
@@ -169,6 +254,35 @@ function wildflower_sanitize_operations_settings( $input ) {
 	}
 
 	$clean['telegram_recipient_ids'] = implode( ', ', $ids );
+
+	$raw_group = isset( $input['telegram_group_chat_id'] ) && is_scalar( $input['telegram_group_chat_id'] ) ? trim( sanitize_text_field( wp_unslash( $input['telegram_group_chat_id'] ) ) ) : '';
+	if ( '' === $raw_group || preg_match( '/^-?[1-9][0-9]*$/', $raw_group ) ) {
+		$clean['telegram_group_chat_id'] = $raw_group;
+	} else {
+		add_settings_error(
+			WILDFLOWER_OPERATIONS_OPTION,
+			'wildflower_invalid_group_chat_id',
+			__( 'The Group Chat ID must be a whole number. A supergroup ID normally begins with -100. The previous value was kept.', 'wildflower' ),
+			'error'
+		);
+	}
+
+	foreach ( array_keys( wildflower_telegram_routes() ) as $route ) {
+		$key       = 'telegram_topic_' . $route;
+		$raw_topic = isset( $input[ $key ] ) && is_scalar( $input[ $key ] ) ? trim( sanitize_text_field( wp_unslash( $input[ $key ] ) ) ) : '';
+
+		if ( '' === $raw_topic || preg_match( '/^[1-9][0-9]*$/', $raw_topic ) ) {
+			$clean[ $key ] = $raw_topic;
+		} else {
+			add_settings_error(
+				WILDFLOWER_OPERATIONS_OPTION,
+				'wildflower_invalid_topic_' . $route,
+				__( 'Topic IDs must be positive whole numbers. The previous value was kept.', 'wildflower' ),
+				'error'
+			);
+		}
+	}
+
 	unset( $clean['clear_bot_token'] );
 
 	return $clean;
@@ -219,7 +333,8 @@ function wildflower_render_operations_page() {
 	$test_state = isset( $_GET['wf_telegram_test'] ) ? sanitize_key( wp_unslash( $_GET['wf_telegram_test'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$test_sent  = isset( $_GET['wf_test_sent'] ) ? absint( $_GET['wf_test_sent'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$test_fail  = isset( $_GET['wf_test_failed'] ) ? absint( $_GET['wf_test_failed'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$test_attrs = $configured && $recipients ? array() : array( 'disabled' => 'disabled' );
+	$group      = trim( (string) $settings['telegram_group_chat_id'] );
+	$test_attrs = $configured && ( '' !== $group || $recipients ) ? array() : array( 'disabled' => 'disabled' );
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Wildflower Operations', 'wildflower' ); ?></h1>
@@ -254,6 +369,31 @@ function wildflower_render_operations_page() {
 			<div class="notice notice-error is-dismissible"><p><?php printf( esc_html__( 'Telegram test failed. Delivered: %1$d. Failed: %2$d. Check the token, recipient IDs, and that each recipient has started the bot.', 'wildflower' ), esc_html( $test_sent ), esc_html( $test_fail ) ); ?></p></div>
 		<?php endif; ?>
 
+		<table class="widefat striped" style="max-width:46rem;">
+			<tbody>
+				<?php foreach ( wildflower_telegram_routes() as $route_slug => $route_label ) : ?>
+					<?php
+					$route_targets = wildflower_telegram_targets( $route_slug );
+					if ( ! $configured || empty( $route_targets ) ) {
+						$route_where = __( 'not configured', 'wildflower' );
+					} elseif ( '' !== $group ) {
+						$route_thread = wildflower_telegram_thread_id( $route_slug );
+						$route_where  = '' !== $route_thread
+							? sprintf( /* translators: 1: group chat ID, 2: topic ID. */ __( 'group %1$s, topic %2$s', 'wildflower' ), $group, $route_thread )
+							: sprintf( /* translators: %s: group chat ID. */ __( 'group %s, General topic', 'wildflower' ), $group );
+					} else {
+						$route_where = sprintf( /* translators: %d: number of recipients. */ _n( '%d direct recipient', '%d direct recipients', count( $route_targets ), 'wildflower' ), count( $route_targets ) );
+					}
+					?>
+					<tr>
+						<td><?php echo esc_html( $route_label ); ?></td>
+						<td><code><?php echo esc_html( $route_where ); ?></code></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<p class="description"><?php esc_html_e( 'Both storefronts post into the same group: each site uses its own bot, and the topic keeps Boston Flowers and Wildflower traffic in one place per kind. Add every bot to the group before saving.', 'wildflower' ); ?></p>
+
 		<form method="post" action="options.php">
 			<?php settings_fields( 'wildflower_operations' ); ?>
 			<table class="form-table" role="presentation">
@@ -268,10 +408,38 @@ function wildflower_render_operations_page() {
 					</td>
 				</tr>
 				<tr>
+					<th scope="row"><label for="wildflower-telegram-group"><?php esc_html_e( 'Group Chat ID', 'wildflower' ); ?></label></th>
+					<td>
+						<input id="wildflower-telegram-group" class="regular-text" type="text" name="<?php echo esc_attr( WILDFLOWER_OPERATIONS_OPTION ); ?>[telegram_group_chat_id]" value="<?php echo esc_attr( $settings['telegram_group_chat_id'] ); ?>" spellcheck="false" placeholder="-1001234567890">
+						<p class="description"><?php esc_html_e( 'The shared group both storefront bots post into. A supergroup ID begins with -100. Leave empty to fall back to the per-person recipient IDs below.', 'wildflower' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="wildflower-topic-orders"><?php esc_html_e( 'Topic ID — Orders', 'wildflower' ); ?></label></th>
+					<td>
+						<input id="wildflower-topic-orders" class="small-text" type="text" name="<?php echo esc_attr( WILDFLOWER_OPERATIONS_OPTION ); ?>[telegram_topic_orders]" value="<?php echo esc_attr( $settings['telegram_topic_orders'] ); ?>" spellcheck="false" placeholder="2">
+						<p class="description"><?php esc_html_e( 'Paid WooCommerce orders (WF-…).', 'wildflower' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="wildflower-topic-leads"><?php esc_html_e( 'Topic ID — Leads', 'wildflower' ); ?></label></th>
+					<td>
+						<input id="wildflower-topic-leads" class="small-text" type="text" name="<?php echo esc_attr( WILDFLOWER_OPERATIONS_OPTION ); ?>[telegram_topic_leads]" value="<?php echo esc_attr( $settings['telegram_topic_leads'] ); ?>" spellcheck="false" placeholder="3">
+						<p class="description"><?php esc_html_e( 'Contact form and Custom Order form.', 'wildflower' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="wildflower-topic-subscriptions"><?php esc_html_e( 'Topic ID — Subscriptions', 'wildflower' ); ?></label></th>
+					<td>
+						<input id="wildflower-topic-subscriptions" class="small-text" type="text" name="<?php echo esc_attr( WILDFLOWER_OPERATIONS_OPTION ); ?>[telegram_topic_subscriptions]" value="<?php echo esc_attr( $settings['telegram_topic_subscriptions'] ); ?>" spellcheck="false" placeholder="4">
+						<p class="description"><?php esc_html_e( 'Newsletter sign-ups and subscription enquiries. Optional — leave empty to send these to the Leads topic.', 'wildflower' ); ?></p>
+					</td>
+				</tr>
+				<tr>
 					<th scope="row"><label for="wildflower-telegram-recipients"><?php esc_html_e( 'Recipient Telegram IDs', 'wildflower' ); ?></label></th>
 					<td>
-						<input id="wildflower-telegram-recipients" class="regular-text" type="text" name="<?php echo esc_attr( WILDFLOWER_OPERATIONS_OPTION ); ?>[telegram_recipient_ids]" value="<?php echo esc_attr( $settings['telegram_recipient_ids'] ); ?>" spellcheck="false" placeholder="123456789, -1001234567890">
-						<p class="description"><?php esc_html_e( 'Separate multiple user or group IDs with commas. Every recipient must start the bot or add it to the group before testing.', 'wildflower' ); ?></p>
+						<input id="wildflower-telegram-recipients" class="regular-text" type="text" name="<?php echo esc_attr( WILDFLOWER_OPERATIONS_OPTION ); ?>[telegram_recipient_ids]" value="<?php echo esc_attr( $settings['telegram_recipient_ids'] ); ?>" spellcheck="false" placeholder="123456789, 987654321">
+						<p class="description"><?php esc_html_e( 'Fallback only: used while no Group Chat ID is set, so nothing is delivered twice. Separate IDs with commas; every recipient must start the bot first.', 'wildflower' ); ?></p>
 					</td>
 				</tr>
 			</table>
@@ -280,7 +448,7 @@ function wildflower_render_operations_page() {
 
 		<hr>
 		<h2><?php esc_html_e( 'Connection Test', 'wildflower' ); ?></h2>
-		<p><?php esc_html_e( 'Save the settings first. The test sends one message to every configured recipient.', 'wildflower' ); ?></p>
+		<p><?php esc_html_e( 'Save the settings first. With a group configured the test posts one message into each topic, so you can confirm every topic ID landed where you meant it to.', 'wildflower' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="wildflower_test_telegram">
 			<?php wp_nonce_field( 'wildflower_test_telegram' ); ?>
@@ -293,21 +461,29 @@ function wildflower_render_operations_page() {
 /**
  * Send one plain-text message to one Telegram recipient.
  *
- * @param string $token   Telegram bot token.
- * @param string $chat_id Telegram recipient ID.
- * @param string $text    Message text.
+ * @param string $token     Telegram bot token.
+ * @param string $chat_id   Telegram recipient ID.
+ * @param string $text      Message text.
+ * @param string $thread_id Forum topic ID, or an empty string for none.
  * @return true|WP_Error
  */
-function wildflower_send_telegram_to_recipient( $token, $chat_id, $text ) {
+function wildflower_send_telegram_to_recipient( $token, $chat_id, $text, $thread_id = '' ) {
+	$body = array(
+		'chat_id'                  => $chat_id,
+		'text'                     => $text,
+		'disable_web_page_preview' => 'true',
+	);
+
+	// Only forum groups accept a thread; sending one to a private chat errors out.
+	if ( '' !== (string) $thread_id ) {
+		$body['message_thread_id'] = (string) $thread_id;
+	}
+
 	$response = wp_remote_post(
 		'https://api.telegram.org/bot' . $token . '/sendMessage',
 		array(
 			'timeout' => 12,
-			'body'    => array(
-				'chat_id'                  => $chat_id,
-				'text'                     => $text,
-				'disable_web_page_preview' => 'true',
-			),
+			'body'    => $body,
 		)
 	);
 
@@ -324,16 +500,17 @@ function wildflower_send_telegram_to_recipient( $token, $chat_id, $text ) {
 }
 
 /**
- * Send one message to all configured Telegram recipients.
+ * Send one message to every destination configured for a route.
  *
- * @param string $text Message text.
+ * @param string $text  Message text.
+ * @param string $route Route slug; see wildflower_telegram_routes().
  * @return array<string, int>|WP_Error
  */
-function wildflower_send_telegram_message( $text ) {
-	$settings   = wildflower_operations_settings();
-	$recipients = wildflower_parse_telegram_recipient_ids( $settings['telegram_recipient_ids'] );
+function wildflower_send_telegram_message( $text, $route = 'leads' ) {
+	$settings = wildflower_operations_settings();
+	$targets  = wildflower_telegram_targets( $route );
 
-	if ( '' === $settings['telegram_bot_token'] || empty( $recipients ) ) {
+	if ( '' === $settings['telegram_bot_token'] || empty( $targets ) ) {
 		return new WP_Error( 'wildflower_telegram_not_configured', __( 'Telegram is not configured yet.', 'wildflower' ) );
 	}
 
@@ -342,8 +519,8 @@ function wildflower_send_telegram_message( $text ) {
 		'failed' => 0,
 	);
 
-	foreach ( $recipients as $recipient ) {
-		$sent = wildflower_send_telegram_to_recipient( $settings['telegram_bot_token'], $recipient, $text );
+	foreach ( $targets as $target ) {
+		$sent = wildflower_send_telegram_to_recipient( $settings['telegram_bot_token'], $target['chat_id'], $text, $target['thread_id'] );
 		if ( is_wp_error( $sent ) ) {
 			++$result['failed'];
 		} else {
@@ -364,15 +541,39 @@ function wildflower_handle_telegram_test() {
 
 	check_admin_referer( 'wildflower_test_telegram' );
 
-	$test_message = sprintf(
-		/* translators: %s: current site URL. */
-		__( "Wildflower Telegram connection test\nSite: %s\nStatus: connected", 'wildflower' ),
-		home_url( '/' )
-	);
-	$result       = wildflower_send_telegram_message( $test_message );
-	$sent         = is_wp_error( $result ) ? 0 : $result['sent'];
-	$failed       = is_wp_error( $result ) ? 1 : $result['failed'];
-	$state        = ! is_wp_error( $result ) && $sent > 0 ? 'success' : 'error';
+	$settings = wildflower_operations_settings();
+	$routes   = '' !== trim( (string) $settings['telegram_group_chat_id'] ) ? array_keys( wildflower_telegram_routes() ) : array( 'leads' );
+	$sent     = 0;
+	$failed   = 0;
+	$seen     = array();
+
+	foreach ( $routes as $route ) {
+		// Two routes pointed at one topic would otherwise be tested twice.
+		$fingerprint = wp_json_encode( wildflower_telegram_targets( $route ) );
+		if ( isset( $seen[ $fingerprint ] ) ) {
+			continue;
+		}
+		$seen[ $fingerprint ] = true;
+
+		$labels       = wildflower_telegram_routes();
+		$test_message = sprintf(
+			/* translators: 1: route label, 2: current site URL. */
+			__( "Wildflower Telegram connection test\nTopic: %1\$s\nSite: %2\$s\nStatus: connected", 'wildflower' ),
+			isset( $labels[ $route ] ) ? $labels[ $route ] : $route,
+			home_url( '/' )
+		);
+
+		$result = wildflower_send_telegram_message( $test_message, $route );
+		if ( is_wp_error( $result ) ) {
+			++$failed;
+			continue;
+		}
+
+		$sent   += $result['sent'];
+		$failed += $result['failed'];
+	}
+
+	$state = $sent > 0 && 0 === $failed ? 'success' : 'error';
 	$redirect     = add_query_arg(
 		array(
 			'page'             => 'wildflower-operations',
@@ -672,7 +873,7 @@ function wildflower_handle_lead_submission() {
 	 * site with no Telegram token still delivers by email and vice versa.
 	 */
 	$body     = wildflower_format_lead_message( $source, $fields );
-	$telegram = wildflower_send_telegram_message( $body );
+	$telegram = wildflower_send_telegram_message( $body, wildflower_lead_telegram_route( $source, $fields ) );
 	$email    = wildflower_send_lead_email( $source, $fields, $body );
 
 	$telegram_ok = ! is_wp_error( $telegram ) && ! empty( $telegram['sent'] );
@@ -716,3 +917,98 @@ function wildflower_order_number( $order_number, $order ) {
 	return sprintf( 'WF-%06d', $order->get_id() );
 }
 add_filter( 'woocommerce_order_number', 'wildflower_order_number', 10, 2 );
+
+/**
+ * Format one WooCommerce order for the Telegram orders topic.
+ *
+ * @param WC_Order $order Order object.
+ * @return string
+ */
+function wildflower_format_order_message( $order ) {
+	$lines = array(
+		'[WILDFLOWER] NEW ORDER',
+		__( 'Store: Wildflower', 'wildflower' ),
+		__( 'Order:', 'wildflower' ) . ' ' . $order->get_order_number(),
+		__( 'Total:', 'wildflower' ) . ' ' . html_entity_decode( wp_strip_all_tags( wc_price( $order->get_total(), array( 'currency' => $order->get_currency() ) ) ), ENT_QUOTES, 'UTF-8' ),
+		__( 'Status:', 'wildflower' ) . ' ' . wc_get_order_status_name( $order->get_status() ),
+		__( 'Payment:', 'wildflower' ) . ' ' . ( $order->get_payment_method_title() ? $order->get_payment_method_title() : $order->get_payment_method() ),
+	);
+
+	$customer = trim( $order->get_formatted_billing_full_name() );
+	if ( '' !== $customer ) {
+		$lines[] = __( 'Customer:', 'wildflower' ) . ' ' . $customer;
+	}
+
+	if ( $order->get_billing_email() ) {
+		$lines[] = __( 'Email:', 'wildflower' ) . ' ' . $order->get_billing_email();
+	}
+
+	if ( $order->get_billing_phone() ) {
+		$lines[] = __( 'Phone:', 'wildflower' ) . ' ' . $order->get_billing_phone();
+	}
+
+	$destination = trim( wp_strip_all_tags( $order->get_formatted_shipping_address() ? $order->get_formatted_shipping_address() : $order->get_formatted_billing_address() ) );
+	if ( '' !== $destination ) {
+		$lines[] = __( 'Deliver to:', 'wildflower' ) . ' ' . preg_replace( '/\s*\n\s*/', ', ', $destination );
+	}
+
+	$items = array();
+	foreach ( $order->get_items() as $item ) {
+		$items[] = $item->get_quantity() . ' x ' . $item->get_name();
+	}
+
+	if ( $items ) {
+		$lines[] = __( 'Items:', 'wildflower' ) . ' ' . implode( '; ', $items );
+	}
+
+	if ( $order->get_customer_note() ) {
+		$lines[] = __( 'Note:', 'wildflower' ) . ' ' . $order->get_customer_note();
+	}
+
+	$lines[] = __( 'Admin:', 'wildflower' ) . ' ' . $order->get_edit_order_url();
+
+	return implode( "\n", $lines );
+}
+
+/**
+ * Post a newly placed order into the Telegram orders topic.
+ *
+ * Guarded by order meta because the classic and block checkouts each fire their
+ * own hook, and a resumed payment can replay the same order.
+ *
+ * @param int $order_id Order ID.
+ */
+function wildflower_notify_new_order( $order_id ) {
+	if ( ! function_exists( 'wc_get_order' ) ) {
+		return;
+	}
+
+	$order = wc_get_order( $order_id );
+	if ( ! $order || 'yes' === $order->get_meta( '_wildflower_telegram_notified', true ) ) {
+		return;
+	}
+
+	$result = wildflower_send_telegram_message( wildflower_format_order_message( $order ), 'orders' );
+	if ( is_wp_error( $result ) || empty( $result['sent'] ) ) {
+		if ( is_wp_error( $result ) && 'wildflower_telegram_not_configured' !== $result->get_error_code() ) {
+			error_log( sprintf( 'Wildflower order Telegram notice failed for #%d: %s', absint( $order_id ), $result->get_error_message() ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		}
+		return;
+	}
+
+	$order->update_meta_data( '_wildflower_telegram_notified', 'yes' );
+	$order->save();
+}
+add_action( 'woocommerce_checkout_order_processed', 'wildflower_notify_new_order', 20 );
+add_action( 'woocommerce_store_api_checkout_order_processed', 'wildflower_notify_new_order_object', 20 );
+
+/**
+ * Block checkout hands over the order object rather than its ID.
+ *
+ * @param WC_Order $order Order object.
+ */
+function wildflower_notify_new_order_object( $order ) {
+	if ( is_object( $order ) && method_exists( $order, 'get_id' ) ) {
+		wildflower_notify_new_order( $order->get_id() );
+	}
+}
