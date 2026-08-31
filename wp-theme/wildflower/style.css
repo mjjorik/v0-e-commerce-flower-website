@@ -886,6 +886,24 @@ textarea { resize: vertical; }
 .product:hover .product__view { opacity: 1; }
 .product:hover .product__view span { transform: none; }
 @media (hover: none) { .product__view { display: none; } }
+/* Sold out: a quiet ribbon on the photo plus a text label where the "+" button
+   would sit. The listing stays in the grid — WooCommerce already refuses to add
+   an out-of-stock product to the cart. */
+.product__soldout {
+  position: absolute; top: .75rem; left: .75rem; z-index: 2;
+  padding: .3rem .6rem; border-radius: 999px;
+  background: rgba(17,19,21,.82); color: #fff;
+  font-size: .68rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  pointer-events: none;
+}
+.product__media:has(.product__soldout) img,
+.product__media:has(.product__soldout) .card-slider__slide img { opacity: .62; }
+.product__unavailable {
+  align-self: center; white-space: nowrap;
+  font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted, #8E8881);
+}
+
 /* Product card title as a link — inherit the card's ink, no underline. */
 .product__info .woocommerce-loop-product__title a { color: inherit; text-decoration: none; }
 .product__media[data-href] { cursor: pointer; }

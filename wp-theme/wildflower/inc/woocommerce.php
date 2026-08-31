@@ -364,6 +364,14 @@ add_action(
 add_action(
 	'woocommerce_before_shop_loop_item_title',
 	function () {
+		global $product;
+
+		// Sold out stays on the shelf: the listing keeps its place in the grid and
+		// says so on the photo, rather than quietly vanishing from the catalog.
+		if ( $product instanceof WC_Product && ! $product->is_in_stock() ) {
+			echo '<span class="product__soldout">' . esc_html__( 'Sold out', 'wildflower' ) . '</span>';
+		}
+
 		echo '<span class="product__view" aria-hidden="true"><span>' . esc_html__( 'View bouquet', 'wildflower' ) . '</span></span>';
 		echo '</div><div class="product__body"><div class="product__info">';
 	},
@@ -384,11 +392,31 @@ add_action(
 add_action(
 	'woocommerce_after_shop_loop_item_title',
 	function () {
+		global $product;
+
 		echo '</div>';
-		woocommerce_template_loop_add_to_cart();
+
+		// The "+" button would otherwise become WooCommerce's "Read more" link,
+		// which reads like an invitation to buy. Say what is actually true instead.
+		if ( $product instanceof WC_Product && ! $product->is_in_stock() ) {
+			echo '<span class="product__unavailable">' . esc_html__( 'Sold out', 'wildflower' ) . '</span>';
+		} else {
+			woocommerce_template_loop_add_to_cart();
+		}
+
 		echo '</div>';
 	},
 	20
+);
+
+/* Say "Sold out" on the product page too, instead of Woo's "Out of stock". */
+add_filter(
+	'woocommerce_get_availability_text',
+	function ( $text, $product ) {
+		return $product && ! $product->is_in_stock() ? __( 'Sold out', 'wildflower' ) : $text;
+	},
+	10,
+	2
 );
 
 /* ------------------------------------------------------------------
