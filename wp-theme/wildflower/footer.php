@@ -75,15 +75,21 @@ $brand = wildflower_brand();
 				</ul>
 			</div>
 
-			<div>
-				<h3><?php esc_html_e( 'Studio', 'wildflower' ); ?></h3>
-				<p class="footer-contact" style="margin-top:1rem;font-size:.9rem;">
-					<?php if ( ! empty( $brand['address'] ) ) : ?>
-						<a class="link-underline" href="<?php echo esc_url( $brand['maps'] ); ?>" rel="noopener" target="_blank"><?php echo esc_html( $brand['address'] ); ?></a><br>
-					<?php endif; ?>
-					<?php echo esc_html( $brand['email'] ); ?><br>
-					<?php echo esc_html( $brand['phone'] ); ?>
-				</p>
+				<div>
+					<h3><?php esc_html_e( 'Studio', 'wildflower' ); ?></h3>
+					<p class="footer-contact" style="margin-top:1rem;font-size:.9rem;">
+						<?php if ( ! empty( $brand['legal_name'] ) ) : ?>
+							<?php echo esc_html( $brand['legal_name'] ); ?><br>
+						<?php endif; ?>
+						<?php if ( ! empty( $brand['address'] ) ) : ?>
+							<a class="link-underline" href="<?php echo esc_url( $brand['maps'] ); ?>" rel="noopener" target="_blank"><?php echo esc_html( $brand['address'] ); ?></a><br>
+						<?php endif; ?>
+						<?php if ( ! empty( $brand['email'] ) ) : ?>
+							<a href="mailto:<?php echo esc_attr( $brand['email'] ); ?>"><?php echo esc_html( $brand['email'] ); ?></a><br>
+						<?php endif; ?>
+						<a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $brand['phone'] ) ); ?>"><?php echo esc_html( $brand['phone'] ); ?></a><br>
+						<a class="link-underline" href="https://wa.me/<?php echo esc_attr( preg_replace( '/[^0-9]/', '', $brand['whatsapp'] ) ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'WhatsApp', 'wildflower' ); ?></a>
+					</p>
 				<div class="footer-social" aria-label="<?php esc_attr_e( 'Follow us', 'wildflower' ); ?>">
 					<a href="<?php echo esc_url( $brand['instagram'] ); ?>" rel="noopener" target="_blank" aria-label="Instagram">
 						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
@@ -110,11 +116,13 @@ $brand = wildflower_brand();
 				<p style="margin-top:1rem;font-size:.9rem;">
 					<?php esc_html_e( 'Seasonal blooms, delivery news, the occasional secret sale.', 'wildflower' ); ?>
 				</p>
-				<form class="newsletter-form" onsubmit="return false;">
-					<input type="email" placeholder="<?php esc_attr_e( 'Your email', 'wildflower' ); ?>" aria-label="<?php esc_attr_e( 'Email address', 'wildflower' ); ?>">
+				<form class="newsletter-form" method="post" data-wildflower-lead-form data-lead-source="newsletter" aria-describedby="wildflower-newsletter-status">
+					<input type="email" name="email" placeholder="<?php esc_attr_e( 'Your email', 'wildflower' ); ?>" aria-label="<?php esc_attr_e( 'Email address', 'wildflower' ); ?>" autocomplete="email" spellcheck="false" required>
 					<button type="submit" aria-label="<?php esc_attr_e( 'Subscribe', 'wildflower' ); ?>">
 						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
 					</button>
+					<div class="wf-honeypot" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+					<p id="wildflower-newsletter-status" class="wf-form-status" data-wildflower-form-status role="status" aria-live="polite" tabindex="-1"></p>
 				</form>
 			</div>
 		</div>

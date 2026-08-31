@@ -6,8 +6,7 @@
  * (not via the homepage) gets the full picture, who Wildflower is, what can be
  * ordered, how it works, what it costs, proof, and a working request form.
  *
- * The request form is functional with zero plugins, on submit it builds a
- * pre-filled email to the studio (see [data-custom-order-form] in main.js).
+ * The request form submits securely to the studio's configured Telegram bot.
  *
  * SEO / GEO / AEO / E-E-A-T: location-rich copy, order-type coverage, process,
  * transparent pricing, reviews, plain-language FAQ, and Service + FAQPage +
@@ -18,9 +17,9 @@
 
 get_header();
 $brand = wildflower_brand();
-$email = $brand['email'];
 $phone = $brand['phone'];
 $city  = $brand['city'];
+$whatsapp = preg_replace( '/[^0-9]/', '', $brand['whatsapp'] );
 $shop  = class_exists( 'WooCommerce' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 
 $svg = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">';
@@ -185,13 +184,13 @@ $faqs = array(
 			<div class="corder__form-col">
 				<div class="section-head" style="margin-bottom:1.5rem;"><div><p class="eyebrow reveal"><?php esc_html_e( 'Your request', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Tell us what you are dreaming up', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
 
-				<form class="corder__form reveal" data-custom-order-form data-studio-email="<?php echo esc_attr( $email ); ?>" method="post" action="#" novalidate>
+				<form class="corder__form reveal" method="post" data-wildflower-lead-form data-lead-source="custom_order" aria-describedby="wildflower-custom-order-status">
 					<div class="field-row">
 						<label class="field"><span><?php esc_html_e( 'Full name', 'wildflower' ); ?></span><input type="text" name="name" autocomplete="name" required></label>
-						<label class="field"><span><?php esc_html_e( 'Email', 'wildflower' ); ?></span><input type="email" name="email" autocomplete="email" required></label>
+						<label class="field"><span><?php esc_html_e( 'Email', 'wildflower' ); ?></span><input type="email" name="email" autocomplete="email" spellcheck="false" required></label>
 					</div>
 					<div class="field-row">
-						<label class="field"><span><?php esc_html_e( 'Phone', 'wildflower' ); ?></span><input type="tel" name="phone" autocomplete="tel"></label>
+						<label class="field"><span><?php esc_html_e( 'Phone', 'wildflower' ); ?></span><input type="tel" name="phone" autocomplete="tel" inputmode="tel"></label>
 						<label class="field"><span><?php esc_html_e( 'Occasion', 'wildflower' ); ?></span>
 							<select name="occasion">
 								<?php foreach ( $occasions as $o ) : ?>
@@ -214,13 +213,14 @@ $faqs = array(
 						<label class="field"><span><?php esc_html_e( 'Colors / palette', 'wildflower' ); ?></span><input type="text" name="palette" placeholder="<?php esc_attr_e( 'e.g. blush, ivory, dusty blue', 'wildflower' ); ?>"></label>
 						<label class="field"><span><?php esc_html_e( 'Delivery city or ZIP', 'wildflower' ); ?></span><input type="text" name="location" placeholder="<?php esc_attr_e( 'e.g. Cambridge 02139', 'wildflower' ); ?>"></label>
 					</div>
-					<label class="field"><span><?php esc_html_e( 'Your vision', 'wildflower' ); ?></span><textarea name="details" rows="5" placeholder="<?php esc_attr_e( 'Favorite flowers, style, size, a photo link, anything at all…', 'wildflower' ); ?>"></textarea></label>
+				<label class="field"><span><?php esc_html_e( 'Your vision', 'wildflower' ); ?> <span aria-hidden="true">*</span></span><textarea name="details" rows="5" placeholder="<?php esc_attr_e( 'Favorite flowers, style, size, a photo link, anything at all…', 'wildflower' ); ?>" required></textarea></label>
+				<div class="wf-honeypot" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 
-					<div class="corder__actions">
-						<button type="submit" class="btn--primary btn--lg"><?php esc_html_e( 'Send request', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></button>
-						<span class="corder__note"><?php printf( esc_html__( 'Opens your email to %s. Prefer to write yourself? That works too.', 'wildflower' ), esc_html( $email ) ); ?></span>
-					</div>
-					<p class="corder__ok" data-custom-order-ok hidden><?php esc_html_e( 'Thanks, your email draft is ready. Hit send and we’ll reply within one business day.', 'wildflower' ); ?></p>
+				<div class="corder__actions">
+					<button type="submit" class="btn--primary btn--lg"><?php esc_html_e( 'Send request', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></button>
+					<span class="corder__note"><?php esc_html_e( 'Sent securely to our studio team. We usually reply within one business day.', 'wildflower' ); ?></span>
+				</div>
+				<p id="wildflower-custom-order-status" class="wf-form-status" data-wildflower-form-status role="status" aria-live="polite" tabindex="-1"></p>
 				</form>
 			</div>
 
@@ -234,7 +234,7 @@ $faqs = array(
 				</ul>
 				<p class="corder__aside-contact">
 					<?php esc_html_e( 'Rather talk it through?', 'wildflower' ); ?><br>
-					<a class="link-underline" href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a><br>
+					<a class="link-underline" href="https://wa.me/<?php echo esc_attr( $whatsapp ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Message us on WhatsApp', 'wildflower' ); ?></a><br>
 					<a class="link-underline" href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $phone ) ); ?>"><?php echo esc_html( $phone ); ?></a>
 				</p>
 			</aside>

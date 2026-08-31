@@ -493,6 +493,9 @@ body.admin-bar .site-header { top: 32px; }
 .site-footer .newsletter-form input { color: var(--primary-foreground); }
 .site-footer .newsletter-form input::placeholder { color: color-mix(in oklab, var(--primary-foreground) 55%, transparent); }
 .site-footer .newsletter-form button { color: var(--primary-foreground); }
+/* The shared status colours assume a light page; restate them for the dark footer. */
+.site-footer .wf-form-status.is-success { color: var(--primary-foreground); }
+.site-footer .wf-form-status.is-error { color: #ffb4a8; }
 .ig-strip { display: grid; grid-template-columns: repeat(3,1fr); }
 @media (min-width: 640px){ .ig-strip { grid-template-columns: repeat(6,1fr); } }
 .ig-strip .media { aspect-ratio: 1; }
@@ -532,8 +535,10 @@ body.admin-bar .site-header { top: 32px; }
 .footer-legal { display: flex; flex-wrap: wrap; gap: .35rem 1rem; }
 .footer-legal a { color: inherit; }
 .footer-legal a:hover { color: var(--foreground); }
-.newsletter-form { display: flex; align-items: center; gap: .5rem; border-bottom: 1px solid color-mix(in oklab, var(--foreground) 30%, transparent); padding-bottom: .5rem; margin-top: 1rem; }
-.newsletter-form input { width: 100%; background: transparent; border: none; outline: none; font-size: .9rem; }
+.newsletter-form { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; border-bottom: 1px solid color-mix(in oklab, var(--foreground) 30%, transparent); padding-bottom: .5rem; margin-top: 1rem; }
+.newsletter-form input[type="email"] { flex: 1 1 8rem; width: 100%; background: transparent; border: none; outline: none; font-size: .9rem; }
+/* The status line drops to its own row instead of squeezing the input. */
+.newsletter-form .wf-form-status { flex: 0 0 100%; }
 
 /* ============================================================
    11. Page header (inner pages)
@@ -1679,6 +1684,18 @@ a.corder-type { color: inherit; text-decoration: none; display: block; }
 .corder__aside-contact { font-size: .92rem; line-height: 1.9; color: var(--muted-foreground); }
 .contact__form .btn--primary { align-self: flex-start; margin-top: .5rem; }
 .contact__note { font-size: .85rem; }
+.wf-honeypot {
+  position: absolute !important; left: -10000px !important; width: 1px !important;
+  height: 1px !important; overflow: hidden !important;
+}
+.wf-form-status { min-height: 1.35em; margin-top: .25rem; font-size: .9rem; font-weight: 600; }
+.wf-form-status.is-success { color: var(--primary); }
+.wf-form-status.is-error { color: #8a2f2f; }
+.wf-form-status:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.field input[aria-invalid="true"], .field textarea[aria-invalid="true"], .field select[aria-invalid="true"] {
+  border-color: #8a2f2f; box-shadow: 0 0 0 3px color-mix(in oklab, #8a2f2f 18%, transparent);
+}
+[data-wildflower-lead-form] button[aria-busy="true"] { opacity: .65; cursor: wait; }
 /* Studio details sit on an accent matcha panel so the contact page carries the
    brand colour instead of reading as a flat white form. */
 .contact__card {

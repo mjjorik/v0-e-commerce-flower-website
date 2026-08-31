@@ -246,12 +246,14 @@ function wildflower_provision_product_categories() {
  */
 function wildflower_terms_starter() {
 	$brand = wildflower_brand();
-	$name  = $brand['name'];
-	$email = $brand['email'];
-	$city  = $brand['city'];
+	$name       = $brand['name'];
+	$legal_name = $brand['legal_name'];
+	$phone      = $brand['phone'];
+	$city       = $brand['city'];
 
 	$p = array(
 		'<p><em>' . esc_html__( 'Last updated: on publication. Please review these terms and adjust them to your business before relying on them.', 'wildflower' ) . '</em></p>',
+		'<p>' . sprintf( esc_html__( '%1$s is operated by %2$s, located at %3$s.', 'wildflower' ), esc_html( $name ), esc_html( $legal_name ), esc_html( $brand['address'] ) ) . '</p>',
 		'<h2>' . esc_html__( 'Ordering', 'wildflower' ) . '</h2>',
 		'<p>' . sprintf( esc_html__( 'When you place an order with %1$s you are making an offer to purchase. We confirm orders by email. Prices are shown in US dollars and may change without notice, though changes never affect orders already confirmed.', 'wildflower' ), esc_html( $name ) ) . '</p>',
 		'<h2>' . esc_html__( 'Cancellations', 'wildflower' ) . '</h2>',
@@ -267,7 +269,7 @@ function wildflower_terms_starter() {
 		'<h2>' . esc_html__( 'Freshness guarantee', 'wildflower' ) . '</h2>',
 		'<p>' . esc_html__( 'We stand behind our flowers. If your arrangement wilts earlier than it should, contact us within three days with a photo and we will arrange a replacement or credit.', 'wildflower' ) . '</p>',
 		'<h2>' . esc_html__( 'Contact', 'wildflower' ) . '</h2>',
-		'<p>' . sprintf( esc_html__( 'Questions about these terms? Email %s.', 'wildflower' ), esc_html( $email ) ) . '</p>',
+		'<p>' . sprintf( esc_html__( 'Questions about these terms? Call or contact us on WhatsApp at %s.', 'wildflower' ), esc_html( $phone ) ) . '</p>',
 	);
 	return implode( "\n\n", $p );
 }
@@ -280,12 +282,13 @@ function wildflower_terms_starter() {
  */
 function wildflower_privacy_starter() {
 	$brand = wildflower_brand();
-	$name  = $brand['name'];
-	$email = $brand['email'];
+	$name       = $brand['name'];
+	$legal_name = $brand['legal_name'];
+	$phone      = $brand['phone'];
 
 	$p = array(
 		'<p><em>' . esc_html__( 'Last updated: on publication. This is a starter policy, please review it and confirm it reflects how your store actually handles data.', 'wildflower' ) . '</em></p>',
-		'<p>' . sprintf( esc_html__( 'This policy explains how %1$s collects and uses your information when you visit our site or place an order.', 'wildflower' ), esc_html( $name ) ) . '</p>',
+		'<p>' . sprintf( esc_html__( 'This policy explains how %1$s, operated by %2$s, collects and uses your information when you visit our site or place an order.', 'wildflower' ), esc_html( $name ), esc_html( $legal_name ) ) . '</p>',
 		'<h2>' . esc_html__( 'What we collect', 'wildflower' ) . '</h2>',
 		'<p>' . esc_html__( 'When you order we collect your name, email, phone number, billing and delivery addresses, and the details of your order and any gift message. When you browse, we collect standard technical data such as your IP address, browser type and the pages you view.', 'wildflower' ) . '</p>',
 		'<h2>' . esc_html__( 'How we use it', 'wildflower' ) . '</h2>',
@@ -295,7 +298,7 @@ function wildflower_privacy_starter() {
 		'<h2>' . esc_html__( 'Sharing', 'wildflower' ) . '</h2>',
 		'<p>' . esc_html__( 'We share data only with the services needed to run the store, for example our payment processor, delivery couriers and hosting provider, and never sell your personal information.', 'wildflower' ) . '</p>',
 		'<h2>' . esc_html__( 'Your rights', 'wildflower' ) . '</h2>',
-		'<p>' . sprintf( esc_html__( 'You may request a copy of the data we hold about you, ask us to correct it, or ask us to delete it. To make a request, email %s.', 'wildflower' ), esc_html( $email ) ) . '</p>',
+		'<p>' . sprintf( esc_html__( 'You may request a copy of the data we hold about you, ask us to correct it, or ask us to delete it. To make a request, call or contact us on WhatsApp at %s.', 'wildflower' ), esc_html( $phone ) ) . '</p>',
 	);
 	return implode( "\n\n", $p );
 }

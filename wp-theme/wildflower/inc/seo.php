@@ -77,7 +77,6 @@ function wildflower_head_jsonld() {
 		'@id'         => $home . '#business',
 		'name'        => $brand['name'],
 		'url'         => $home,
-		'email'       => $brand['email'],
 		'telephone'   => $brand['phone'],
 		'description' => 'Farm-fresh bouquets and weekly flower subscriptions, hand-delivered same-day across Greater Boston.',
 		'priceRange'  => '$$',
@@ -92,6 +91,12 @@ function wildflower_head_jsonld() {
 			'closes'    => '18:00',
 		),
 	);
+	if ( ! empty( $brand['legal_name'] ) ) {
+		$business['legalName'] = $brand['legal_name'];
+	}
+	if ( ! empty( $brand['email'] ) ) {
+		$business['email'] = $brand['email'];
+	}
 	if ( $image ) {
 		$business['image'] = $image;
 		$business['logo']  = $image;
@@ -108,10 +113,12 @@ function wildflower_head_jsonld() {
 	$business['contactPoint'] = array(
 		'@type'       => 'ContactPoint',
 		'contactType' => 'customer service',
-		'email'       => $brand['email'],
 		'telephone'   => $brand['phone'],
 		'areaServed'  => 'US',
 	);
+	if ( ! empty( $brand['email'] ) ) {
+		$business['contactPoint']['email'] = $brand['email'];
+	}
 
 	// WebSite + Sitelinks Search Box.
 	$website = array(

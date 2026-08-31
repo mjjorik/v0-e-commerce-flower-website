@@ -13,7 +13,9 @@ get_header();
 $brand  = wildflower_brand();
 $cutoff = $brand['cutoff'];
 $city   = $brand['city'];
-$email  = $brand['email'];
+// Order changes and cancellations belong in the orders mailbox, not the
+// general studio inbox.
+$email  = function_exists( 'wildflower_studio_email' ) ? wildflower_studio_email( 'orders' ) : $brand['email'];
 $shop   = class_exists( 'WooCommerce' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 
 /* Grouped FAQ: each group = array( heading, array( array( q, a ) ) ). */

@@ -508,34 +508,6 @@
     });
   });
 
-  /* ---- Custom order request form → pre-filled email (no plugin needed) ---- */
-  var corderForm = document.querySelector('[data-custom-order-form]');
-  if (corderForm) {
-    corderForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var to = corderForm.getAttribute('data-studio-email') || '';
-      var get = function (n) { var el = corderForm.querySelector('[name="' + n + '"]'); return el ? String(el.value || '').trim() : ''; };
-      var name = get('name');
-      var rows = [
-        ['Name', name], ['Email', get('email')], ['Phone', get('phone')],
-        ['Occasion', get('occasion')], ['Date needed', get('date')], ['Budget', get('budget')],
-        ['Colors / palette', get('palette')], ['Delivery city / ZIP', get('location')]
-      ];
-      var body = 'Hi Wildflower,\n\nI’d like to request a custom order.\n\n';
-      rows.forEach(function (r) { if (r[1]) { body += r[0] + ': ' + r[1] + '\n'; } });
-      var details = get('details');
-      if (details) { body += '\nMy vision:\n' + details + '\n'; }
-      body += '\nThank you!' + (name ? '\n' + name : '');
-      var subject = 'Custom order request' + (name ? ' — ' + name : '');
-      var href = 'mailto:' + encodeURIComponent(to) +
-        '?subject=' + encodeURIComponent(subject) +
-        '&body=' + encodeURIComponent(body);
-      var ok = corderForm.querySelector('[data-custom-order-ok]');
-      if (ok) { ok.hidden = false; }
-      window.location.href = href;
-    });
-  }
-
   /* ---- Announcement bar ---- */
   var announce = document.querySelector('[data-announce]');
   var announceClose = document.querySelector('[data-announce-close]');

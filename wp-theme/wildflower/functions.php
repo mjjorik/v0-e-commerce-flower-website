@@ -72,6 +72,17 @@ function wildflower_assets() {
 	// Theme JS.
 	wp_enqueue_script( 'wildflower-main', get_template_directory_uri() . '/assets/js/main.js', array( 'gsap', 'gsap-scrolltrigger' ), wildflower_ver( '/assets/js/main.js' ), true );
 
+	// Lead forms. Site-wide, because the footer newsletter renders on every page.
+	wp_enqueue_script( 'wildflower-leads', get_template_directory_uri() . '/assets/js/leads.js', array(), wildflower_ver( '/assets/js/leads.js' ), true );
+	wp_localize_script(
+		'wildflower-leads',
+		'wildflowerLeads',
+		array(
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( 'wildflower_submit_lead' ),
+		)
+	);
+
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
@@ -295,17 +306,26 @@ function wildflower_nav( $menu_class = 'site-header__menu' ) {
  */
 function wildflower_brand() {
 	return array(
-		'name'    => get_bloginfo( 'name' ) ? get_bloginfo( 'name' ) : 'Wildflower',
-		'city'    => 'Greater Boston',
-		'cutoff'  => '1 PM',
-		'email'   => 'hello@wildflower.boston',
-		'phone'   => '(617) 555-0142',
-		'handle'  => '@wildflower.boston',
+		'name'       => get_bloginfo( 'name' ) ? get_bloginfo( 'name' ) : 'Wildflower',
+		'legal_name' => 'BOSTON.FLOWERS AND BOUQUETS LLC',
+		'city'       => 'Greater Boston',
+		'cutoff'     => '1 PM',
+		'email'      => 'studio@boston-wildflower.com',
+		/*
+		 * Purpose-routed studio mailboxes. `studio` is the public address,
+		 * `orders` receives order and request traffic and is the WooCommerce
+		 * sender, `subscriptions` receives subscription and newsletter leads.
+		 */
+		'emails'     => array(
+			'studio'        => 'studio@boston-wildflower.com',
+			'orders'        => 'orders@boston-wildflower.com',
+			'subscriptions' => 'subscriptions@boston-wildflower.com',
+		),
+		'phone'      => '(617) 817-8975',
+		'handle'     => '@wildflower.boston',
 		'instagram' => 'https://instagram.com/wildflower.boston',
 		'facebook'  => 'https://facebook.com/wildflower.boston',
-		// WhatsApp number in international format, digits only (e.g. 16175550142).
-		// Defaults to the phone digits, set the real WhatsApp line here.
-		'whatsapp'  => '',
+		'whatsapp'  => '16178178975',
 		// Extra socials, icons show now; drop the real URLs in when ready.
 		'pinterest' => '',
 		'tiktok'    => '',
@@ -314,13 +334,13 @@ function wildflower_brand() {
 		 * footer/contact blocks and the map. Keep in sync with Google Business
 		 * Profile byte-for-byte.
 		 */
-		'street'   => '267 N Beacon St',
+		'street'   => '267 North Beacon St',
 		'locality' => 'Brighton',
 		'postal'   => '02135',
-		'address'  => '267 N Beacon St, Brighton, MA 02135',
+		'address'  => '267 North Beacon St, Brighton, MA 02135',
 		'lat'      => '42.3577',
 		'lng'      => '-71.1426',
-		'maps'     => 'https://www.google.com/maps/search/?api=1&query=267+N+Beacon+St+Brighton+MA+02135',
+		'maps'     => 'https://www.google.com/maps/search/?api=1&query=267+North+Beacon+St+Brighton+MA+02135',
 	);
 }
 
@@ -871,6 +891,7 @@ require get_template_directory() . '/inc/theme-switcher.php';
 
 // Structured data (JSON-LD) and WooCommerce tweaks.
 require get_template_directory() . '/inc/seo.php';
+require get_template_directory() . '/inc/operations.php';
 if ( class_exists( 'WooCommerce' ) ) {
 	require get_template_directory() . '/inc/woocommerce.php';
 	require get_template_directory() . '/inc/shop-filters.php';

@@ -5,15 +5,13 @@
  * Styled form + studio details + map. Wildflower system (theme/pult aware).
  * ContactPage + BreadcrumbList JSON-LD (LocalBusiness already in head).
  *
- * NOTE: the form markup is presentational. Wire it to a form plugin
- * (Contact Form 7 / WPForms / Fluent Forms) or admin-post for real sending.
- *
  * @package Wildflower
  */
 
 get_header();
 $brand = wildflower_brand();
 $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
+$contact_whatsapp = preg_replace( '/[^0-9]/', '', $brand['whatsapp'] );
 ?>
 
 <!-- CONTACT: HEADER -->
@@ -41,30 +39,44 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 				$wf_prefill = sprintf( __( "Hi Wildflower, I'd like to start the %s. Please tell me the next steps.", 'wildflower' ), $wf_plan );
 			}
 			?>
-			<form class="contact__form reveal" method="post" action="#" novalidate>
+			<form class="contact__form reveal" method="post" data-wildflower-lead-form data-lead-source="contact" aria-describedby="wildflower-contact-status">
 				<div class="field-row">
-					<label class="field"><span><?php esc_html_e( 'First name', 'wildflower' ); ?></span><input type="text" name="first_name" autocomplete="given-name"></label>
+					<label class="field"><span><?php esc_html_e( 'First name', 'wildflower' ); ?> <span aria-hidden="true">*</span></span><input type="text" name="first_name" autocomplete="given-name" required></label>
 					<label class="field"><span><?php esc_html_e( 'Last name', 'wildflower' ); ?></span><input type="text" name="last_name" autocomplete="family-name"></label>
 				</div>
-				<label class="field"><span><?php esc_html_e( 'Email', 'wildflower' ); ?></span><input type="email" name="email" autocomplete="email"></label>
+				<div class="field-row">
+					<label class="field"><span><?php esc_html_e( 'Email', 'wildflower' ); ?> <span aria-hidden="true">*</span></span><input type="email" name="email" autocomplete="email" spellcheck="false" required></label>
+					<label class="field"><span><?php esc_html_e( 'Phone', 'wildflower' ); ?></span><input type="tel" name="phone" autocomplete="tel" inputmode="tel"></label>
+				</div>
 				<label class="field"><span><?php esc_html_e( 'Topic', 'wildflower' ); ?></span>
 					<select name="topic">
-						<option<?php selected( ! $wf_is_sub ); ?>><?php esc_html_e( 'An order', 'wildflower' ); ?></option>
-						<option<?php selected( $wf_is_sub ); ?>><?php esc_html_e( 'Flower subscription', 'wildflower' ); ?></option>
-						<option><?php esc_html_e( 'Custom / bespoke arrangement', 'wildflower' ); ?></option>
-						<option><?php esc_html_e( 'Weddings & events', 'wildflower' ); ?></option>
-						<option><?php esc_html_e( 'Corporate gifting', 'wildflower' ); ?></option>
-						<option><?php esc_html_e( 'Something else', 'wildflower' ); ?></option>
+						<?php
+						// The slug is what gets submitted, so routing never depends on
+						// a translated label. "Flower subscription" goes to the
+						// subscriptions mailbox; everything else to orders.
+						$wf_topic = $wf_is_sub ? 'subscription' : 'order';
+						foreach ( wildflower_contact_topics() as $wf_topic_slug => $wf_topic_label ) :
+							?>
+							<option value="<?php echo esc_attr( $wf_topic_slug ); ?>"<?php selected( $wf_topic, $wf_topic_slug ); ?>><?php echo esc_html( $wf_topic_label ); ?></option>
+						<?php endforeach; ?>
 					</select>
 				</label>
-				<label class="field"><span><?php esc_html_e( 'Message', 'wildflower' ); ?></span><textarea name="message" rows="5"><?php echo esc_textarea( $wf_prefill ); ?></textarea></label>
+				<label class="field"><span><?php esc_html_e( 'Message', 'wildflower' ); ?> <span aria-hidden="true">*</span></span><textarea name="message" rows="5" required><?php echo esc_textarea( $wf_prefill ); ?></textarea></label>
+				<div class="wf-honeypot" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 				<button type="submit" class="btn--primary btn--lg"><?php esc_html_e( 'Send message', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></button>
-				<p class="contact__note muted"><?php esc_html_e( 'Prefer email? Write us directly, we reply within a few hours during studio hours.', 'wildflower' ); ?></p>
+				<p class="contact__note muted"><?php esc_html_e( 'Your request goes directly to our studio team. Prefer a quick chat?', 'wildflower' ); ?> <a class="link-underline" href="https://wa.me/<?php echo esc_attr( $contact_whatsapp ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Message us on WhatsApp.', 'wildflower' ); ?></a></p>
+				<p id="wildflower-contact-status" class="wf-form-status" data-wildflower-form-status role="status" aria-live="polite" tabindex="-1"></p>
 			</form>
 
 			<aside class="contact__aside reveal">
 				<div class="contact__card">
 					<ul class="contact__details">
+						<?php if ( ! empty( $brand['legal_name'] ) ) : ?>
+							<li>
+								<span class="contact__label"><?php esc_html_e( 'Operated by', 'wildflower' ); ?></span>
+								<span><?php echo esc_html( $brand['legal_name'] ); ?></span>
+							</li>
+						<?php endif; ?>
 						<?php if ( ! empty( $brand['address'] ) ) : ?>
 							<li>
 								<span class="contact__label"><?php esc_html_e( 'Studio', 'wildflower' ); ?></span>
@@ -72,12 +84,12 @@ $contact_map_id = wildflower_page_media_id( 'contact', 'map' );
 							</li>
 						<?php endif; ?>
 						<li>
-							<span class="contact__label"><?php esc_html_e( 'Email', 'wildflower' ); ?></span>
-							<a href="mailto:<?php echo esc_attr( $brand['email'] ); ?>"><?php echo esc_html( $brand['email'] ); ?></a>
-						</li>
-						<li>
 							<span class="contact__label"><?php esc_html_e( 'Phone', 'wildflower' ); ?></span>
 							<a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $brand['phone'] ) ); ?>"><?php echo esc_html( $brand['phone'] ); ?></a>
+						</li>
+						<li>
+							<span class="contact__label"><?php esc_html_e( 'WhatsApp', 'wildflower' ); ?></span>
+							<a class="link-underline" href="https://wa.me/<?php echo esc_attr( $contact_whatsapp ); ?>" rel="noopener" target="_blank"><?php esc_html_e( 'Chat with the studio', 'wildflower' ); ?></a>
 						</li>
 						<li>
 							<span class="contact__label"><?php esc_html_e( 'Studio hours', 'wildflower' ); ?></span>
