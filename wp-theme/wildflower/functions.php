@@ -209,20 +209,35 @@ function wildflower_nav_items() {
  * @return string
  */
 function wildflower_resolve_product_cat( $candidates, $shop_url ) {
-	$candidates = (array) $candidates;
+	$candidates  = (array) $candidates;
+	$saw_empty   = false;
 	if ( class_exists( 'WooCommerce' ) && taxonomy_exists( 'product_cat' ) ) {
 		foreach ( $candidates as $c ) {
 			$term = get_term_by( 'slug', sanitize_title( $c ), 'product_cat' );
 			if ( ! $term ) {
 				$term = get_term_by( 'name', $c, 'product_cat' );
 			}
-			if ( $term && ! is_wp_error( $term ) ) {
-				$link = get_term_link( $term );
-				if ( ! is_wp_error( $link ) ) {
-					return $link;
-				}
+			if ( ! $term || is_wp_error( $term ) ) {
+				continue;
+			}
+			/*
+			 * An empty category renders nothing but "No products were found",
+			 * so skip it and try the next candidate. That is how "Gifts" lands
+			 * on Add-ons: the empty `gifts` term no longer shadows it.
+			 */
+			if ( (int) $term->count < 1 ) {
+				$saw_empty = true;
+				continue;
+			}
+			$link = get_term_link( $term );
+			if ( ! is_wp_error( $link ) ) {
+				return $link;
 			}
 		}
+	}
+	// The section exists but has nothing in it yet: the shop beats a dead end.
+	if ( $saw_empty ) {
+		return $shop_url;
 	}
 	$slug = ! empty( $candidates ) ? sanitize_title( $candidates[0] ) : '';
 	return $slug ? add_query_arg( 'product_cat', $slug, $shop_url ) : $shop_url;

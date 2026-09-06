@@ -446,7 +446,13 @@ function wildflower_social_meta() {
 	}
 
 	echo "\n";
-	if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_taxonomy() ) ) {
+	/*
+	 * Core's rel_canonical() only fires on singular views, which left every
+	 * archive (blog categories, the author archive, paginated shop listings)
+	 * without a canonical. $url is already the request path with the query
+	 * string stripped, so filter/sort URLs fold into the clean archive.
+	 */
+	if ( ! is_singular() && ! is_404() && ! is_search() ) {
 		printf( '<link rel="canonical" href="%s">' . "\n", esc_url( $url ) );
 	}
 	printf( '<meta name="description" content="%s">' . "\n", esc_attr( $desc ) );
@@ -468,8 +474,160 @@ function wildflower_social_meta() {
 add_action( 'wp_head', 'wildflower_social_meta', 6 );
 
 /**
- * robots.txt: explicitly welcome AI answer-engine crawlers (we WANT citations)
- * and keep faceted-filter parameter URLs out of the crawl.
+ * Keep thin archives out of the index.
+ *
+ * The author archive is a duplicate of the journal on a single-author
+ * storefront, and its slug is derived from a private email address. An empty
+ * category or product category renders nothing but "No products were found".
+ *
+ * @param array $robots Robots directives keyed by name.
+ * @return array
+ */
+function wildflower_robots_meta( $robots ) {
+	if ( is_author() ) {
+		$robots['noindex'] = true;
+		$robots['follow']  = true;
+		return $robots;
+	}
+
+	$is_term = is_category() || is_tag() || ( function_exists( 'is_product_taxonomy' ) && is_product_taxonomy() );
+	if ( $is_term ) {
+		$term = get_queried_object();
+		if ( $term instanceof WP_Term && (int) $term->count < 1 ) {
+			$robots['noindex'] = true;
+			$robots['follow']  = true;
+		}
+	}
+
+	return $robots;
+}
+add_filter( 'wp_robots', 'wildflower_robots_meta' );
+
+/**
+ * Drop the users provider from the XML sitemap.
+ *
+ * @param WP_Sitemaps_Provider $provider Provider instance.
+ * @param string               $name     Provider name.
+ * @return WP_Sitemaps_Provider|false
+ */
+function wildflower_sitemap_providers( $provider, $name ) {
+	if ( 'users' === $name ) {
+		return false;
+	}
+	return $provider;
+}
+add_filter( 'wp_sitemaps_add_provider', 'wildflower_sitemap_providers', 10, 2 );
+
+/**
+ * Cart / Checkout / My account page IDs, however WooCommerce is configured.
+ *
+ * @return int[]
+ */
+function wildflower_transactional_page_ids() {
+	$ids = array();
+
+	if ( function_exists( 'wc_get_page_id' ) ) {
+		foreach ( array( 'cart', 'checkout', 'myaccount' ) as $wc_page ) {
+			$ids[] = (int) wc_get_page_id( $wc_page );
+		}
+	}
+	foreach ( array( 'cart', 'checkout', 'my-account' ) as $slug ) {
+		$page = get_page_by_path( $slug, OBJECT, 'page' );
+		if ( $page instanceof WP_Post ) {
+			$ids[] = (int) $page->ID;
+		}
+	}
+
+	return array_values( array_unique( array_filter( $ids, function ( $id ) { return $id > 0; } ) ) );
+}
+
+/**
+ * Keep the transactional pages out of the XML sitemap.
+ *
+ * They already carry noindex, and advertising a noindex URL in the sitemap is
+ * what Search Console reports as "indexed, though blocked" noise.
+ *
+ * @param array  $args      WP_Query args used to gather sitemap entries.
+ * @param string $post_type Post type being queried.
+ * @return array
+ */
+function wildflower_sitemap_posts_query_args( $args, $post_type ) {
+	if ( 'page' !== $post_type ) {
+		return $args;
+	}
+
+	$excluded = wildflower_transactional_page_ids();
+	if ( $excluded ) {
+		$existing             = isset( $args['post__not_in'] ) ? (array) $args['post__not_in'] : array();
+		$args['post__not_in'] = array_values( array_unique( array_merge( $existing, $excluded ) ) );
+	}
+
+	return $args;
+}
+add_filter( 'wp_sitemaps_posts_query_args', 'wildflower_sitemap_posts_query_args', 10, 2 );
+
+/**
+ * Merge extra directives into the existing "User-agent: *" group.
+ *
+ * WordPress and WooCommerce have already written that group by the time this
+ * filter runs. Appending a second group with the same token is legal but
+ * fragile (only crawlers that merge duplicate groups honour it), so we splice
+ * our lines into the group that is already there and skip any duplicates.
+ *
+ * @param string   $output Existing robots.txt body.
+ * @param string[] $rules  Directives to add.
+ * @return string
+ */
+function wildflower_robots_txt_merge( $output, $rules ) {
+	$lines    = preg_split( '/\r\n|\r|\n/', (string) $output );
+	$existing = array_map( 'trim', $lines );
+	$rules    = array_values( array_diff( $rules, $existing ) );
+	if ( empty( $rules ) ) {
+		return $output;
+	}
+
+	$start = null;
+	foreach ( $lines as $i => $line ) {
+		if ( preg_match( '/^\s*user-agent:\s*\*\s*$/i', $line ) ) {
+			$start = $i;
+			break;
+		}
+	}
+	if ( null === $start ) {
+		array_unshift( $rules, 'User-agent: *' );
+		return rtrim( (string) $output, "\n" ) . "\n" . implode( "\n", $rules ) . "\n";
+	}
+
+	/*
+	 * Walk to the last rule of that group. Blanks and comments are skipped, and
+	 * only Allow/Disallow/Crawl-delay extend it: Sitemap is a non-group
+	 * directive, so our rules belong above it, not after it.
+	 */
+	$end   = $start;
+	$count = count( $lines );
+	for ( $i = $start + 1; $i < $count; $i++ ) {
+		$line = trim( $lines[ $i ] );
+		if ( preg_match( '/^user-agent:/i', $line ) ) {
+			break;
+		}
+		if ( preg_match( '/^(allow|disallow|crawl-delay):/i', $line ) ) {
+			$end = $i;
+		}
+	}
+
+	array_splice( $lines, $end + 1, 0, $rules );
+
+	return implode( "\n", $lines );
+}
+
+/**
+ * robots.txt: keep faceted-filter parameter URLs out of the crawl and
+ * explicitly welcome AI answer-engine crawlers (we WANT citations).
+ *
+ * Cart, checkout and my-account used to be disallowed here. That fought with
+ * the noindex those pages already carry: a crawler that is not allowed to
+ * fetch a page never sees the noindex, so the URLs sat in Search Console as
+ * blocked-but-indexed. They are crawlable now and drop out on their own.
  *
  * @param string $output Existing robots.txt body.
  * @param bool   $public Whether the site is public.
@@ -479,24 +637,26 @@ function wildflower_robots_txt( $output, $public ) {
 	if ( ! $public ) {
 		return $output;
 	}
-	$ai = array( 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'anthropic-ai', 'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Applebot-Extended', 'Bytespider', 'CCBot' );
+
+	$output = wildflower_robots_txt_merge(
+		$output,
+		array(
+			'# Keep filter/sort parameter URLs out of the crawl',
+			'Disallow: /*?orderby=',
+			'Disallow: /*?min_price=',
+			'Disallow: /*?max_price=',
+			'Disallow: /*?filter_',
+		)
+	);
+
+	$ai    = array( 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'anthropic-ai', 'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Applebot-Extended', 'Bytespider', 'CCBot' );
 	$lines = array( '', '# AI answer engines, allowed so the studio can be cited/recommended' );
 	foreach ( $ai as $bot ) {
 		$lines[] = 'User-agent: ' . $bot;
 		$lines[] = 'Allow: /';
 		$lines[] = '';
 	}
-	$lines[] = '# Keep filter/sort parameter URLs out of the crawl';
-	$lines[] = 'User-agent: *';
-	$lines[] = 'Disallow: /*?orderby=';
-	$lines[] = 'Disallow: /*?min_price=';
-	$lines[] = 'Disallow: /*?max_price=';
-	$lines[] = 'Disallow: /*?filter_';
-	$lines[] = 'Disallow: /*?add-to-cart=';
-	$lines[] = 'Disallow: /cart/';
-	$lines[] = 'Disallow: /checkout/';
-	$lines[] = 'Disallow: /my-account/';
 
-	return $output . implode( "\n", $lines ) . "\n";
+	return rtrim( $output, "\n" ) . "\n" . implode( "\n", $lines ) . "\n";
 }
 add_filter( 'robots_txt', 'wildflower_robots_txt', 10, 2 );
