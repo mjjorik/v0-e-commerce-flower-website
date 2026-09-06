@@ -15,6 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Bump this on any deploy whose output should reach visitors immediately.
+ *
+ * It re-runs provisioning (repo-owned pages are rewritten) and purges the
+ * host's full-page cache, which otherwise serves the previous build without
+ * ever reaching PHP.
+ */
+const WILDFLOWER_BUILD = 'v11';
+
 add_action( 'init', 'wildflower_provision_pages', 20 );
 add_action( 'after_switch_theme', 'wildflower_provision_pages' );
 
@@ -26,7 +35,7 @@ add_action( 'after_switch_theme', 'wildflower_provision_pages' );
  * so it runs once per version, with a short lock to avoid concurrent double-runs.
  */
 function wildflower_provision_pages() {
-	if ( 'v10' === get_option( 'wildflower_provisioned' ) ) {
+	if ( WILDFLOWER_BUILD === get_option( 'wildflower_provisioned' ) ) {
 		return;
 	}
 	if ( get_transient( 'wildflower_provisioning' ) ) {
@@ -178,7 +187,7 @@ function wildflower_provision_pages() {
 	// WooCommerce shop sections (Roses / Bouquets / …) + auto-file products.
 	wildflower_provision_product_categories();
 
-	update_option( 'wildflower_provisioned', 'v10' );
+	update_option( 'wildflower_provisioned', WILDFLOWER_BUILD );
 	delete_transient( 'wildflower_provisioning' );
 
 	wildflower_purge_page_cache();
@@ -210,7 +219,10 @@ function wildflower_purge_page_cache() {
 	if ( headers_sent() ) {
 		do_action( 'litespeed_purge_all' );
 	} else {
-		header( 'X-LiteSpeed-Purge: *' );
+		wildflower_send_purge_header();
+		// The plugin writes its own value into this header from a shutdown
+		// handler, so claim it back as late as the request allows.
+		add_action( 'shutdown', 'wildflower_send_purge_header', PHP_INT_MAX );
 	}
 
 	if ( function_exists( 'wp_cache_clear_cache' ) ) {
@@ -225,15 +237,12 @@ function wildflower_purge_page_cache() {
 }
 
 /**
- * A signature that changes on every deploy of the theme.
- *
- * @return string
+ * Ask the LiteSpeed server to drop every cached object for this site.
  */
-function wildflower_theme_build_signature() {
-	$style = get_theme_file_path( 'style.css' );
-	$stamp = file_exists( $style ) ? (int) filemtime( $style ) : 0;
-
-	return wp_get_theme()->get( 'Version' ) . '-' . $stamp;
+function wildflower_send_purge_header() {
+	if ( ! headers_sent() ) {
+		header( 'X-LiteSpeed-Purge: *' );
+	}
 }
 
 /**
@@ -244,7 +253,7 @@ function wildflower_theme_build_signature() {
  * Keyed on the build signature: once per deploy, never on an ordinary request.
  */
 function wildflower_purge_cache_on_deploy() {
-	$signature = wildflower_theme_build_signature();
+	$signature = WILDFLOWER_BUILD;
 	if ( get_option( 'wildflower_cache_purged_for' ) === $signature ) {
 		return;
 	}
