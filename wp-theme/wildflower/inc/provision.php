@@ -196,13 +196,20 @@ function wildflower_provision_pages() {
  */
 function wildflower_purge_page_cache() {
 	/*
-	 * The host runs LiteSpeed. The plugin hook covers the plugin's own cache;
-	 * the header is what the LiteSpeed server itself listens for, and it is the
-	 * one that actually drops an already-cached XML sitemap. Both are ignored
-	 * where LiteSpeed is not in front of the site.
+	 * The host runs LiteSpeed, and only the server-level purge reaches every
+	 * object: the plugin's purge-all emits a tagged header
+	 * (`X-LiteSpeed-Purge: public,<blog>_`) that left a 15-hour-old
+	 * /wp-sitemap.xml being served long after the sitemap had changed.
+	 *
+	 * `*` is the documented purge-everything token, so send it directly, and do
+	 * NOT fire the plugin action alongside it: the plugin writes its own value
+	 * into the same header later in the request and ours would be replaced. The
+	 * action stays as the fallback for when output has already started and the
+	 * header can no longer be set.
 	 */
-	do_action( 'litespeed_purge_all' );
-	if ( ! headers_sent() ) {
+	if ( headers_sent() ) {
+		do_action( 'litespeed_purge_all' );
+	} else {
 		header( 'X-LiteSpeed-Purge: *' );
 	}
 
