@@ -26,7 +26,7 @@ add_action( 'after_switch_theme', 'wildflower_provision_pages' );
  * so it runs once per version, with a short lock to avoid concurrent double-runs.
  */
 function wildflower_provision_pages() {
-	if ( 'v9' === get_option( 'wildflower_provisioned' ) ) {
+	if ( 'v10' === get_option( 'wildflower_provisioned' ) ) {
 		return;
 	}
 	if ( get_transient( 'wildflower_provisioning' ) ) {
@@ -178,7 +178,7 @@ function wildflower_provision_pages() {
 	// WooCommerce shop sections (Roses / Bouquets / …) + auto-file products.
 	wildflower_provision_product_categories();
 
-	update_option( 'wildflower_provisioned', 'v9' );
+	update_option( 'wildflower_provisioned', 'v10' );
 	delete_transient( 'wildflower_provisioning' );
 
 	wildflower_purge_page_cache();
@@ -195,7 +195,16 @@ function wildflower_provision_pages() {
  * Every call is a no-op when the matching cache is not installed.
  */
 function wildflower_purge_page_cache() {
+	/*
+	 * The host runs LiteSpeed. The plugin hook covers the plugin's own cache;
+	 * the header is what the LiteSpeed server itself listens for, and it is the
+	 * one that actually drops an already-cached XML sitemap. Both are ignored
+	 * where LiteSpeed is not in front of the site.
+	 */
 	do_action( 'litespeed_purge_all' );
+	if ( ! headers_sent() ) {
+		header( 'X-LiteSpeed-Purge: *' );
+	}
 
 	if ( function_exists( 'wp_cache_clear_cache' ) ) {
 		wp_cache_clear_cache(); // WP Super Cache.
@@ -207,6 +216,36 @@ function wildflower_purge_page_cache() {
 		rocket_clean_domain();
 	}
 }
+
+/**
+ * A signature that changes on every deploy of the theme.
+ *
+ * @return string
+ */
+function wildflower_theme_build_signature() {
+	$style = get_theme_file_path( 'style.css' );
+	$stamp = file_exists( $style ) ? (int) filemtime( $style ) : 0;
+
+	return wp_get_theme()->get( 'Version' ) . '-' . $stamp;
+}
+
+/**
+ * Purge the full-page cache once per deployed build.
+ *
+ * Pages are served from LiteSpeed without touching PHP, so a deploy that
+ * changes what a template outputs stays invisible until the cache is dropped.
+ * Keyed on the build signature: once per deploy, never on an ordinary request.
+ */
+function wildflower_purge_cache_on_deploy() {
+	$signature = wildflower_theme_build_signature();
+	if ( get_option( 'wildflower_cache_purged_for' ) === $signature ) {
+		return;
+	}
+
+	update_option( 'wildflower_cache_purged_for', $signature );
+	wildflower_purge_page_cache();
+}
+add_action( 'init', 'wildflower_purge_cache_on_deploy', 21 );
 
 /**
  * Create the shop categories that actually receive products and file existing
