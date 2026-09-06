@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * host's full-page cache, which otherwise serves the previous build without
  * ever reaching PHP.
  */
-const WILDFLOWER_BUILD = 'v11';
+const WILDFLOWER_BUILD = 'v12';
 
 add_action( 'init', 'wildflower_provision_pages', 20 );
 add_action( 'after_switch_theme', 'wildflower_provision_pages' );
@@ -190,7 +190,7 @@ function wildflower_provision_pages() {
 	update_option( 'wildflower_provisioned', WILDFLOWER_BUILD );
 	delete_transient( 'wildflower_provisioning' );
 
-	wildflower_purge_page_cache();
+	update_option( 'wildflower_purge_pending', 1 );
 }
 
 /**
@@ -210,19 +210,16 @@ function wildflower_purge_page_cache() {
 	 * (`X-LiteSpeed-Purge: public,<blog>_`) that left a 15-hour-old
 	 * /wp-sitemap.xml being served long after the sitemap had changed.
 	 *
-	 * `*` is the documented purge-everything token, so send it directly, and do
-	 * NOT fire the plugin action alongside it: the plugin writes its own value
-	 * into the same header later in the request and ours would be replaced. The
-	 * action stays as the fallback for when output has already started and the
-	 * header can no longer be set.
+	 * `*` is the documented purge-everything token, so send it directly rather
+	 * than firing the plugin action alongside it: when the plugin has purges
+	 * queued it writes its own tag list into this header from an output-buffer
+	 * callback, which runs last and replaces ours. The action is kept only as
+	 * the fallback for when output has already started.
 	 */
 	if ( headers_sent() ) {
 		do_action( 'litespeed_purge_all' );
 	} else {
 		wildflower_send_purge_header();
-		// The plugin writes its own value into this header from a shutdown
-		// handler, so claim it back as late as the request allows.
-		add_action( 'shutdown', 'wildflower_send_purge_header', PHP_INT_MAX );
 	}
 
 	if ( function_exists( 'wp_cache_clear_cache' ) ) {
@@ -253,13 +250,27 @@ function wildflower_send_purge_header() {
  * Keyed on the build signature: once per deploy, never on an ordinary request.
  */
 function wildflower_purge_cache_on_deploy() {
-	$signature = WILDFLOWER_BUILD;
-	if ( get_option( 'wildflower_cache_purged_for' ) === $signature ) {
+	/*
+	 * A scheduled purge is sent from a LATER request on purpose. Whenever this
+	 * request has purges of its own queued (provisioning updates posts, which
+	 * queues one per post), the plugin writes its tag list into
+	 * X-LiteSpeed-Purge from an output-buffer callback, which runs after every
+	 * shutdown hook, so anything we set is replaced. A request that touches no
+	 * posts leaves the header to us, and only the `*` we send there reaches
+	 * objects the plugin never tagged, such as /wp-sitemap.xml.
+	 */
+	if ( get_option( 'wildflower_purge_pending' ) ) {
+		delete_option( 'wildflower_purge_pending' );
+		wildflower_purge_page_cache();
 		return;
 	}
 
-	update_option( 'wildflower_cache_purged_for', $signature );
-	wildflower_purge_page_cache();
+	if ( get_option( 'wildflower_cache_purged_for' ) === WILDFLOWER_BUILD ) {
+		return;
+	}
+
+	update_option( 'wildflower_cache_purged_for', WILDFLOWER_BUILD );
+	update_option( 'wildflower_purge_pending', 1 );
 }
 add_action( 'init', 'wildflower_purge_cache_on_deploy', 21 );
 
