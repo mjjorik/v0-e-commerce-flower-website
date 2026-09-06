@@ -26,7 +26,7 @@ add_action( 'after_switch_theme', 'wildflower_provision_pages' );
  * so it runs once per version, with a short lock to avoid concurrent double-runs.
  */
 function wildflower_provision_pages() {
-	if ( 'v8' === get_option( 'wildflower_provisioned' ) ) {
+	if ( 'v9' === get_option( 'wildflower_provisioned' ) ) {
 		return;
 	}
 	if ( get_transient( 'wildflower_provisioning' ) ) {
@@ -178,8 +178,34 @@ function wildflower_provision_pages() {
 	// WooCommerce shop sections (Roses / Bouquets / …) + auto-file products.
 	wildflower_provision_product_categories();
 
-	update_option( 'wildflower_provisioned', 'v8' );
+	update_option( 'wildflower_provisioned', 'v9' );
 	delete_transient( 'wildflower_provisioning' );
+
+	wildflower_purge_page_cache();
+}
+
+/**
+ * Drop the host's full-page cache after provisioning.
+ *
+ * Without this the work above is invisible: LiteSpeed keeps serving the copy it
+ * made before the page existed. That is how a freshly created /privacy-policy/
+ * carried on returning 404, and how the XML sitemap carried on advertising URLs
+ * that had already been dropped from it.
+ *
+ * Every call is a no-op when the matching cache is not installed.
+ */
+function wildflower_purge_page_cache() {
+	do_action( 'litespeed_purge_all' );
+
+	if ( function_exists( 'wp_cache_clear_cache' ) ) {
+		wp_cache_clear_cache(); // WP Super Cache.
+	}
+	if ( function_exists( 'w3tc_flush_all' ) ) {
+		w3tc_flush_all();
+	}
+	if ( function_exists( 'rocket_clean_domain' ) ) {
+		rocket_clean_domain();
+	}
 }
 
 /**
