@@ -1,0 +1,470 @@
+<?php
+/**
+ * Front page, the Wildflower homepage.
+ *
+ * Section order (see docs/STUDIO_PLAN.md):
+ * hero → trust strip → occasions bento → bestsellers (3 big) → add-ons →
+ * subscription → how it works → our story → delivery → reviews → gallery → CTA.
+ *
+ * @package Wildflower
+ */
+
+get_header();
+$brand   = wildflower_brand();
+$has_woo = class_exists( 'WooCommerce' );
+$shop    = $has_woo ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+$cats    = array();
+$markup  = '';
+$home_media = wildflower_home_media();
+
+if ( $has_woo ) {
+	$cats = get_terms(
+		array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => true,
+			'number'     => 6,
+			'exclude'    => array( get_option( 'default_product_cat' ) ),
+		)
+	);
+	$cats = is_wp_error( $cats ) ? array() : $cats;
+
+	// Six bestsellers, shown 3 at a time in a horizontal scroller.
+	$markup = do_shortcode( '[products limit="6" columns="6" visibility="featured"]' );
+	if ( substr_count( $markup, '<li' ) < 6 ) {
+		$markup = do_shortcode( '[products limit="6" columns="6" category="bouquets" orderby="date" order="DESC"]' );
+	}
+	if ( substr_count( $markup, '<li' ) < 6 ) {
+		$markup = do_shortcode( '[products limit="6" columns="6" orderby="date" order="DESC"]' );
+	}
+	$markup = false === strpos( $markup, '<li' ) ? '' : $markup;
+}
+
+// Fall back to demo bouquets so the section is never empty (no Woo / no products).
+if ( '' === $markup ) {
+	$markup = wildflower_demo_products( 6 );
+}
+?>
+
+<!-- 3 · HERO -->
+<section class="hero">
+	<span class="hero__glow" aria-hidden="true" data-parallax="90"></span>
+	<div class="container--wide">
+		<div class="hero__grid">
+			<div class="hero__content">
+				<span class="hero__badge"><span class="dot"></span> <?php printf( esc_html__( 'Fresh flowers · %s', 'wildflower' ), esc_html( $brand['city'] ) ); ?></span>
+				<?php
+				$rotate = array( 'today.', 'for you.', 'hand-tied.', 'in bloom.', 'same-day.' );
+				?>
+				<h1 class="hero__title kinetic">
+					<?php echo wildflower_kinetic( 'Fresh flowers' ); ?><br>
+					<span class="hero__title-accent hero__rotate" data-rotate aria-label="<?php echo esc_attr( implode( ' ', $rotate ) ); ?>">
+						<?php foreach ( $rotate as $ri => $word ) : ?>
+							<span class="hero__rotate-word<?php echo 0 === $ri ? ' is-active' : ''; ?>"><?php echo esc_html( $word ); ?></span>
+						<?php endforeach; ?>
+					</span>
+				</h1>
+				<div class="hero__lead">
+					<p><?php printf( esc_html__( 'Farm-fresh bouquets and weekly subscriptions, hand-delivered same-day across Greater Boston. Order by %s.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>
+					<div class="hero__cta">
+						<a class="btn--primary btn--lg btn--magnetic" data-magnetic="0.25" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+						<a class="btn--outline btn--lg" href="#how"><?php esc_html_e( 'How it works', 'wildflower' ); ?></a>
+					</div>
+					<div class="hero__trust">
+						<span class="hero__trust-item hero__rating"><span class="hero__stars">★★★★★</span> <strong>4.9</strong> <span class="hero__trust-sub"><?php esc_html_e( '820+ reviews', 'wildflower' ); ?></span></span>
+						<span class="hero__trust-item"><?php esc_html_e( 'Same-day before 1 PM', 'wildflower' ); ?></span>
+						<span class="hero__trust-item"><?php esc_html_e( 'Hand-tied daily', 'wildflower' ); ?></span>
+					</div>
+				</div>
+			</div>
+			<div class="hero__visual">
+				<div class="hero__media media" data-hero-media>
+					<?php wildflower_hero_visual(); ?>
+				</div>
+				<span class="hero__chip"><span class="hero__chip-star">★</span> 4.9 · <?php esc_html_e( 'Same-day', 'wildflower' ); ?></span>
+				<?php
+				/* Hero badge = the bouquet featured in the hero video (Blush Cloud
+				   Bouquet), with its live catalog price. Falls back if the product
+				   isn't found. */
+				$hero_bq_name  = 'Blush Cloud Bouquet';
+				$hero_bq_price = '$125';
+				$hero_bq_url   = $shop;
+				if ( class_exists( 'WooCommerce' ) ) {
+					$bq_post = get_page_by_path( 'blush-cloud-bouquet', OBJECT, 'product' );
+					if ( ! $bq_post ) {
+						$bq_found = get_posts( array( 'post_type' => 'product', 'post_status' => 'publish', 'numberposts' => 1, 'title' => 'Blush Cloud Bouquet' ) );
+						$bq_post  = $bq_found ? $bq_found[0] : null;
+					}
+					if ( $bq_post ) {
+						$bq_prod = wc_get_product( $bq_post->ID );
+						if ( $bq_prod ) {
+							$hero_bq_name  = $bq_prod->get_name();
+							$hero_bq_price = wp_strip_all_tags( $bq_prod->get_price_html() );
+							$hero_bq_url   = get_permalink( $bq_prod->get_id() );
+						}
+					}
+				}
+				?>
+				<a class="hero__float" href="<?php echo esc_url( $hero_bq_url ); ?>">
+					<span class="hero__float-text">
+						<span class="hero__float-name"><?php echo esc_html( $hero_bq_name ); ?></span>
+						<span class="hero__float-price"><?php echo esc_html( $hero_bq_price ); ?></span>
+					</span>
+					<span class="hero__float-plus" aria-hidden="true">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+					</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 4 · TRUST STRIP -->
+<section class="trust-strip">
+	<div class="container trust-strip__row">
+		<?php
+		$svg_open = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">';
+		$trust    = array(
+			array(
+				$svg_open . '<path d="M3 7.5h10v8.5H3z"/><path d="M13 10.5h4l3.2 3v2.5H13z"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17.2" cy="17.5" r="1.6"/></svg>',
+				__( 'Same-day delivery', 'wildflower' ),
+				__( 'Order by 1 PM', 'wildflower' ),
+			),
+			array(
+				$svg_open . '<path d="M12 21v-9"/><path d="M12 14C8.5 14 6 11 6 7c4 0 6 3 6 7z"/><path d="M12 12c3.2 0 5.5-2.2 5.5-5.5C14 6.5 12 8.6 12 12z"/></svg>',
+				__( 'Farm-fresh', 'wildflower' ),
+				__( 'Cut this week', 'wildflower' ),
+			),
+			array(
+				$svg_open . '<path d="M3.5 12.5V5.5a2 2 0 0 1 2-2h7l8 8-9 9z"/><circle cx="8" cy="8" r="1.5"/></svg>',
+				__( 'Honest pricing', 'wildflower' ),
+				__( '$50–$130, no markups', 'wildflower' ),
+			),
+			array(
+				$svg_open . '<path d="M12 20.5S4 16 4 9.8A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 8 2.8C20 16 12 20.5 12 20.5z"/></svg>',
+				__( 'Loved in Boston', 'wildflower' ),
+				__( '4.9★ · 820+ reviews', 'wildflower' ),
+			),
+		);
+		foreach ( $trust as $t ) :
+			?>
+			<div class="trust-strip__item reveal">
+				<span class="trust-strip__icon"><?php echo $t[0]; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+				<span class="trust-strip__text"><strong><?php echo esc_html( $t[1] ); ?></strong><em><?php echo esc_html( $t[2] ); ?></em></span>
+			</div>
+		<?php endforeach; ?>
+	</div>
+</section>
+
+<?php if ( $markup ) : ?>
+<!-- 5 · BESTSELLERS, 3 shown, 6 total, horizontal scroll (placed above Shop by occasion) -->
+<section class="section section--alt scroller" data-scroller>
+	<div class="container">
+		<div class="section-head">
+			<div style="max-width:36rem;">
+				<p class="eyebrow reveal"><?php esc_html_e( 'The line-up', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Bestsellers', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			</div>
+			<div class="scroller__nav">
+				<button class="scroller__arrow" data-scroll-prev aria-label="<?php esc_attr_e( 'Previous', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+				<button class="scroller__arrow" data-scroll-next aria-label="<?php esc_attr_e( 'Next', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+				<a class="link-underline reveal" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'View all', 'wildflower' ); ?></a>
+			</div>
+		</div>
+	</div>
+	<div class="scroller__viewport">
+		<div class="container products--scroll" data-scroller-track>
+			<?php echo $markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+		<span class="scroller__fade" aria-hidden="true"></span>
+		<span class="scroller__hint" aria-hidden="true"><?php esc_html_e( 'Swipe for more', 'wildflower' ); ?> →</span>
+	</div>
+</section>
+<?php endif; ?>
+
+<!-- 6 · SHOP BY OCCASION — chip rail drives a sliding card deck (behaviour: initOccasionsSlider in main.js) -->
+<section class="section" id="shop-by-occasion">
+	<div class="container">
+		<div class="section-head section-head--center">
+			<p class="eyebrow reveal"><?php esc_html_e( 'For every moment', 'wildflower' ); ?></p>
+			<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Shop by occasion', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			<p class="section-sub reveal"><?php esc_html_e( 'Flip through the moments we arrange for, one bouquet at a time.', 'wildflower' ); ?></p>
+		</div>
+
+		<?php
+		$occasions = array(
+			array( 'birthday', 'Birthday', 'Make their year bloom.', 'birthday' ),
+			array( 'anniversary', 'Anniversary', 'Romance, distilled into stems.', 'anniversary' ),
+			array( 'congratulations', 'Congratulations', 'Toast the big moment.', 'congratulations' ),
+			array( 'corporate_gifts', 'Corporate gifts', 'A thoughtful thank-you, beautifully delivered.', '' ),
+			array( 'get_well', 'Get well', 'A little brightness for the road back.', 'get-well' ),
+			array( 'housewarming', 'Housewarming', 'Something beautiful for the new place.', '' ),
+			array( 'just_because', 'Just because', 'The best reason there is.', 'just-because' ),
+			array( 'love_romance', 'Love & romance', 'Say it with flowers.', 'love-romance' ),
+			array( 'new_baby', 'New baby', 'A soft hello to someone small.', 'new-baby' ),
+			array( 'sympathy', 'Sympathy', 'When words fall short.', 'sympathy' ),
+			array( 'wedding_events', 'Wedding & events', 'Flowers for a day worth remembering.', 'wedding' ),
+		);
+		$occ_total = count( $occasions );
+		?>
+		<div class="occasions reveal" data-occasions>
+			<!-- static chip list (left) -->
+			<div class="occasions__rail">
+				<ul class="occasions__chips" role="tablist" aria-label="<?php esc_attr_e( 'Occasions', 'wildflower' ); ?>">
+					<?php foreach ( $occasions as $oi => $o ) :
+						$link = $has_woo && $o[3] ? add_query_arg( 'occasion', $o[3], $shop ) : $shop;
+						?>
+						<li role="presentation">
+							<button class="occasions__chip<?php echo 0 === $oi ? ' is-active' : ''; ?>" type="button" role="tab" data-occ-chip="<?php echo esc_attr( $oi ); ?>" data-href="<?php echo esc_url( $link ); ?>" aria-selected="<?php echo 0 === $oi ? 'true' : 'false'; ?>">
+								<span class="occasions__chip-ic" aria-hidden="true"><?php echo wildflower_flower_svg(); // phpcs:ignore ?></span>
+								<span><?php echo esc_html( $o[1] ); ?></span>
+							</button>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+
+			<!-- sliding card deck (right) -->
+			<div class="occasions__stage" data-occ-stage>
+				<?php foreach ( $occasions as $oi => $o ) :
+					$link = $has_woo && $o[3] ? add_query_arg( 'occasion', $o[3], $shop ) : $shop;
+					$occasion_media_id = isset( $home_media[ 'occasion_' . $o[0] ] ) ? absint( $home_media[ 'occasion_' . $o[0] ] ) : 0;
+					?>
+					<a class="occasions__card<?php echo 0 === $oi ? ' is-active' : ''; ?>" data-occ-card="<?php echo esc_attr( $oi ); ?>" href="<?php echo esc_url( $link ); ?>"<?php echo 0 === $oi ? '' : ' tabindex="-1" aria-hidden="true"'; ?>>
+						<span class="occasions__media" aria-hidden="true">
+							<?php
+							if ( $occasion_media_id ) {
+								echo wp_get_attachment_image( $occasion_media_id, 'large', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async', 'sizes' => '(max-width: 900px) 74vw, 24rem' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							} else {
+								echo '<span class="media-fallback media-fallback--' . esc_attr( ( $oi % 5 ) + 1 ) . '">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+							}
+							?>
+						</span>
+						<span class="occasions__overlay">
+							<span class="occasions__num"><?php echo esc_html( sprintf( '%02d / %02d', $oi + 1, $occ_total ) ); ?></span>
+							<span class="occasions__cardtitle"><?php echo esc_html( $o[1] ); ?></span>
+							<span class="occasions__cardesc"><?php echo esc_html( $o[2] ); ?></span>
+							<span class="occasions__more"><?php esc_html_e( 'Shop now', 'wildflower' ); ?> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+						</span>
+					</a>
+				<?php endforeach; ?>
+
+				<div class="occasions__nav" aria-hidden="true">
+					<button class="occasions__arrow occasions__arrow--prev" type="button" data-occ-prev aria-label="<?php esc_attr_e( 'Previous occasion', 'wildflower' ); ?>"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+					<button class="occasions__arrow occasions__arrow--next" type="button" data-occ-next aria-label="<?php esc_attr_e( 'Next occasion', 'wildflower' ); ?>"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+				</div>
+			</div>
+		</div>
+
+		<div class="occasions__cta reveal">
+			<a class="btn--outline" href="<?php echo esc_url( home_url( '/occasions/' ) ); ?>"><?php esc_html_e( 'View all occasions', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+		</div>
+	</div>
+</section>
+
+<!-- 6.5 · SCROLL-STORY VIDEO (cinematic zoom) -->
+<section class="vstory" data-vstory>
+	<div class="vstory__sticky">
+		<div class="vstory__media" data-vstory-media>
+			<?php wildflower_story_visual(); ?>
+			<div class="vstory__scrim" aria-hidden="true"></div>
+			<div class="vstory__overlay" data-vstory-overlay>
+				<p class="eyebrow"><?php esc_html_e( 'In the studio', 'wildflower' ); ?></p>
+				<h2 class="vstory__title"><?php esc_html_e( 'Hand-tied, every single morning', 'wildflower' ); ?></h2>
+				<p class="vstory__lead"><?php esc_html_e( 'Real florists, real flowers, cut this week, not a warehouse. Watch a bouquet come together before it heads to your door.', 'wildflower' ); ?></p>
+				<a class="btn--accent btn--lg" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 7 · COMPLETE THE GIFT, ADD-ONS (dark) -->
+<section class="section addons">
+	<div class="container addons__inner" data-scroller>
+		<div class="addons__head reveal">
+			<p class="eyebrow"><?php esc_html_e( 'The little extras', 'wildflower' ); ?></p>
+			<h2 class="kinetic" style="margin-top:.5rem;color:var(--primary-foreground);"><?php echo wildflower_kinetic( __( 'Complete the gift', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			<p class="addons__lead"><?php esc_html_e( 'Make it unforgettable, add a little something at checkout.', 'wildflower' ); ?></p>
+		</div>
+		<div class="addons__grid" data-scroller-track>
+			<?php
+			$addons = array(
+				array( 'addon_vase', 'Glass vase', '+ $18' ),
+				array( 'addon_candle', 'Soy candle', '+ $24' ),
+				array( 'addon_chocolate', 'Belgian truffles', '+ $16' ),
+				array( 'addon_card', 'Handwritten card', 'Free' ),
+			);
+			foreach ( $addons as $ai => $a ) :
+				$addon_media_id = isset( $home_media[ $a[0] ] ) ? absint( $home_media[ $a[0] ] ) : 0;
+				?>
+				<div class="addon reveal" data-delay="<?php echo esc_attr( $ai * 90 ); ?>">
+					<?php if ( $addon_media_id ) : ?>
+						<?php echo wp_get_attachment_image( $addon_media_id, 'medium', false, array( 'class' => 'addon__image', 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async', 'sizes' => '(max-width: 700px) 22vw, 7rem' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<?php endif; ?>
+					<span class="addon__name"><?php echo esc_html( $a[1] ); ?></span>
+					<span class="addon__price"><?php echo esc_html( $a[2] ); ?></span>
+				</div>
+			<?php endforeach; ?>
+		</div>
+		<div class="addons__foot">
+			<a class="btn--accent" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Browse add-ons', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			<div class="scroller__nav addons__nav" aria-label="<?php esc_attr_e( 'Scroll add-ons', 'wildflower' ); ?>">
+				<button class="scroller__arrow" data-scroll-prev aria-label="<?php esc_attr_e( 'Previous', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+				<button class="scroller__arrow" data-scroll-next aria-label="<?php esc_attr_e( 'Next', 'wildflower' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 8 · DELIVERY, brief (full details on /delivery/) -->
+<section class="section section--alt">
+	<div class="container">
+		<div class="delivery">
+			<div class="delivery__body reveal">
+				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'Delivery', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Same-day across Boston', 'wildflower' ) ); // phpcs:ignore ?></h2>
+				<p class="delivery__lead"><?php printf( esc_html__( 'Order by %s and we hand-deliver the same day across Boston, Cambridge, Somerville and the metro. Zone-based delivery from $19, a flat $15 on orders over $85.', 'wildflower' ), esc_html( $brand['cutoff'] ) ); ?></p>
+				<div class="delivery__facts">
+					<div><strong><?php esc_html_e( 'Same-day', 'wildflower' ); ?></strong><span><?php esc_html_e( 'Order by 1 PM', 'wildflower' ); ?></span></div>
+					<div><strong><?php esc_html_e( 'From $19', 'wildflower' ); ?></strong><span><?php esc_html_e( '$15 on orders $85+', 'wildflower' ); ?></span></div>
+					<div><strong><?php esc_html_e( 'Metro-wide', 'wildflower' ); ?></strong><span><?php esc_html_e( 'Within Rt-128', 'wildflower' ); ?></span></div>
+				</div>
+				<a class="link-underline" href="<?php echo esc_url( home_url( '/delivery/' ) ); ?>"><?php esc_html_e( 'See zones & full details', 'wildflower' ); ?> →</a>
+			</div>
+			<div class="delivery__map media" aria-hidden="true">
+				<?php
+				$map_media_id = wildflower_home_media_id( 'delivery_map' );
+				if ( $map_media_id ) {
+					echo wp_get_attachment_image( $map_media_id, 'large', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+				?>
+				<span class="delivery__pin"></span>
+				<span class="media-fallback__label"><?php esc_html_e( 'Greater Boston', 'wildflower' ); ?></span>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 9 · HOW IT WORKS (dark) -->
+<section class="section how" id="how">
+	<div class="container">
+		<h2 class="kinetic" style="max-width:28rem;"><?php echo wildflower_kinetic( __( 'How it works', 'wildflower' ) ); // phpcs:ignore ?></h2>
+		<div class="how__grid">
+			<?php
+			$steps = array(
+				array( '01', 'Pick your bouquet', 'Browse the line-up or start a subscription. Choose a size, Petite, Classic or Grand.' ),
+				array( '02', 'Tell us when & where', 'Add a delivery date, a time slot and a gift message. Same-day if you order by 1 PM.' ),
+				array( '03', 'We hand-deliver it', 'Our local couriers bring it fresh to the door, anywhere across Greater Boston.' ),
+			);
+			foreach ( $steps as $si => $s ) {
+				?>
+				<div class="reveal" data-delay="<?php echo esc_attr( $si * 130 ); ?>">
+					<p class="how__num"><?php echo esc_html( $s[0] ); ?></p>
+					<h3><?php echo esc_html( $s[1] ); ?></h3>
+					<p><?php echo esc_html( $s[2] ); ?></p>
+				</div>
+				<?php
+			}
+			?>
+		</div>
+	</div>
+</section>
+
+<!-- 10 · SUBSCRIPTION -->
+<section class="section">
+	<div class="container">
+		<div class="sub-teaser">
+			<div class="media">
+				<?php wildflower_media( wildflower_home_media_id( 'weekly_ritual' ), 'large', 'Wildflower florist holding a seasonal hand-tied bouquet', true ); ?>
+			</div>
+			<div class="sub-teaser__body reveal">
+				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Fresh flowers, every week', 'wildflower' ) ); // phpcs:ignore ?></h2>
+				<p style="margin-top:1.25rem;max-width:28rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.6;"><?php esc_html_e( 'A standing order of seasonal blooms, chosen by our studio and delivered like clockwork. Pause, skip or cancel anytime, no strings, just stems.', 'wildflower' ); ?></p>
+				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$70</span> <span style="font-size:1rem;color:var(--muted-foreground);">/ delivery</span></p>
+				<a class="btn--primary" style="margin-top:1.75rem;" href="<?php echo esc_url( home_url( '/subscriptions/' ) ); ?>"><?php esc_html_e( 'Explore subscriptions', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 11 · REVIEWS (matcha block) -->
+<section class="section reviews">
+	<div class="container">
+		<div class="section-head">
+			<div style="max-width:36rem;">
+				<p class="eyebrow reveal"><?php esc_html_e( 'Loved across the city', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Notes from the neighborhood', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			</div>
+			<span class="reviews__rating reveal">★ 4.9 · 820+ reviews</span>
+		</div>
+		<?php
+		$reviews = array(
+			array( 'review_maya', 'The nicest flowers I’ve sent, and somehow the cheapest. My sister cried.', 'Maya R.', 'Back Bay' ),
+			array( 'review_daniel', 'Subscription is the best $70 I spend each week. The studio has taste.', 'Daniel K.', 'Cambridge' ),
+			array( 'review_priya', 'Ordered at noon, delivered by 4. The bouquet looked exactly like the photo.', 'Priya S.', 'Somerville' ),
+		);
+		?>
+		<div class="reviews-grid">
+			<?php foreach ( $reviews as $ri => $r ) : ?>
+				<figure class="quote-card reveal" data-delay="<?php echo esc_attr( $ri * 110 ); ?>">
+					<span class="quote-card__stars">★★★★★</span>
+					<blockquote>&ldquo;<?php echo esc_html( $r[1] ); ?>&rdquo;</blockquote>
+					<figcaption class="quote-card__by">
+						<span class="quote-card__avatar">
+							<?php
+							$review_media_id = wildflower_home_media_id( $r[0] );
+							if ( $review_media_id ) {
+								echo wp_get_attachment_image( $review_media_id, 'thumbnail', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							} else {
+								echo '<span class="media-fallback media-fallback--' . esc_attr( ( $ri % 5 ) + 1 ) . '" aria-hidden="true">' . wildflower_flower_svg() . '</span>'; // phpcs:ignore
+							}
+							?>
+						</span>
+						<span class="quote-card__who"><strong><?php echo esc_html( $r[2] ); ?></strong><span class="quote-card__loc"><?php echo esc_html( $r[3] ); ?> · <?php esc_html_e( 'Verified buyer', 'wildflower' ); ?></span></span>
+					</figcaption>
+				</figure>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</section>
+
+<!-- 12 · GALLERY -->
+<section class="section">
+	<div class="container">
+		<div class="section-head">
+			<div style="max-width:32rem;">
+				<p class="eyebrow reveal"><?php esc_html_e( 'From the studio', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'The gallery', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			</div>
+			<a class="link-underline reveal" href="<?php echo esc_url( $brand['instagram'] ); ?>"><?php echo esc_html( $brand['handle'] ); ?></a>
+		</div>
+		<div class="gallery-grid">
+			<?php
+			// 10 tiles, tuned to tile flush with no gaps on the 2-col mobile grid.
+			wildflower_gallery( 1, array( 'w2', 'h2', '', '', 'w2', '', 'h2', '', 'w2', 'w2' ), isset( $home_media['gallery'] ) && is_array( $home_media['gallery'] ) ? $home_media['gallery'] : array() );
+			?>
+		</div>
+		<div class="gallery-cta reveal">
+			<a class="btn--primary btn--lg" href="<?php echo esc_url( home_url( '/gallery/' ) ); ?>"><?php esc_html_e( 'View the gallery', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+		</div>
+	</div>
+</section>
+
+<!-- 13 · FINAL CTA (dark) -->
+<section class="section" style="padding-top:0;">
+	<div class="container">
+		<div class="cta">
+			<span class="cta__glow" aria-hidden="true" data-parallax="-70"></span>
+			<p class="eyebrow" style="position:relative;margin-bottom:1.25rem;"><?php esc_html_e( 'No occasion required', 'wildflower' ); ?></p>
+			<h2 class="kinetic"><?php echo wildflower_kinetic( 'Send something beautiful today.' ); ?></h2>
+			<p><?php esc_html_e( 'Fresh, hand-tied and delivered across Boston in hours. The best flowers are the ones nobody expected.', 'wildflower' ); ?></p>
+			<div class="cta__row">
+				<a class="btn--accent btn--lg btn--pulse" href="<?php echo esc_url( $shop ); ?>"><?php esc_html_e( 'Shop Bouquets', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+				<a class="btn--lg" style="position:relative;background:transparent;border:1px solid color-mix(in oklab,var(--primary-foreground) 45%,transparent);color:var(--primary-foreground);" href="<?php echo esc_url( home_url( '/subscriptions/' ) ); ?>"><?php esc_html_e( 'Start a subscription', 'wildflower' ); ?></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<?php
+get_footer();

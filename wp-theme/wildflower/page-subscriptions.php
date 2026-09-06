@@ -1,0 +1,317 @@
+<?php
+/**
+ * Subscriptions page (auto-applies to the page with slug "subscriptions").
+ *
+ * A landing page for recurring flower plans, in the Wildflower system
+ * (theme + Studio-remote aware). The plan CTAs point to the shop / subscription
+ * products; actual recurring billing is handled by a subscriptions plugin
+ * (e.g. WooCommerce Subscriptions), this page is the marketing + plan chooser.
+ *
+ * SEO / AEO / E-E-A-T: clear plan offers, plain-language FAQ, Service +
+ * OfferCatalog + FAQPage + BreadcrumbList JSON-LD.
+ *
+ * @package Wildflower
+ */
+
+get_header();
+$brand = wildflower_brand();
+$shop  = class_exists( 'WooCommerce' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+$media = wildflower_page_media( 'subscriptions' );
+
+/* Plans: name, price, cadence, featured, perks[] */
+$plans = array(
+	array( 'Weekly', 70, __( 'every week', 'wildflower' ), false, array(
+		__( 'A fresh seasonal bouquet weekly', 'wildflower' ),
+		__( 'Free delivery, always', 'wildflower' ),
+		__( 'Skip or pause anytime', 'wildflower' ),
+		__( 'Best value per stem', 'wildflower' ),
+	) ),
+	array( 'Bi-weekly', 95, __( 'every two weeks', 'wildflower' ), true, array(
+		__( 'Everything in Weekly', 'wildflower' ),
+		__( 'A vase free on your first box', 'wildflower' ),
+		__( '10% off all add-ons', 'wildflower' ),
+		__( 'Our most-loved rhythm', 'wildflower' ),
+	) ),
+	array( 'Monthly', 130, __( 'once a month', 'wildflower' ), false, array(
+		__( 'Designer’s choice each month', 'wildflower' ),
+		__( 'Free delivery, always', 'wildflower' ),
+		__( 'Skip or pause anytime', 'wildflower' ),
+		__( 'A monthly moment of fresh', 'wildflower' ),
+	) ),
+);
+
+$faqs = array(
+	array(
+		__( 'How does a flower subscription work?', 'wildflower' ),
+		__( 'Choose a rhythm, weekly, every two weeks, or monthly, and our studio hand-ties a fresh seasonal bouquet for each delivery. You’re billed per delivery, and you can manage everything from your account.', 'wildflower' ),
+	),
+	array(
+		__( 'Can I pause, skip or cancel?', 'wildflower' ),
+		__( 'Anytime, with no fees. Going away? Skip a delivery or pause your plan from your account, and cancel whenever you like, no strings, just stems.', 'wildflower' ),
+	),
+	array(
+		__( 'What flowers will I receive?', 'wildflower' ),
+		__( 'A designer’s-choice arrangement built from the freshest stems that week, so it’s always seasonal and never the same twice. Tell us any no-go flowers and we’ll work around them.', 'wildflower' ),
+	),
+	array(
+		__( 'When am I charged?', 'wildflower' ),
+		__( 'Before each delivery on your chosen schedule. Your first box ships on the next available delivery date after you sign up.', 'wildflower' ),
+	),
+	array(
+		__( 'Can I send a subscription as a gift?', 'wildflower' ),
+		__( 'Yes. Gift plans are prepaid for 4, 8 or 12 deliveries and never auto-renew, the recipient simply receives fresh flowers on schedule, with your note in every box.', 'wildflower' ),
+	),
+	array(
+		__( 'Where do you deliver subscriptions?', 'wildflower' ),
+		sprintf( __( 'Across Greater Boston, same-day when you order before %s. See our Delivery page for zones and ZIP coverage.', 'wildflower' ), $brand['cutoff'] ),
+	),
+);
+?>
+
+<!-- HERO -->
+<section class="hero">
+	<span class="hero__glow" aria-hidden="true" data-parallax="90"></span>
+	<div class="container--wide">
+		<div class="hero__grid">
+			<div class="hero__content">
+				<span class="hero__badge"><span class="dot"></span> <?php esc_html_e( 'Subscriptions', 'wildflower' ); ?></span>
+				<?php $sub_rot = array( 'on repeat.', 'weekly.', 'for you.', 'always fresh.' ); ?>
+				<h1 class="kinetic">
+					<?php echo wildflower_kinetic( __( 'Fresh flowers,', 'wildflower' ) ); ?><br>
+					<span class="italic hero__rotate" data-rotate aria-label="<?php echo esc_attr( implode( ' ', $sub_rot ) ); ?>">
+						<?php foreach ( $sub_rot as $si => $w ) : ?>
+							<span class="hero__rotate-word<?php echo 0 === $si ? ' is-active' : ''; ?>"><?php echo esc_html( $w ); ?></span>
+						<?php endforeach; ?>
+					</span>
+				</h1>
+				<div class="hero__lead">
+					<p><?php esc_html_e( 'A seasonal bouquet hand-tied by our studio and delivered on your schedule. Pause, skip or cancel anytime, flowers should feel like a treat, never a chore.', 'wildflower' ); ?></p>
+					<div class="hero__cta">
+						<a class="btn--primary btn--lg btn--magnetic" data-magnetic="0.25" href="#plans"><?php esc_html_e( 'See plans', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+						<a class="btn--outline btn--lg" href="#how"><?php esc_html_e( 'How it works', 'wildflower' ); ?></a>
+					</div>
+					<div class="hero__trust">
+						<span class="hero__trust-item"><strong><?php esc_html_e( 'From $70', 'wildflower' ); ?></strong> <?php esc_html_e( 'per delivery', 'wildflower' ); ?></span>
+						<span class="hero__trust-item"><?php esc_html_e( 'Free delivery', 'wildflower' ); ?></span>
+						<span class="hero__trust-item"><?php esc_html_e( 'Cancel anytime', 'wildflower' ); ?></span>
+					</div>
+				</div>
+			</div>
+			<div class="hero__visual">
+				<div class="hero__media hero__media--subscription media" data-hero-media>
+					<?php wildflower_media( isset( $media['hero'] ) ? absint( $media['hero'] ) : 0, 'large', __( 'This week’s Wild Flower subscription bouquet', 'wildflower' ), true ); ?>
+				</div>
+				<span class="hero__chip"><span class="hero__chip-star">★</span> <?php esc_html_e( 'Loved weekly', 'wildflower' ); ?></span>
+				<div class="hero__float">
+					<span class="hero__float-text">
+						<span class="hero__float-name"><?php esc_html_e( 'Bi-weekly plan', 'wildflower' ); ?></span>
+						<span class="hero__float-price">$70 <span style="font-family:var(--font-sans);font-size:.7rem;color:var(--muted-foreground);">/ delivery</span></span>
+					</span>
+					<span class="hero__float-plus" aria-hidden="true">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section--alt" id="how">
+	<div class="container">
+		<div class="section-head"><div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'How it works', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Set it once, enjoy it always', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
+		<div class="how__grid how__grid--light">
+			<?php
+			$steps = array(
+				array( '01', __( 'Choose your rhythm', 'wildflower' ), __( 'Weekly, every two weeks or monthly, and pick a size that fits your space.', 'wildflower' ) ),
+				array( '02', __( 'We design it seasonal', 'wildflower' ), __( 'Our florists hand-tie a fresh designer’s-choice bouquet for every delivery.', 'wildflower' ) ),
+				array( '03', __( 'Delivered on schedule', 'wildflower' ), __( 'It arrives like clockwork. Pause, skip or cancel anytime from your account.', 'wildflower' ) ),
+			);
+			foreach ( $steps as $si => $s ) :
+				?>
+				<div class="reveal" data-delay="<?php echo esc_attr( $si * 120 ); ?>">
+					<p class="how__num"><?php echo esc_html( $s[0] ); ?></p>
+					<h3><?php echo esc_html( $s[1] ); ?></h3>
+					<p><?php echo esc_html( $s[2] ); ?></p>
+				</div>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</section>
+
+<!-- EDITORIAL / RITUAL -->
+<section class="section">
+	<div class="container">
+		<div class="sub-teaser">
+			<div class="media">
+				<?php wildflower_media( isset( $media['ritual'] ) ? absint( $media['ritual'] ) : 0, 'large', __( 'Seasonal stems from Wild Flower Boston', 'wildflower' ), true ); ?>
+			</div>
+			<div class="sub-teaser__body reveal">
+				<p class="eyebrow" style="color:var(--accent);"><?php esc_html_e( 'The ritual', 'wildflower' ); ?></p>
+				<h2 class="kinetic" style="margin-top:.75rem;"><?php echo wildflower_kinetic( __( 'Never the same bouquet twice', 'wildflower' ) ); // phpcs:ignore ?></h2>
+				<p style="margin-top:1.25rem;max-width:30rem;color:color-mix(in oklab,var(--foreground) 75%,transparent);line-height:1.65;"><?php esc_html_e( 'Each delivery is a designer’s-choice arrangement built from the freshest stems of the week, peonies in June, ranunculus in spring, branches in autumn. A small, living change of season on your table, every time.', 'wildflower' ); ?></p>
+				<p class="sub-teaser__price"><?php esc_html_e( 'From', 'wildflower' ); ?> <span class="amt">$70</span> <span style="font-size:1rem;color:var(--muted-foreground);"><?php esc_html_e( '/ delivery', 'wildflower' ); ?></span></p>
+				<a class="btn--primary" style="margin-top:1.5rem;" href="#plans"><?php esc_html_e( 'See plans', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- PLANS -->
+<section class="section" id="plans">
+	<div class="container">
+		<div class="section-head"><div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'Choose a plan', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'A rhythm for every home', 'wildflower' ) ); // phpcs:ignore ?></h2></div><span class="reviews__rating reveal" style="color:var(--accent);"><?php esc_html_e( 'Pause or cancel anytime', 'wildflower' ); ?></span></div>
+		<div class="plans">
+			<?php foreach ( $plans as $p ) : ?>
+				<div class="plan reveal<?php echo $p[3] ? ' plan--featured' : ''; ?>">
+					<?php if ( $p[3] ) : ?><span class="plan__badge"><?php esc_html_e( 'Most popular', 'wildflower' ); ?></span><?php endif; ?>
+					<h3 class="plan__name"><?php echo esc_html( $p[0] ); ?></h3>
+					<p class="plan__price">$<?php echo esc_html( $p[1] ); ?><span><?php esc_html_e( '/ delivery', 'wildflower' ); ?></span></p>
+					<p class="plan__cadence"><?php echo esc_html( $p[2] ); ?></p>
+					<ul class="plan__features">
+						<?php foreach ( $p[4] as $feat ) : ?>
+							<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><?php echo esc_html( $feat ); ?></li>
+						<?php endforeach; ?>
+					</ul>
+					<a class="<?php echo $p[3] ? 'btn--accent' : 'btn--primary'; ?> plan__cta" href="<?php echo esc_url( home_url( '/contact/?topic=subscription&plan=' . rawurlencode( $p[0] ) ) ); ?>"><?php esc_html_e( 'Choose plan', 'wildflower' ); ?></a>
+				</div>
+			<?php endforeach; ?>
+		</div>
+		<p class="price-zones__note muted" style="text-align:center;margin-inline:auto;"><?php esc_html_e( 'Sizes available on every plan, Petite, Classic or Grand. Prices shown per delivery; you’re only billed for boxes you receive.', 'wildflower' ); ?></p>
+	</div>
+</section>
+
+<!-- WHAT'S INCLUDED -->
+<section class="section section--alt">
+	<div class="container">
+		<div class="section-head"><div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'Every box', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'What’s always included', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
+		<ul class="incl-grid reveal">
+			<?php
+			$incl = array(
+				array( 'M12 21v-9M12 14C8.5 14 6 11 6 7c4 0 6 3 6 7zM12 12c3.2 0 5.5-2.2 5.5-5.5C14 6.5 12 8.6 12 12z', __( 'Seasonal & fresh', 'wildflower' ), __( 'Hand-tied that morning from the week’s best stems, never the same twice.', 'wildflower' ) ),
+				array( 'M5 13l4 4L19 7', __( 'Free delivery', 'wildflower' ), __( 'Every box is delivered free across Greater Boston, on your schedule.', 'wildflower' ) ),
+				array( 'M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z', __( 'Total flexibility', 'wildflower' ), __( 'Skip, pause, reschedule or cancel anytime, fully in your control.', 'wildflower' ) ),
+				array( 'M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0zM12 8v4l3 2', __( 'Member perks', 'wildflower' ), __( 'Add-on discounts, a free first vase on Bi-weekly, and priority same-day.', 'wildflower' ) ),
+			);
+			foreach ( $incl as $i ) :
+				?>
+				<li class="incl reveal">
+					<span class="incl__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="<?php echo esc_attr( $i[0] ); ?>"/></svg></span>
+					<h3><?php echo esc_html( $i[1] ); ?></h3>
+					<p><?php echo esc_html( $i[2] ); ?></p>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+</section>
+
+<!-- GIFT SUBSCRIPTION (dark statement) -->
+<section class="section how">
+	<div class="container deliv-rule__inner">
+		<div>
+			<p class="eyebrow"><?php esc_html_e( 'Gifting', 'wildflower' ); ?></p>
+			<h2 class="deliv-rule__title kinetic"><?php echo wildflower_kinetic( __( 'Give flowers that keep arriving', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			<p class="deliv-rule__text"><?php esc_html_e( 'A gift subscription is prepaid for 4, 8 or 12 deliveries and never auto-renews. They get a fresh bouquet on schedule with your note in every box, no account, no surprises.', 'wildflower' ); ?></p>
+			<a class="btn--accent" style="margin-top:1.5rem;" href="<?php echo esc_url( home_url( '/contact/?topic=subscription&plan=' . rawurlencode( 'Gift subscription' ) ) ); ?>"><?php esc_html_e( 'Gift a subscription', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+		</div>
+		<ul class="gift-terms">
+			<li><strong>4</strong><span><?php esc_html_e( 'deliveries · a month of flowers', 'wildflower' ); ?></span></li>
+			<li><strong>8</strong><span><?php esc_html_e( 'deliveries · two months', 'wildflower' ); ?></span></li>
+			<li><strong>12</strong><span><?php esc_html_e( 'deliveries · a season of fresh', 'wildflower' ); ?></span></li>
+		</ul>
+	</div>
+</section>
+
+<!-- SUBSCRIBER MOMENTS -->
+<section class="section">
+	<div class="container">
+		<div class="section-head">
+			<div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'From our subscribers', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Real moments, real homes', 'wildflower' ) ); // phpcs:ignore ?></h2></div>
+			<a class="link-underline reveal" href="<?php echo esc_url( $brand['instagram'] ); ?>"><?php echo esc_html( $brand['handle'] ); ?></a>
+		</div>
+		<div class="subs-strip reveal">
+			<?php for ( $i = 0; $i < 6; $i++ ) : ?>
+				<?php $home_moment_id = isset( $media['homes'][ $i ] ) ? absint( $media['homes'][ $i ] ) : 0; ?>
+				<span class="media"><?php wildflower_media( $home_moment_id, 'large', sprintf( __( 'Wild Flower subscription bouquet in a Boston home %d', 'wildflower' ), $i + 1 ), false ); ?></span>
+			<?php endfor; ?>
+		</div>
+	</div>
+</section>
+
+<!-- FAQ -->
+<section class="section section--alt">
+	<div class="container faq-wrap">
+		<div class="section-head"><div style="max-width:36rem;"><p class="eyebrow reveal"><?php esc_html_e( 'Good to know', 'wildflower' ); ?></p><h2 class="kinetic" style="margin-top:.5rem;"><?php echo wildflower_kinetic( __( 'Subscription questions, answered', 'wildflower' ) ); // phpcs:ignore ?></h2></div></div>
+		<div class="faq">
+			<?php foreach ( $faqs as $f ) : ?>
+				<details class="faq__item reveal">
+					<summary class="faq__q"><?php echo esc_html( $f[0] ); ?><span class="faq__icon" aria-hidden="true"></span></summary>
+					<div class="faq__a"><p><?php echo esc_html( $f[1] ); ?></p></div>
+				</details>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="padding-top:0;">
+	<div class="container">
+		<div class="cta">
+			<span class="cta__glow" aria-hidden="true" data-parallax="-70"></span>
+			<p class="eyebrow" style="position:relative;margin-bottom:1.25rem;"><?php esc_html_e( 'Flowers, every week', 'wildflower' ); ?></p>
+			<h2 class="kinetic"><?php echo wildflower_kinetic( __( 'Start your subscription today.', 'wildflower' ) ); // phpcs:ignore ?></h2>
+			<p><?php esc_html_e( 'Set your rhythm in a minute. Pause, skip or cancel whenever you like.', 'wildflower' ); ?></p>
+			<div class="cta__row">
+				<a class="btn--accent btn--lg btn--pulse" href="#plans"><?php esc_html_e( 'Choose a plan', 'wildflower' ); ?> <?php echo wildflower_arrow(); // phpcs:ignore ?></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<?php
+/* ---- Structured data: Service + OfferCatalog + FAQPage + Breadcrumb ---- */
+$home    = home_url( '/' );
+$offers  = array();
+foreach ( $plans as $p ) {
+	$offers[] = array(
+		'@type'    => 'Offer',
+		'name'     => $p[0] . ' flower subscription',
+		'price'    => $p[1],
+		'priceCurrency' => 'USD',
+		'priceSpecification' => array(
+			'@type'         => 'UnitPriceSpecification',
+			'price'         => $p[1],
+			'priceCurrency' => 'USD',
+			'referenceQuantity' => array( '@type' => 'QuantitativeValue', 'value' => 1, 'unitText' => 'delivery' ),
+		),
+	);
+}
+$faq_ld = array();
+foreach ( $faqs as $f ) {
+	$faq_ld[] = array( '@type' => 'Question', 'name' => $f[0], 'acceptedAnswer' => array( '@type' => 'Answer', 'text' => $f[1] ) );
+}
+wildflower_print_jsonld(
+	array(
+		array(
+			'@context'    => 'https://schema.org',
+			'@type'       => 'Service',
+			'serviceType' => 'Flower subscription',
+			'name'        => 'Flower subscriptions, Greater Boston',
+			'provider'    => array( '@id' => $home . '#business' ),
+			'areaServed'  => 'Greater Boston',
+			'offers'      => array( '@type' => 'OfferCatalog', 'name' => 'Subscription plans', 'itemListElement' => $offers ),
+			'url'         => get_permalink(),
+		),
+		array( '@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $faq_ld ),
+		array(
+			'@context'        => 'https://schema.org',
+			'@type'           => 'BreadcrumbList',
+			'itemListElement' => array(
+				array( '@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => $home ),
+				array( '@type' => 'ListItem', 'position' => 2, 'name' => 'Subscriptions', 'item' => get_permalink() ),
+			),
+		),
+	)
+);
+
+get_footer();

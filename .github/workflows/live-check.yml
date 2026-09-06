@@ -1,0 +1,61 @@
+name: Live Homepage Check (objective)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/website-redesign-bugs-doj090
+    paths:
+      - '.github/workflows/live-check.yml'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch the live homepage two ways + headers
+        run: |
+          set +e
+          UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36'
+          BUST="$(date +%s)$$"
+          echo "=================== NORMAL homepage ==================="
+          curl -s -A "$UA" -H 'Accept: text/html' --max-time 30 "https://boston-wildflower.com/" -o home_normal.html -w "HTTP %{http_code}  size %{size_download}\n"
+          echo "=================== QUERY-STRING homepage (bypasses page cache) ==================="
+          curl -s -A "$UA" -H 'Accept: text/html' --max-time 30 "https://boston-wildflower.com/?nocache=${BUST}" -o home_query.html -w "HTTP %{http_code}  size %{size_download}\n"
+          for f in home_normal.html home_query.html; do
+            echo "--- $f : bytes $(wc -c < $f 2>/dev/null) ---"
+            echo "    footer OLD (Help): $(grep -c -iE '>Help<|>HELP<' "$f" 2>/dev/null)   footer NEW (Explore/Company/footer-cols): $(grep -c -iE '>Explore<|>EXPLORE<|>Company<|footer-cols' "$f" 2>/dev/null)"
+            echo "    section order — first of Bestsellers vs Shop-by-occasion:"
+            grep -n -iE 'Bestsellers|Shop by occasion' "$f" 2>/dev/null | head -4 | sed 's/^/      /'
+            echo "    style.css ver: $(grep -oE 'style\.css\?ver=[0-9]+' "$f" 2>/dev/null | head -1)"
+          done
+          echo "=================== HERO / STORY VIDEO MARKUP ==================="
+          for f in home_normal.html home_query.html; do
+            echo "--- $f ---"
+            echo "  <video ...> tags:"
+            grep -oE '<video[^>]*>' "$f" 2>/dev/null | sed 's/^/    /'
+            echo "  video src / source URLs:"
+            grep -oE '(hero__video|vstory__video)[^>]*src="[^"]+"' "$f" 2>/dev/null | grep -oE 'src="[^"]+"' | sed 's/^/    /'
+            grep -oE '<source[^>]+src="[^"]+"[^>]*>' "$f" 2>/dev/null | sed 's/^/    /'
+            echo "  any .mov / .mp4 / .webm references:"
+            grep -oE 'https?://[^" ]+\.(mov|mp4|webm|m4v|ogv)' "$f" 2>/dev/null | sort -u | sed 's/^/    /'
+            echo "  data-home-video present: $(grep -c 'data-home-video' "$f" 2>/dev/null)"
+          done
+          echo "=================== PROBE VIDEO FILES (codec / pixfmt / faststart) ==================="
+          sudo apt-get update -qq >/dev/null 2>&1 && sudo apt-get install -y -qq ffmpeg >/dev/null 2>&1
+          for u in \
+            "https://boston-wildflower.com/wp-content/uploads/2026/07/wildflower-boston-home-hero-v4.mp4" \
+            "https://boston-wildflower.com/wp-content/uploads/2026/07/wildflower-boston-studio-story-v2.mp4"; do
+            echo "---- $u ----"
+            curl -s --max-time 120 "$u" -o v.mp4 -w "    HTTP %{http_code}  size %{size_download} bytes  ctype %{content_type}\n"
+            echo "    streams:"
+            ffprobe -v error -show_entries stream=codec_name,codec_type,profile,width,height,pix_fmt,bit_rate -show_entries format=duration,format_name -of default=noprint_wrappers=1 v.mp4 2>&1 | sed 's/^/      /'
+            MOOV=$(grep -aboin 'moov' v.mp4 2>/dev/null | head -1 | cut -d: -f1)
+            MDAT=$(grep -aboin 'mdat' v.mp4 2>/dev/null | head -1 | cut -d: -f1)
+            echo "    moov offset: ${MOOV:-?}   mdat offset: ${MDAT:-?}"
+            if [ -n "$MOOV" ] && [ -n "$MDAT" ] && [ "$MOOV" -lt "$MDAT" ]; then echo "    => faststart OK"; elif [ -n "$MOOV" ]; then echo "    => NOT faststart (moov after mdat): mobile autoplay often fails"; fi
+          done
+          echo "=================== RESPONSE HEADERS (normal) ==================="
+          curl -sI -A "$UA" --max-time 30 "https://boston-wildflower.com/" | grep -iE 'HTTP/|x-litespeed|x-lsadc|x-cache|x-qc|cache-control|cf-cache|age:|server:|x-turbo|platform'
+          echo "=================== RESPONSE HEADERS (query-string) ==================="
+          curl -sI -A "$UA" --max-time 30 "https://boston-wildflower.com/?nocache=${BUST}" | grep -iE 'HTTP/|x-litespeed|x-lsadc|x-cache|x-qc|cache-control|cf-cache|age:|server:|x-turbo|platform'
+          exit 0

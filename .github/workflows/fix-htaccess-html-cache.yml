@@ -1,0 +1,55 @@
+name: Fix .htaccess (stop caching HTML pages)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/website-redesign-bugs-doj090
+    paths:
+      - '.github/workflows/fix-htaccess-html-cache.yml'
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+      - name: Add 'text/html = no cache' to .htaccess mod_expires (with backup)
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          USER: ${{ secrets.FTP_USERNAME }}
+          PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          set +e
+          OPTS="set ftp:ssl-allow no; set ftp:passive-mode on; set net:timeout 15; set net:max-retries 2;"
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS get .htaccess -o htaccess.orig; bye" "ftp://$SERVER"
+          if [ ! -s htaccess.orig ]; then echo "ERROR: could not fetch .htaccess"; exit 0; fi
+          cp htaccess.orig htaccess.bak
+          echo "=== ORIGINAL .htaccess ==="; cat htaccess.orig
+          if grep -q 'text/html "access plus 0 seconds"' htaccess.orig; then
+            echo "Already patched — nothing to do."; exit 0
+          fi
+          if ! grep -q 'ExpiresActive On' htaccess.orig; then
+            echo "No mod_expires block found — leaving .htaccess untouched."; exit 0
+          fi
+          # Insert an explicit no-cache rule for HTML right after ExpiresActive On.
+          awk '{ print }
+               /ExpiresActive On/ { print "\tExpiresByType text/html \"access plus 0 seconds\"" }' htaccess.orig > htaccess.new
+          echo "=== PATCHED .htaccess ==="; cat htaccess.new
+          # Basic sanity: patched file must still contain the WordPress rewrite block.
+          if ! grep -q 'RewriteRule . /index.php' htaccess.new; then
+            echo "ERROR: patched file lost the WordPress rewrite rule — NOT uploading."; exit 0
+          fi
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS put htaccess.new -o .htaccess; bye" "ftp://$SERVER"
+          echo "=== VERIFY (re-download) ==="
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS get .htaccess -o htaccess.verify; bye" "ftp://$SERVER"
+          grep -n 'text/html "access plus 0 seconds"' htaccess.verify && echo "OK: HTML no-cache rule is live." || echo "WARN: rule not found after upload."
+          exit 0
+      - name: Upload .htaccess backup artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: htaccess-backup
+          path: htaccess.bak
+          if-no-files-found: warn
+          retention-days: 30

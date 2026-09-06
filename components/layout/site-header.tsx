@@ -136,10 +136,7 @@ export function SiteHeader() {
           </Link>
 
           <div className="flex flex-1 items-center justify-end gap-3 sm:gap-4">
-            <Link
-              href="/shop"
-              className="hidden rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5 lg:inline-flex"
-            >
+            <Link href="/shop" className="btn-primary btn-sm hidden lg:inline-flex">
               Order Now
             </Link>
             <button
