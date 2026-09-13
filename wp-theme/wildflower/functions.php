@@ -910,6 +910,8 @@ require get_template_directory() . '/inc/operations.php';
 if ( class_exists( 'WooCommerce' ) ) {
 	require get_template_directory() . '/inc/woocommerce.php';
 	require get_template_directory() . '/inc/shop-filters.php';
+	// Telegram order cards, identical to the Boston Flowers ones.
+	require get_template_directory() . '/inc/telegram-orders.php';
 }
 
 // Local delivery city landing-page data (used by the template + provisioning).

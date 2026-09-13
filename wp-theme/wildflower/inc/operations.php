@@ -918,97 +918,12 @@ function wildflower_order_number( $order_number, $order ) {
 }
 add_filter( 'woocommerce_order_number', 'wildflower_order_number', 10, 2 );
 
-/**
- * Format one WooCommerce order for the Telegram orders topic.
+/*
+ * Order notices moved to inc/telegram-orders.php on 2026-09-13.
  *
- * @param WC_Order $order Order object.
- * @return string
+ * Wildflower used to post nine plain lines here while Boston Flowers posted a
+ * full card with the listing photo, alerts, requested delivery, card message,
+ * both phones and per-item detail. Both brands land in one Telegram group, so
+ * the two formats had to be read differently — the new file is the Boston
+ * Flowers notifier ported across, and it owns the order hooks now.
  */
-function wildflower_format_order_message( $order ) {
-	$lines = array(
-		'[WILDFLOWER] NEW ORDER',
-		__( 'Store: Wildflower', 'wildflower' ),
-		__( 'Order:', 'wildflower' ) . ' ' . $order->get_order_number(),
-		__( 'Total:', 'wildflower' ) . ' ' . html_entity_decode( wp_strip_all_tags( wc_price( $order->get_total(), array( 'currency' => $order->get_currency() ) ) ), ENT_QUOTES, 'UTF-8' ),
-		__( 'Status:', 'wildflower' ) . ' ' . wc_get_order_status_name( $order->get_status() ),
-		__( 'Payment:', 'wildflower' ) . ' ' . ( $order->get_payment_method_title() ? $order->get_payment_method_title() : $order->get_payment_method() ),
-	);
-
-	$customer = trim( $order->get_formatted_billing_full_name() );
-	if ( '' !== $customer ) {
-		$lines[] = __( 'Customer:', 'wildflower' ) . ' ' . $customer;
-	}
-
-	if ( $order->get_billing_email() ) {
-		$lines[] = __( 'Email:', 'wildflower' ) . ' ' . $order->get_billing_email();
-	}
-
-	if ( $order->get_billing_phone() ) {
-		$lines[] = __( 'Phone:', 'wildflower' ) . ' ' . $order->get_billing_phone();
-	}
-
-	$destination = trim( wp_strip_all_tags( $order->get_formatted_shipping_address() ? $order->get_formatted_shipping_address() : $order->get_formatted_billing_address() ) );
-	if ( '' !== $destination ) {
-		$lines[] = __( 'Deliver to:', 'wildflower' ) . ' ' . preg_replace( '/\s*\n\s*/', ', ', $destination );
-	}
-
-	$items = array();
-	foreach ( $order->get_items() as $item ) {
-		$items[] = $item->get_quantity() . ' x ' . $item->get_name();
-	}
-
-	if ( $items ) {
-		$lines[] = __( 'Items:', 'wildflower' ) . ' ' . implode( '; ', $items );
-	}
-
-	if ( $order->get_customer_note() ) {
-		$lines[] = __( 'Note:', 'wildflower' ) . ' ' . $order->get_customer_note();
-	}
-
-	$lines[] = __( 'Admin:', 'wildflower' ) . ' ' . $order->get_edit_order_url();
-
-	return implode( "\n", $lines );
-}
-
-/**
- * Post a newly placed order into the Telegram orders topic.
- *
- * Guarded by order meta because the classic and block checkouts each fire their
- * own hook, and a resumed payment can replay the same order.
- *
- * @param int $order_id Order ID.
- */
-function wildflower_notify_new_order( $order_id ) {
-	if ( ! function_exists( 'wc_get_order' ) ) {
-		return;
-	}
-
-	$order = wc_get_order( $order_id );
-	if ( ! $order || 'yes' === $order->get_meta( '_wildflower_telegram_notified', true ) ) {
-		return;
-	}
-
-	$result = wildflower_send_telegram_message( wildflower_format_order_message( $order ), 'orders' );
-	if ( is_wp_error( $result ) || empty( $result['sent'] ) ) {
-		if ( is_wp_error( $result ) && 'wildflower_telegram_not_configured' !== $result->get_error_code() ) {
-			error_log( sprintf( 'Wildflower order Telegram notice failed for #%d: %s', absint( $order_id ), $result->get_error_message() ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-		}
-		return;
-	}
-
-	$order->update_meta_data( '_wildflower_telegram_notified', 'yes' );
-	$order->save();
-}
-add_action( 'woocommerce_checkout_order_processed', 'wildflower_notify_new_order', 20 );
-add_action( 'woocommerce_store_api_checkout_order_processed', 'wildflower_notify_new_order_object', 20 );
-
-/**
- * Block checkout hands over the order object rather than its ID.
- *
- * @param WC_Order $order Order object.
- */
-function wildflower_notify_new_order_object( $order ) {
-	if ( is_object( $order ) && method_exists( $order, 'get_id' ) ) {
-		wildflower_notify_new_order( $order->get_id() );
-	}
-}
