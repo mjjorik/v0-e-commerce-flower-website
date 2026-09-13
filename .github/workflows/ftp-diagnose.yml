@@ -1,0 +1,44 @@
+name: FTP Diagnose (which site does this account serve)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/website-redesign-bugs-doj090
+    paths:
+      - '.github/workflows/ftp-diagnose.yml'
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+      - name: Probe FTP filesystem + site identity (no secrets printed)
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          USER: ${{ secrets.FTP_USERNAME }}
+          PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          set +e
+          OPTS="set ftp:ssl-allow no; set ftp:passive-mode on; set net:timeout 15; set net:max-retries 2;"
+          echo "================ FTP HOME (absolute path) ================"
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS pwd; bye" "ftp://$SERVER"
+          echo "================ HOME ROOT LISTING ================"
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS cls -l ./; bye" "ftp://$SERVER"
+          echo "================ PARENT (look for domains/) ================"
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS cls -l ../ 2>/dev/null; bye" "ftp://$SERVER"
+          echo "================ domains/ (if present) ================"
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS cls -l domains/ 2>/dev/null; cls -l ../domains/ 2>/dev/null; bye" "ftp://$SERVER"
+          echo "================ ALL wp-config.php ON THIS ACCOUNT ================"
+          timeout 120 lftp -u "$USER","$PASS" -e "$OPTS find / 2>/dev/null; bye" "ftp://$SERVER" | grep -i "wp-config.php$" | head -40
+          echo "================ SITE IDENTITY from wp-config (safe lines only) ================"
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS get wp-config.php -o wpc.php 2>/dev/null; bye" "ftp://$SERVER"
+          if [ -f wpc.php ]; then
+            grep -E "DB_NAME|table_prefix|WP_HOME|WP_SITEURL|WP_ENVIRONMENT_TYPE" wpc.php
+          else
+            echo "(no wp-config.php at FTP home root)"
+          fi
+          echo "================ active theme hint: newest-modified theme dir ================"
+          timeout 40 lftp -u "$USER","$PASS" -e "$OPTS cls -l --sort=date wp-content/themes/ 2>/dev/null; bye" "ftp://$SERVER"
+          exit 0

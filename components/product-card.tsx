@@ -1,9 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useRef } from 'react'
 import { Plus } from 'lucide-react'
+import { SmartImage } from '@/components/smart-image'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
@@ -63,16 +63,18 @@ export function ProductCard({
     <div ref={cardRef} className="group opacity-0">
       <Link href={`/shop/${product.slug}`} className="block">
         <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-card">
-          <Image
-            src={product.image || '/placeholder.svg'}
+          <SmartImage
+            src={product.image}
             alt={product.imageAlt}
             fill
             sizes="(max-width: 640px) 50vw, 25vw"
+            fallbackLabel={product.name}
             className="object-cover transition-all duration-700 md:group-hover:scale-105"
           />
-          <Image
-            src={product.hoverImage || '/placeholder.svg'}
+          <SmartImage
+            src={product.hoverImage}
             alt={product.hoverImageAlt}
+            showMotif={false}
             fill
             sizes="(max-width: 640px) 50vw, 25vw"
             className="object-cover opacity-0 transition-all duration-700 md:group-hover:opacity-100 md:group-hover:scale-105"

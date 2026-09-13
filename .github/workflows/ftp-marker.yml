@@ -1,0 +1,27 @@
+name: FTP Marker (is this the live docroot?)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/website-redesign-bugs-doj090
+    paths:
+      - '.github/workflows/ftp-marker.yml'
+
+jobs:
+  marker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+      - name: Put a theme-independent marker file at the FTP docroot root
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          USER: ${{ secrets.FTP_USERNAME }}
+          PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          set +e
+          printf 'wildflower deploy check — this file was placed via the FTP account at %s UTC\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > wf-deploy-check-8823.txt
+          timeout 40 lftp -u "$USER","$PASS" -e "set ftp:ssl-allow no; set ftp:passive-mode on; set net:timeout 15; put wf-deploy-check-8823.txt -o wf-deploy-check-8823.txt; bye" "ftp://$SERVER"
+          echo "marker put attempted"
+          exit 0

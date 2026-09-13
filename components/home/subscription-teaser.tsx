@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { Reveal } from '@/components/kinetic-text'
+import { SmartImage } from '@/components/smart-image'
 
 export function SubscriptionTeaser() {
   return (
@@ -9,11 +9,12 @@ export function SubscriptionTeaser() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-6 overflow-hidden rounded-3xl bg-sage/40 lg:grid-cols-2">
           <div className="relative aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[28rem]">
-            <Image
+            <SmartImage
               src="/subscriptions/teaser.png"
               alt="A weekly flower subscription bouquet on a kitchen counter"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
+              fallbackLabel="Weekly ritual"
               className="object-cover"
             />
           </div>
@@ -34,12 +35,9 @@ export function SubscriptionTeaser() {
                 From <span className="text-terracotta">$55</span>
                 <span className="text-base text-foreground/60"> / delivery</span>
               </p>
-              <Link
-                href="/subscriptions"
-                className="group mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-sm text-primary-foreground transition-transform hover:-translate-y-0.5"
-              >
+              <Link href="/subscriptions" className="btn-primary group mt-7">
                 Explore subscriptions
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="btn-arrow size-4" strokeWidth={2} />
               </Link>
             </Reveal>
           </div>

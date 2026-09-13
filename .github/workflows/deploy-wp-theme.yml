@@ -1,0 +1,100 @@
+name: Deploy WP Theme to Client (FTP)
+
+# Deploys ONLY the Wildflower theme to the live client site (boston-wildflower.com)
+# via FTP, into wp-content/themes/wildflower/. It never touches wp-content/uploads,
+# the database, WordPress core, or anything outside the theme folder.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/website-redesign-bugs-doj090
+    paths:
+      - 'wp-theme/wildflower/**'
+      - '.github/workflows/deploy-wp-theme.yml'
+
+concurrency:
+  group: wp-theme-ftp-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Inspect remote themes and back up the current theme (best-effort, bounded)
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          USER: ${{ secrets.FTP_USERNAME }}
+          PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          set +e
+          LFTP_OPTS="set ftp:ssl-allow no; set ftp:passive-mode on; set net:timeout 15; set net:max-retries 2; set net:reconnect-interval-base 5;"
+          echo "== Themes currently on the server =="
+          timeout 60 lftp -u "$USER","$PASS" -e "$LFTP_OPTS cls -l wp-content/themes/; bye" "ftp://$SERVER" || echo "(could not list themes)"
+          echo "== Backing up the current wildflower theme (single connection, max ~150s) =="
+          mkdir -p theme-backup
+          timeout 150 lftp -u "$USER","$PASS" -e "$LFTP_OPTS mirror --verbose=0 wp-content/themes/wildflower ./theme-backup/wildflower; bye" "ftp://$SERVER"
+          if [ -d theme-backup/wildflower ] && [ -n "$(ls -A theme-backup/wildflower 2>/dev/null)" ]; then
+            tar -czf theme-backup.tgz -C theme-backup wildflower && echo "Backup created ($(du -h theme-backup.tgz | cut -f1))"
+          else
+            echo "Backup skipped or timed out — proceeding. Note: the first FTP deploy overwrites files but does NOT delete unknown remote files."
+          fi
+          # Cool-down so the shared-host FTP connection slots free up before the
+          # deploy step connects (avoids 'Timeout (control socket)').
+          echo "Cooling down 20s before deploy..."
+          sleep 20
+          exit 0
+
+      - name: Upload theme backup artifact (rollback copy)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wildflower-theme-backup
+          path: theme-backup.tgz
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Deploy theme via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          timeout: 90000
+          local-dir: ./wp-theme/wildflower/
+          server-dir: wp-content/themes/wildflower/
+          # Keep the deployed theme lean and never expose repo-only material.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.DS_Store
+            docs/**
+            scripts/**
+
+      - name: Purge on-disk WordPress page cache + clean up diagnostics
+        if: always()
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          USER: ${{ secrets.FTP_USERNAME }}
+          PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          set +e
+          OPTS="set ftp:ssl-allow no; set ftp:passive-mode on; set net:timeout 15; set net:max-retries 2;"
+          # Clear common on-disk full-page caches so the freshly deployed theme
+          # shows immediately (LiteSpeed plugin cache, WP Super Cache, etc.).
+          for dir in wp-content/cache wp-content/litespeed wp-content/cache/litespeed wp-content/wp-rocket-config wp-content/uploads/cache; do
+            timeout 45 lftp -u "$USER","$PASS" -e "$OPTS glob -a rm -r $dir/*; bye" "ftp://$SERVER" 2>/dev/null
+          done
+          # Remove the one-off diagnostic files placed earlier.
+          timeout 30 lftp -u "$USER","$PASS" -e "$OPTS rm -f wf-deploy-check-8823.txt; rm -f wf-theme-check.php; bye" "ftp://$SERVER" 2>/dev/null
+          echo "Cache purge + diagnostic cleanup attempted (best-effort). If a server-level LiteSpeed/Hostinger cache remains, purge it in hPanel."
+          exit 0

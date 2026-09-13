@@ -1,0 +1,37 @@
+name: FTP Probe (which theme is active)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/website-redesign-bugs-doj090
+    paths:
+      - '.github/workflows/ftp-probe.yml'
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+      - name: Upload a tiny WP probe that prints the ACTIVE theme folder
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          USER: ${{ secrets.FTP_USERNAME }}
+          PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          set +e
+          cat > wf-theme-check.php <<'PHP'
+          <?php
+          // Temporary diagnostic — prints the active theme folder. Delete after use.
+          require __DIR__ . '/wp-load.php';
+          header( 'Content-Type: text/plain' );
+          echo "ACTIVE THEME FOLDER (stylesheet): " . get_stylesheet() . "\n";
+          echo "PARENT THEME FOLDER (template):   " . get_template() . "\n";
+          echo "THEME DIRECTORY: " . get_stylesheet_directory() . "\n";
+          echo "SITE URL: " . get_site_url() . "\n";
+          echo "HOME URL: " . get_home_url() . "\n";
+          PHP
+          timeout 40 lftp -u "$USER","$PASS" -e "set ftp:ssl-allow no; set ftp:passive-mode on; set net:timeout 15; put wf-theme-check.php -o wf-theme-check.php; bye" "ftp://$SERVER"
+          echo "probe uploaded"
+          exit 0
