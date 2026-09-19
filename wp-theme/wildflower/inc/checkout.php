@@ -10,6 +10,185 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Expose store availability through WooCommerce's authenticated Settings API.
+ * Boston Flowers OS owns these values; the WordPress fields are read-only to
+ * prevent two admin screens from silently overwriting each other.
+ *
+ * @param array $settings General WooCommerce settings.
+ * @return array
+ */
+function wildflower_store_availability_settings( $settings ) {
+	$availability_settings = array(
+		array(
+			'title' => 'Store availability',
+			'type'  => 'title',
+			'desc'  => 'Emergency ordering pause and unavailable fulfillment dates managed by Boston Flowers OS.',
+			'id'    => 'bf_store_availability_settings',
+		),
+		array(
+			'title'   => 'Pause online ordering',
+			'desc'    => 'Keep products visible but prevent new carts and checkout.',
+			'id'      => 'bf_store_orders_paused',
+			'default' => 'no',
+			'type'    => 'checkbox',
+		),
+		array(
+			'title'             => 'Closed fulfillment dates',
+			'desc'              => 'JSON array of Boston calendar dates (YYYY-MM-DD). Managed by Boston Flowers OS.',
+			'id'                => 'bf_store_closed_dates',
+			'default'           => '[]',
+			'type'              => 'textarea',
+			'css'               => 'min-width: 420px; min-height: 90px;',
+			'custom_attributes' => array( 'readonly' => 'readonly' ),
+		),
+		array(
+			'type' => 'sectionend',
+			'id'   => 'bf_store_availability_settings',
+		),
+	);
+
+	$end = array_pop( $settings );
+	if ( null === $end ) {
+		return array_merge( $settings, $availability_settings );
+	}
+
+	return array_merge( $settings, $availability_settings, array( $end ) );
+}
+add_filter( 'woocommerce_get_settings_general', 'wildflower_store_availability_settings' );
+
+/**
+ * Whether checkout is globally paused by the studio.
+ *
+ * @return bool
+ */
+function wildflower_store_orders_paused() {
+	return 'yes' === get_option( 'bf_store_orders_paused', 'no' );
+}
+
+/**
+ * Sanitized unique closed dates.
+ *
+ * @return array<int,string>
+ */
+function wildflower_store_closed_dates() {
+	$stored = get_option( 'bf_store_closed_dates', '[]' );
+	$values = is_array( $stored ) ? $stored : json_decode( (string) $stored, true );
+	if ( ! is_array( $values ) ) {
+		return array();
+	}
+
+	$dates = array();
+	foreach ( $values as $value ) {
+		$date = wildflower_checkout_clean_date( $value );
+		if ( $date ) {
+			$dates[ $date ] = true;
+		}
+	}
+
+	$dates = array_keys( $dates );
+	sort( $dates, SORT_STRING );
+	return array_slice( $dates, 0, 366 );
+}
+
+/**
+ * Whether a fulfillment date is explicitly closed.
+ *
+ * @param mixed $date Date to inspect.
+ * @return bool
+ */
+function wildflower_store_date_is_closed( $date ) {
+	$date = wildflower_checkout_clean_date( $date );
+	return $date && in_array( $date, wildflower_store_closed_dates(), true );
+}
+
+/**
+ * Customer-facing pause message.
+ *
+ * @return string
+ */
+function wildflower_store_pause_message() {
+	return __( 'Online ordering is temporarily paused. Please contact Wildflower before placing an order.', 'wildflower' );
+}
+
+/**
+ * Make every product non-purchasable without changing stock or visibility.
+ *
+ * @param bool $purchasable Current product state.
+ * @return bool
+ */
+function wildflower_store_pause_product_purchasable( $purchasable ) {
+	return wildflower_store_orders_paused() ? false : $purchasable;
+}
+add_filter( 'woocommerce_is_purchasable', 'wildflower_store_pause_product_purchasable', 100 );
+add_filter( 'woocommerce_variation_is_purchasable', 'wildflower_store_pause_product_purchasable', 100 );
+
+/**
+ * Reject direct add-to-cart requests while paused.
+ *
+ * @param bool $passed Existing validation result.
+ * @return bool
+ */
+function wildflower_store_pause_add_to_cart( $passed ) {
+	if ( ! wildflower_store_orders_paused() ) {
+		return $passed;
+	}
+
+	wildflower_store_pause_add_notice();
+	return false;
+}
+add_filter( 'woocommerce_add_to_cart_validation', 'wildflower_store_pause_add_to_cart', 100 );
+
+/** Add one non-duplicated cart/checkout error while paused. */
+function wildflower_store_pause_add_notice() {
+	if ( ! wildflower_store_orders_paused() || ! function_exists( 'wc_add_notice' ) ) {
+		return;
+	}
+
+	$message = wildflower_store_pause_message();
+	if ( ! function_exists( 'wc_has_notice' ) || ! wc_has_notice( $message, 'error' ) ) {
+		wc_add_notice( $message, 'error' );
+	}
+}
+add_action( 'woocommerce_check_cart_items', 'wildflower_store_pause_add_notice', 1 );
+add_action( 'woocommerce_checkout_process', 'wildflower_store_pause_add_notice', 1 );
+
+/**
+ * Reject Store API cart and express-payment requests while paused.
+ *
+ * @param WP_Error $errors Store API errors.
+ */
+function wildflower_store_pause_store_api_errors( $errors ) {
+	if ( wildflower_store_orders_paused() && $errors instanceof WP_Error ) {
+		$errors->add( 'wildflower_store_orders_paused', wildflower_store_pause_message() );
+	}
+}
+add_action( 'woocommerce_store_api_cart_errors', 'wildflower_store_pause_store_api_errors', 10, 1 );
+
+/** Show a clear storefront-wide notice while product buttons are disabled. */
+function wildflower_store_pause_banner() {
+	if ( ! wildflower_store_orders_paused() || is_admin() ) {
+		return;
+	}
+	?>
+	<div class="wf-store-pause-banner" role="status"><?php echo esc_html( wildflower_store_pause_message() ); ?></div>
+	<style>
+	.wf-store-pause-banner {
+		position: relative;
+		z-index: 1000;
+		padding: 12px 20px;
+		background: #6e1f32;
+		color: #fff;
+		text-align: center;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.4;
+	}
+	</style>
+	<?php
+}
+add_action( 'wp_body_open', 'wildflower_store_pause_banner', 5 );
+
+/**
  * Return the current time in the studio's business timezone.
  *
  * The site historically had no WordPress timezone configured, so checkout
@@ -27,6 +206,15 @@ function wildflower_checkout_now() {
 	}
 
 	return $now;
+}
+
+/**
+ * Today's calendar date in Boston.
+ *
+ * @return string YYYY-MM-DD.
+ */
+function wildflower_checkout_today_date() {
+	return wildflower_checkout_now()->format( 'Y-m-d' );
 }
 
 /**
@@ -238,15 +426,19 @@ function wildflower_checkout_assets() {
 		array(
 			'ajaxUrl'          => WC_AJAX::get_endpoint( 'wildflower_sync_express_checkout' ),
 			'nonce'            => wp_create_nonce( 'wildflower_sync_express_checkout' ),
+			'todayDate'        => wildflower_checkout_today_date(),
 			'earliestDate'     => wildflower_checkout_earliest_date(),
-			'minNoticeDays'    => wildflower_checkout_minimum_notice_days(),
 			'sameDayAllowed'   => wildflower_checkout_cart_allows_same_day(),
 			'afterNoon'        => (int) wildflower_checkout_now()->format( 'G' ) >= 12,
+			'closedDates'      => wildflower_store_closed_dates(),
+			'ordersPaused'     => wildflower_store_orders_paused(),
 			'messages'         => array(
-				'dateRequired'   => __( 'Delivery date is required.', 'wildflower' ),
-				'windowRequired' => __( 'Please select a preferred delivery window.', 'wildflower' ),
-				'windowCutoff'   => __( 'Morning delivery is unavailable for this date. Please choose afternoon or evening.', 'wildflower' ),
-				'expressReady'   => __( 'Complete the required checkout fields above to use express checkout.', 'wildflower' ),
+				'dateRequired'    => __( 'Delivery date is required.', 'wildflower' ),
+				'dateUnavailable' => __( 'This date is unavailable. Please choose the next open day.', 'wildflower' ),
+				'windowRequired'  => __( 'Please select a preferred delivery window.', 'wildflower' ),
+				'windowCutoff'    => __( 'Morning delivery is unavailable for this date. Please choose afternoon or evening.', 'wildflower' ),
+				'expressReady'    => __( 'Complete the required checkout fields above to use express checkout.', 'wildflower' ),
+				'pauseMessage'    => wildflower_store_pause_message(),
 			),
 		)
 	);
@@ -351,10 +543,11 @@ function wildflower_checkout_clean_window( $value ) {
  * Validate delivery fields during classic checkout.
  */
 function wildflower_checkout_validate_delivery_fields() {
-	if ( wildflower_checkout_is_pickup() ) {
+	if ( wildflower_store_orders_paused() ) {
 		return;
 	}
 
+	$is_pickup = wildflower_checkout_is_pickup();
 	$date_raw   = isset( $_POST['wildflower_delivery_date'] ) ? $_POST['wildflower_delivery_date'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 	$window_raw = isset( $_POST['wildflower_delivery_window'] ) ? $_POST['wildflower_delivery_window'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 	$date       = wildflower_checkout_clean_date( $date_raw );
@@ -370,16 +563,23 @@ function wildflower_checkout_validate_delivery_fields() {
 		return;
 	}
 
-	if ( $date < wildflower_checkout_earliest_date() ) {
+	$minimum_date = $is_pickup ? wildflower_checkout_today_date() : wildflower_checkout_earliest_date();
+	if ( $date < $minimum_date ) {
 		wc_add_notice( __( 'That delivery date is no longer available. Please select the next available date.', 'wildflower' ), 'error' );
+		return;
 	}
 
-	if ( '' === $window ) {
+	if ( wildflower_store_date_is_closed( $date ) ) {
+		wc_add_notice( __( 'This date is unavailable. Please choose the next open day.', 'wildflower' ), 'error' );
+		return;
+	}
+
+	if ( ! $is_pickup && '' === $window ) {
 		wc_add_notice( __( 'Please select a preferred delivery window.', 'wildflower' ), 'error' );
 		return;
 	}
 
-	if ( ! in_array( $window, wildflower_checkout_allowed_windows( $date ), true ) ) {
+	if ( ! $is_pickup && ! in_array( $window, wildflower_checkout_allowed_windows( $date ), true ) ) {
 		wc_add_notice( __( 'That delivery window is unavailable for the selected date. Please choose afternoon or evening.', 'wildflower' ), 'error' );
 	}
 }
@@ -550,14 +750,20 @@ function wildflower_checkout_validate_express_data( $posted, $pickup_override = 
 		}
 	}
 
-	$is_pickup = is_bool( $pickup_override ) ? $pickup_override : wildflower_checkout_is_pickup();
-	$date      = isset( $posted['wildflower_delivery_date'] ) ? wildflower_checkout_clean_date( $posted['wildflower_delivery_date'] ) : '';
-	$window    = isset( $posted['wildflower_delivery_window'] ) ? wildflower_checkout_clean_window( $posted['wildflower_delivery_window'] ) : '';
+	$is_pickup   = is_bool( $pickup_override ) ? $pickup_override : wildflower_checkout_is_pickup();
+	$date_raw    = isset( $posted['wildflower_delivery_date'] ) ? $posted['wildflower_delivery_date'] : '';
+	$date        = wildflower_checkout_clean_date( $date_raw );
+	$window      = isset( $posted['wildflower_delivery_window'] ) ? wildflower_checkout_clean_window( $posted['wildflower_delivery_window'] ) : '';
+	$minimum_date = $is_pickup ? wildflower_checkout_today_date() : wildflower_checkout_earliest_date();
 
-	if ( ! $is_pickup && ! $date ) {
+	if ( ! is_scalar( $date_raw ) || '' === trim( (string) $date_raw ) ) {
+		$errors['wildflower_delivery_date'] = __( 'Delivery date is required.', 'wildflower' );
+	} elseif ( ! $date ) {
 		$errors['wildflower_delivery_date'] = __( 'Please select a valid delivery date.', 'wildflower' );
-	} elseif ( ! $is_pickup && $date < wildflower_checkout_earliest_date() ) {
+	} elseif ( $date < $minimum_date ) {
 		$errors['wildflower_delivery_date'] = __( 'Please select an available delivery date.', 'wildflower' );
+	} elseif ( wildflower_store_date_is_closed( $date ) ) {
+		$errors['wildflower_delivery_date'] = __( 'This date is unavailable. Please choose the next open day.', 'wildflower' );
 	}
 	if ( ! $is_pickup && ! $window ) {
 		$errors['wildflower_delivery_window'] = __( 'Please select a preferred delivery window.', 'wildflower' );
@@ -588,6 +794,10 @@ function wildflower_checkout_validate_express_data( $posted, $pickup_override = 
  */
 function wildflower_checkout_sync_express_data() {
 	check_ajax_referer( 'wildflower_sync_express_checkout', 'security' );
+
+	if ( wildflower_store_orders_paused() ) {
+		wp_send_json_error( array( 'message' => wildflower_store_pause_message() ), 503 );
+	}
 
 	if ( ! WC()->session || ! WC()->cart ) {
 		wp_send_json_error( array( 'message' => __( 'Checkout session is unavailable. Please refresh the page.', 'wildflower' ) ), 400 );
@@ -627,6 +837,11 @@ add_action( 'wc_ajax_wildflower_sync_express_checkout', 'wildflower_checkout_syn
  */
 function wildflower_checkout_validate_order_before_payment( $order, $validation_errors ) {
 	if ( ! $order instanceof WC_Order || ! $validation_errors instanceof WP_Error ) {
+		return;
+	}
+
+	if ( wildflower_store_orders_paused() ) {
+		$validation_errors->add( 'wildflower_store_orders_paused', wildflower_store_pause_message() );
 		return;
 	}
 
@@ -688,8 +903,8 @@ function wildflower_checkout_validate_order_before_payment( $order, $validation_
 	if ( is_callable( array( $order, 'set_shipping_phone' ) ) && ! $order->get_shipping_phone() ) {
 		$order->set_shipping_phone( $order->get_billing_phone() );
 	}
+	$order->update_meta_data( '_wildflower_delivery_date', $snapshot['delivery_date'] );
 	if ( ! $is_pickup ) {
-		$order->update_meta_data( '_wildflower_delivery_date', $snapshot['delivery_date'] );
 		$order->update_meta_data( '_wildflower_delivery_window', $snapshot['delivery_window'] );
 	}
 	if ( ! empty( $snapshot['order_comments'] ) ) {

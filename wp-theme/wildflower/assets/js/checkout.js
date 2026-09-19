@@ -3,6 +3,11 @@
 
   var config = window.wildflowerCheckout || {};
   var messages = config.messages || {};
+  var closedDates = Array.isArray(config.closedDates) ? config.closedDates : [];
+  var closedDateLookup = {};
+  closedDates.forEach(function (date) {
+    closedDateLookup[date] = true;
+  });
   var expressServerReady = false;
   var expressSyncTimer = null;
   var expressSyncRequest = 0;
@@ -22,6 +27,21 @@
       method = document.querySelector('input[name^="shipping_method"][type="hidden"]');
     }
     return Boolean(method && String(method.value).indexOf('local_pickup') !== -1);
+  }
+
+  function dateKey(candidate) {
+    var year = candidate.getFullYear();
+    var month = String(candidate.getMonth() + 1).padStart(2, '0');
+    var day = String(candidate.getDate()).padStart(2, '0');
+    return year + '-' + month + '-' + day;
+  }
+
+  function minimumDate() {
+    return pickupSelected() ? config.todayDate : config.earliestDate;
+  }
+
+  function dateUnavailable(value) {
+    return Boolean(!value || (minimumDate() && value < minimumDate()) || closedDateLookup[value]);
   }
 
   function fieldRow(fieldId) {
@@ -66,6 +86,10 @@
   }
 
   function morningRestricted(dateValue) {
+    if (pickupSelected()) {
+      return false;
+    }
+
     if (config.sameDayAllowed && (!dateValue || dateValue === config.earliestDate)) {
       return true;
     }
@@ -90,12 +114,7 @@
   }
 
   function validateDeliveryFields() {
-    if (pickupSelected()) {
-      clearFieldError('wildflower_delivery_date');
-      clearFieldError('wildflower_delivery_window');
-      return true;
-    }
-
+    var isPickup = pickupSelected();
     var date = document.getElementById('wildflower_delivery_date');
     var windowSelect = document.getElementById('wildflower_delivery_window');
     var valid = true;
@@ -103,14 +122,17 @@
     if (!date || !date.value) {
       showFieldError('wildflower_delivery_date', messages.dateRequired || 'Delivery date is required.');
       valid = false;
+    } else if (dateUnavailable(date.value)) {
+      showFieldError('wildflower_delivery_date', messages.dateUnavailable || 'This date is unavailable.');
+      valid = false;
     } else {
       clearFieldError('wildflower_delivery_date');
     }
 
-    if (!windowSelect || !windowSelect.value) {
+    if (!isPickup && (!windowSelect || !windowSelect.value)) {
       showFieldError('wildflower_delivery_window', messages.windowRequired || 'Please select a preferred delivery window.');
       valid = false;
-    } else if (morningRestricted(date ? date.value : '') && windowSelect.value === 'morning') {
+    } else if (!isPickup && windowSelect && morningRestricted(date ? date.value : '') && windowSelect.value === 'morning') {
       showFieldError('wildflower_delivery_window', messages.windowCutoff || 'Morning delivery is unavailable for this date.');
       valid = false;
     } else {
@@ -121,20 +143,21 @@
   }
 
   function validateChangedDeliveryField(target) {
-    if (pickupSelected()) {
-      clearFieldError('wildflower_delivery_date');
+    var isPickup = pickupSelected();
+    if (isPickup) {
       clearFieldError('wildflower_delivery_window');
-      return;
     }
 
     var date = document.getElementById('wildflower_delivery_date');
     var windowSelect = document.getElementById('wildflower_delivery_window');
 
     if (target && target.id === 'wildflower_delivery_date') {
-      if (date && date.value) {
+      if (date && date.value && !dateUnavailable(date.value)) {
         clearFieldError('wildflower_delivery_date');
+      } else if (date && date.value) {
+        showFieldError('wildflower_delivery_date', messages.dateUnavailable || 'This date is unavailable.');
       }
-      if (date && windowSelect && windowSelect.value) {
+      if (!isPickup && date && windowSelect && windowSelect.value) {
         if (morningRestricted(date.value) && windowSelect.value === 'morning') {
           showFieldError('wildflower_delivery_window', messages.windowCutoff || 'Morning delivery is unavailable for this date.');
         } else {
@@ -145,6 +168,10 @@
     }
 
     if (target && target.id === 'wildflower_delivery_window') {
+      if (isPickup) {
+        clearFieldError('wildflower_delivery_window');
+        return;
+      }
       if (!windowSelect || !windowSelect.value) {
         showFieldError('wildflower_delivery_window', messages.windowRequired || 'Please select a preferred delivery window.');
       } else if (morningRestricted(date ? date.value : '') && windowSelect.value === 'morning') {
@@ -197,35 +224,40 @@
     }
 
     date.attr({
-      min: config.earliestDate || '',
+      min: minimumDate() || '',
       autocomplete: 'off',
       inputmode: 'none',
       readonly: 'readonly'
     });
 
-    if (date.val() && config.earliestDate && date.val() < config.earliestDate) {
+    if (date.val() && dateUnavailable(date.val())) {
       date.val('');
-      showFieldError('wildflower_delivery_date', messages.dateRequired || 'Delivery date is required.');
+      showFieldError('wildflower_delivery_date', messages.dateUnavailable || 'This date is unavailable.');
     }
 
     if ($.fn.datepicker && !date.hasClass('hasDatepicker')) {
       date.datepicker({
         dateFormat: 'yy-mm-dd',
-        minDate: Number(config.minNoticeDays || 0),
+        minDate: minimumDate() ? $.datepicker.parseDate('yy-mm-dd', minimumDate()) : 0,
         beforeShow: scheduleDatepickerPosition,
         onChangeMonthYear: scheduleDatepickerPosition,
         beforeShowDay: function (candidate) {
-          if (!config.earliestDate) {
+          if (!minimumDate()) {
             return [true, '', ''];
           }
-          var earliest = $.datepicker.parseDate('yy-mm-dd', config.earliestDate);
-          return [candidate >= earliest, '', ''];
+          var earliest = $.datepicker.parseDate('yy-mm-dd', minimumDate());
+          var key = dateKey(candidate);
+          var enabled = candidate >= earliest && !closedDateLookup[key];
+          return [enabled, enabled ? '' : 'wf-date-unavailable', enabled ? '' : (messages.dateUnavailable || 'This date is unavailable.')];
         },
         onSelect: function () {
           updateWindowOptions();
           date.trigger('change');
         }
       });
+    } else if ($.fn.datepicker && date.hasClass('hasDatepicker')) {
+      date.datepicker('option', 'minDate', minimumDate() ? $.datepicker.parseDate('yy-mm-dd', minimumDate()) : 0);
+      date.datepicker('refresh');
     }
   }
 
@@ -243,11 +275,12 @@
       if (!row || !field) {
         return;
       }
-      row.classList.toggle('validate-required', !isPickup);
-      field.required = !isPickup;
+      var required = fieldId === 'wildflower_delivery_date' || !isPickup;
+      row.classList.toggle('validate-required', required);
+      field.required = required;
       var requiredMark = row.querySelector('.required');
       if (requiredMark) {
-        requiredMark.hidden = isPickup;
+        requiredMark.hidden = !required;
       }
     });
 
@@ -257,10 +290,14 @@
       if (title) {
         title.textContent = isPickup ? 'Pickup details' : 'Delivery details';
       }
+      var dateLabel = fieldRow('wildflower_delivery_date');
+      dateLabel = dateLabel ? dateLabel.querySelector('label') : null;
+      if (dateLabel && dateLabel.firstChild) {
+        dateLabel.firstChild.nodeValue = isPickup ? 'Pickup date ' : 'Delivery date ';
+      }
     }
 
     if (isPickup) {
-      clearFieldError('wildflower_delivery_date');
       clearFieldError('wildflower_delivery_window');
     }
   }
@@ -271,10 +308,15 @@
       return false;
     }
 
-    if (!pickupSelected()) {
-      var date = document.getElementById('wildflower_delivery_date');
+    var isPickup = pickupSelected();
+    var date = document.getElementById('wildflower_delivery_date');
+    if (!date || !date.value || dateUnavailable(date.value)) {
+      return false;
+    }
+
+    if (!isPickup) {
       var windowSelect = document.getElementById('wildflower_delivery_window');
-      if (!date || !date.value || !windowSelect || !windowSelect.value) {
+      if (!windowSelect || !windowSelect.value) {
         return false;
       }
       if (morningRestricted(date.value) && windowSelect.value === 'morning') {
@@ -391,7 +433,7 @@
       return;
     }
 
-    var ready = requiredFieldsReady() && expressServerReady;
+    var ready = !config.ordersPaused && requiredFieldsReady() && expressServerReady;
     express.classList.toggle('wf-express-disabled', !ready);
     express.setAttribute('aria-disabled', ready ? 'false' : 'true');
     express.dataset.wfRequiredReady = ready ? 'true' : 'false';
@@ -405,6 +447,11 @@
 
     expressServerReady = false;
     updateExpressAvailability();
+
+    if (config.ordersPaused) {
+      setExpressNote(messages.pauseMessage || 'Online ordering is temporarily paused.');
+      return;
+    }
 
     if (!form || !express || !config.ajaxUrl || !config.nonce || !requiredFieldsReady()) {
       setExpressNote();
